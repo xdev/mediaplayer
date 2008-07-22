@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>MediaPlayer Embed</title>
+	<script type="text/javascript" src="assets/js/swfobject.js"></script>
+	<meta http-equiv="cache-control" content="no-cache" ></meta>
+	
+	<style type="text/css">
+
+	html
+	{
+		height: 100%;
+	}
+
+	body {
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		background-color: #000000;
+	}
+
+	#flash_wrapper
+	{
+		height: 100%;
+	}
+
+	.overview
+	{
+		display: none;
+	}
+
+	</style>
+	
+</head>
+<body>
+
+
+<div id="flash_wrapper">
+	<div id="media_player"></div>
+</div>
+
+<script type="text/javascript">
+	// <![CDATA[
+
+	var flashvars = {};
+
+	var params = {};
+	params.menu = "false";
+	params.allowfullscreen = "true";
+	params.bgcolor = "#000000";
+	
+	var attributes = {};
+
+	swfobject.embedSWF("assets/swf/mediaplayer.swf", "media_player", "100%", "100%", "9.0.0","/assets/swf/expressInstall.swf", flashvars, params, attributes);
+	// ]]>
+</script>
+
+</body>
+</html>
+

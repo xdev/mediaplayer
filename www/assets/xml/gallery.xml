@@ -1,0 +1,43 @@
+<data>
+	<RecordSet Type="Config">
+		
+	</RecordSet>
+	
+	<RecordSet Type="Slides">
+		<Row>
+			<file>1954889127_2ab22835b6_b.jpg</file>
+		</Row>
+		<Row>
+			<file>final_reel.flv</file>
+		</Row>
+		<Row>
+			<file>Control.mp3</file>
+		</Row>
+		<Row>
+			<file>1955616248_3b2e80546c_b.jpg</file>
+		</Row>
+		<Row>
+			<file>1877119707_92c3fe7928_b.jpg</file>
+		</Row>
+		<Row>
+			<file>boy.jpg</file>
+		</Row>
+		
+		
+		<Row>
+			<file>chaps.jpg</file>
+		</Row>
+		<Row>
+			<file>crab.jpg</file>
+		</Row>
+		<Row>
+			<file>dandelion.jpg</file>
+		</Row>
+		<Row>
+			<file>flowers.jpg</file>
+		</Row>
+		<Row>
+			<file>lake.jpg</file>
+		</Row>			
+	</RecordSet>	
+</data>
