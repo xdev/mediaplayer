@@ -5,39 +5,39 @@
 	
 	<RecordSet Type="Slides">
 		<Row>
-			<file>1954889127_2ab22835b6_b.jpg</file>
+			<file>../img/1954889127_2ab22835b6_b.jpg</file>
 		</Row>
 		<Row>
-			<file>final_reel.flv</file>
+			<file>../img/final_reel.flv</file>
 		</Row>
 		<Row>
-			<file>Control.mp3</file>
+			<file>../img/Control.mp3</file>
 		</Row>
 		<Row>
-			<file>1955616248_3b2e80546c_b.jpg</file>
+			<file>../img/1955616248_3b2e80546c_b.jpg</file>
 		</Row>
 		<Row>
-			<file>1877119707_92c3fe7928_b.jpg</file>
+			<file>../img/1877119707_92c3fe7928_b.jpg</file>
 		</Row>
 		<Row>
-			<file>boy.jpg</file>
+			<file>../img/boy.jpg</file>
 		</Row>
 		
 		
 		<Row>
-			<file>chaps.jpg</file>
+			<file>../img/chaps.jpg</file>
 		</Row>
 		<Row>
-			<file>crab.jpg</file>
+			<file>../img/crab.jpg</file>
 		</Row>
 		<Row>
-			<file>dandelion.jpg</file>
+			<file>../img/dandelion.jpg</file>
 		</Row>
 		<Row>
-			<file>flowers.jpg</file>
+			<file>../img/flowers.jpg</file>
 		</Row>
 		<Row>
-			<file>lake.jpg</file>
+			<file>../img/lake.jpg</file>
 		</Row>			
 	</RecordSet>	
 </data>

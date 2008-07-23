@@ -19,7 +19,6 @@ package
 	{
 		
 		private var _ref:MovieClip;
-		private var assets:String;
 		private var Layout:Object;
 		
 		private var fullscreen:Boolean;
@@ -42,15 +41,21 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			
+			var xml;
+			
 			if(Capabilities.playerType == "External"){
-				assets = "../../assets/";
-				//assets = "http://charlesmastin.com/temp/mp/";
+				xml = '../xml/gallery.xml';
 			}
 			else {
-				assets = "assets/";
-				//assets = "http://charlesmastin.com/temp/mp/";
+				
 			}
-			new XMLLoader(assets+'xml/gallery.xml',parseXML,this);
+			
+			
+			if(root.loaderInfo.parameters.xml){
+				xml = root.loaderInfo.parameters.xml;
+			}
+			
+			new XMLLoader(xml,parseXML,this);
 			
 			Layout = 
 			{
@@ -391,14 +396,14 @@ package
 			}
 						
 			if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
-				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,assets+'img/'+slideA[slideIndex].file);
+				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,slideA[slideIndex].file);
 				MP._view.addEventListener('onUpdateSize', onResize);
 				isPlaying = false;
 				revealSlide();
 			}
 			
 			if(ext == 'jpg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
-				var movie = new LoadMovie(holder,assets+'img/'+slideA[slideIndex].file);
+				var movie = new LoadMovie(holder,slideA[slideIndex].file);
 				movie.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,revealSlide);				
 			}
 			
