@@ -1,18 +1,22 @@
 <data>
 	<RecordSet Type="Config">
-		
+		<fullscreen>0</fullscreen>
+		<thumbgrid>1</thumbgrid>
+		<duration>5000</duration>
 	</RecordSet>
 	
 	<RecordSet Type="Slides">
 		<Row>
 			<file>../img/1954889127_2ab22835b6_b.jpg</file>
 		</Row>
+		<!--
 		<Row>
 			<file>../img/final_reel.flv</file>
 		</Row>
 		<Row>
 			<file>../img/Control.mp3</file>
 		</Row>
+	-->
 		<Row>
 			<file>../img/1955616248_3b2e80546c_b.jpg</file>
 		</Row>
