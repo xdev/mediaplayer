@@ -29,8 +29,9 @@ package
 		private var _ref:MovieClip;
 		private var Layout:Object;
 		
-		private var fullscreen:Boolean;
-		private var isPlaying:Boolean;
+		private var flagFullscreen:Boolean;
+		private var flagPlaying:Boolean;
+		private var flagThumbs:Boolean;
 		
 		private var slideIndex:int;
 		private var slideMax:int;
@@ -79,7 +80,7 @@ package
 			
 			configObj = 
 			{
-				thumbgrid:false,
+				thumbgrid:true,
 				fullscreen:true,
 				duration:5000,
 				slideshow:true
@@ -109,10 +110,13 @@ package
 				i++;
 			}			
 			slideMax = i;
+			flagThumbs = false;
 			
 			if(slideMax > 1){
 				
-				isPlaying = true;
+				
+				
+				flagPlaying = true;
 				slideIndex = -1;
 				buildUI();
 				advanceSlide(1);
@@ -124,7 +128,7 @@ package
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
 			
 			}else{
-				isPlaying = false;
+				flagPlaying = false;
 				configObj.slideshow = false;
 				configObj.thumbgrid = false;
 				slideIndex = -1;
@@ -181,10 +185,14 @@ package
 			
 			if(mc.name == 'nav_prev' || mc.name == 'nav_next'){
 				if(e.type == MouseEvent.MOUSE_OVER){
-					TweenLite.to(MovieClip(mc),0.3,{scaleX:1.2,scaleY:1.2});
+					TweenLite.to(MovieClip(mc),0.2,{scaleX:1.2,scaleY:1.2});
 				}
 				if(e.type == MouseEvent.MOUSE_OUT){
 					TweenLite.to(MovieClip(mc),0.5,{scaleX:1.0,scaleY:1.0});
+				}
+				if(e.type == MouseEvent.CLICK){
+					//TweenLite.to(MovieClip(mc),0.2,{scaleX:1.0,scaleY:1.0});
+					advanceSlide(mc.dir);
 				}
 			}
 		}
@@ -227,7 +235,7 @@ package
 				mc.y = 14;
 				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse);
 				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse);
-				mc.addEventListener(MouseEvent.CLICK,toggleThumbnail);
+				mc.addEventListener(MouseEvent.CLICK,toggleThumbs);
 				if(xPos == 14){
 					mc.xPos = 38;
 				}else{
@@ -239,7 +247,7 @@ package
 			
 			if(configObj.slideshow == true){
 				i = new icon_timer();
-				if(isPlaying){			
+				if(flagPlaying){			
 					i.gotoAndStop('pause');
 				}else{
 					i.gotoAndStop('play');
@@ -274,6 +282,7 @@ package
 				i = new mediaplayer_icons();
 				i.gotoAndStop('nav_arrow');
 				mc = ui.addChild(i);
+				mc.dir = -1;
 				mc.name = 'nav_prev';
 				mc.x = 15;
 				mc.y = 100;
@@ -281,14 +290,12 @@ package
 				mc.buttonMode = true;
 				mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse);
 				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse);
-				mc.addEventListener(MouseEvent.CLICK,function()
-				{
-					advanceSlide(-1);
-				});
+				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse);
 			
 				i = new mediaplayer_icons();
 				i.gotoAndStop('nav_arrow');
 				mc = ui.addChild(i);
+				mc.dir = 1;
 				mc.name = 'nav_next';
 				mc.rotation = 180;
 				mc.x = 575;
@@ -297,10 +304,7 @@ package
 				mc.buttonMode = true;
 				mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse);
 				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse);
-				mc.addEventListener(MouseEvent.CLICK,function()
-				{
-					advanceSlide(1);
-				});
+				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse);
 			
 			}
 			
@@ -389,9 +393,9 @@ package
 		
 		private function toggleFullScreen(e:Event = null):void
 		{
-			fullscreen = !fullscreen;
+			flagFullscreen = !flagFullscreen;
 
-			if(fullscreen){
+			if(flagFullscreen){
 				
 
 				//Optionally use hardware acceleration
@@ -410,14 +414,22 @@ package
 			}
 		}
 		
-		private function toggleThumbnail(e:Event = null):void
+		private function toggleThumbs(e:Event = null):void
 		{
+			flagThumbs = !flagThumbs;
 			
+			if(flagThumbs){
+				//tell it to activate
+				
+				//kill slideshow
+			}else{
+				//
+			}
 		}
 		
 		private function toggleSlideShow(e:Event = null):void
 		{
-			isPlaying = !isPlaying;
+			flagPlaying = !flagPlaying;
 			clearTimeout(slideInterval);
 			
 			//swap the icon state
@@ -425,7 +437,7 @@ package
 			var l = Utils.$(ui,'toggle');
 			var mc;
 			
-			if(isPlaying){
+			if(flagPlaying){
 				advanceSlide(1);
 				l.gotoAndStop('pause');
 				mc = Utils.$(Utils.$(Utils.$(this.stage,'ui'),'toggle'),'circ');
@@ -469,7 +481,7 @@ package
 			if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
 				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,file,{hasView:true});
 				MP._view.addEventListener('updateSize', onResize, false, 0, true);
-				isPlaying = false;
+				flagPlaying = false;
 				revealSlide();
 			}
 			
@@ -522,7 +534,7 @@ package
 			var mc = Utils.$(Utils.$(Utils.$(this.stage,'ui'),'toggle'),'circ');			
 
 			mc.graphics.moveTo(0,0);
-			mc.graphics.beginFill(0x404040,0.75);
+			mc.graphics.beginFill(0x222222,0.75);//404040
 			mc.graphics.lineTo(x1,y1);
 			mc.graphics.lineTo(x2,y2);
 			mc.graphics.endFill();
@@ -533,7 +545,7 @@ package
 		{
 			var slide = Utils.$(this.stage,'slide');
 			TweenLite.to(MovieClip(slide),1.0,{alpha:1.0});
-			if(isPlaying){
+			if(flagPlaying){
 				
 				
 				
