@@ -1,7 +1,15 @@
 /*
 
-Add thumb grid
-Fix timer icon
+Complete thumb grid
+
+Create toggle icon states for
+thubnail
+fullscreen
+
+Add basic preloader for images
+
+Consider overlay centered video controls while in fullscreen
+
 Offer defaults and overrides for configuration
 
 */
@@ -23,6 +31,10 @@ package
 	
 	import com.gs.TweenLite;
 	
+	import ThumbGrid;
+	
+	import com.carlcalderon.arthropod.Debug;
+	
 	final public class Main extends Sprite
 	{
 		
@@ -33,7 +45,7 @@ package
 		private var flagPlaying:Boolean;
 		private var flagThumbs:Boolean;
 		
-		private var slideIndex:int;
+		public var slideIndex:int;
 		private var slideMax:int;
 		private var slideA:Array;
 		
@@ -48,6 +60,7 @@ package
 		private var timestamp:Number;	
 		
 		private var MP:com.a12.modules.mediaplayback.MediaPlayback;
+		private var thumbClass:ThumbGrid;
 		
 		public function Main()
 		{
@@ -57,7 +70,6 @@ package
 			var xml;
 			
 			if(Capabilities.playerType == "External"){
-				xml = 'http:/bbb.dev/php/gallery.php?id=1';
 				xml = '../xml/gallery.xml';
 			}
 			else {
@@ -74,8 +86,7 @@ package
 			Layout = 
 			{
 				marginX:0,
-				marginY:0,
-				menuBarH:0
+				marginY:0
 			}
 			
 			configObj = 
@@ -83,10 +94,14 @@ package
 				thumbgrid:true,
 				fullscreen:true,
 				duration:5000,
-				slideshow:true
+				slideshow:true,
+				scalestage:true
 			}
 			
+			//Debug.clear();
+			
 			stage.addEventListener(Event.RESIZE, onResize);
+			stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
 		}
 		
 		private function parseXML(xml:String):void
@@ -94,17 +109,16 @@ package
 			var tXML:XML = new XML(xml);
 			//parse config information
 			
-			
-			
-			
-			var snip:XMLList = tXML.RecordSet.(@Type == "Slides");
+			//var snip:XMLList = tXML.RecordSet.(@Type == "Slides");
+			var snip:XMLList = tXML.slides;
 			var i:int=0;
 			slideA = [];			
-			for each(var node:XML in snip..Row){
+			for each(var node:XML in snip..slide){
 				slideA.push(
 					{
 						id		: i,
-						file	: node.file
+						file	: node.file,
+						thumb	: node.thumb
 					}
 				);
 				i++;
@@ -113,9 +127,7 @@ package
 			flagThumbs = false;
 			
 			if(slideMax > 1){
-				
-				
-				
+								
 				flagPlaying = true;
 				slideIndex = -1;
 				buildUI();
@@ -362,9 +374,9 @@ package
 			
 		}
 		
-		private function onFullScreen():void
+		private function onFullScreen(e:FullScreenEvent):void
 		{
-			
+			//Debug.log('wooot' + stage.displayState);
 		}
 		
 		private function keyListener(e:KeyboardEvent):void
@@ -385,71 +397,155 @@ package
 				
 				case 40:
 					advanceSlide(1);
-				break;				
+				break;
 				
+				case Keyboard.SPACE:
+					if(MP){
+						MP.toggle();
+					}
+				break;
+				
+				case 70:
+					toggleFullScreen();
+				break;
+				
+				case 83:
+					toggleSlideShow();				
+				break;
+				
+				case 84:			
+					toggleThumbs();
+				break;
 			}
 		}
+		
 		
 		
 		private function toggleFullScreen(e:Event = null):void
 		{
 			flagFullscreen = !flagFullscreen;
-
+			var mc = Utils.$(Utils.$(stage,'ui'),'fullscreen');
+			
 			if(flagFullscreen){
-				
-
-				//Optionally use hardware acceleration
-				/*
-				var screenRectangle:Rectangle = new Rectangle();
-				screenRectangle.x = 0;
-				screenRectangle.y = 0;
-				screenRectangle.width=stage.stageWidth;
-				screenRectangle.height=stage.stageHeight; 
-				stage.fullScreenSourceRect = screenRectangle;			
-				*/
 				stage.displayState = "fullScreen";
+				//update icon
+				mc.gotoAndStop('fullscreen_off');
 			}else{
-
 				stage.displayState = "normal";
+				//update icon
+				mc.gotoAndStop('fullscreen');
 			}
+			
 		}
 		
-		private function toggleThumbs(e:Event = null):void
+		public function toggleThumbs(e:Event = null):void
 		{
 			flagThumbs = !flagThumbs;
+			var ui = Utils.$(stage,'ui');
+			var mc = Utils.$(ui,'thumbnail');
+			
+			var c = Utils.$(this.stage,'thumbs');
+				
 			
 			if(flagThumbs){
 				//tell it to activate
 				
+				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener);
+				
+				if(c){
+					this.stage.removeChild(c);
+				}
+				c = Utils.createmc(stage,'thumbs');
+				//swap depth with ui
+				stage.setChildIndex(c,stage.numChildren - 2);
+				thumbClass = new ThumbGrid(c,this,slideA);
+				
+				//deactivate majority of ui controls
+				c = Utils.$(ui,'toggle');
+				c.mouseEnabled = false;
+				c.alpha = 0.2;
+				
+				c = Utils.$(ui,'nav_prev');
+				c.mouseEnabled = false;
+				c.alpha = 0.2;
+				
+				c = Utils.$(ui,'nav_next');
+				c.mouseEnabled = false;
+				c.alpha = 0.2;
+				
+				//toggle icon
+				mc.gotoAndStop('thumbnail_off');
+				
+				
 				//kill slideshow
+				flagPlaying = false;
+				clearInterval(progressInterval);
+				clearTimeout(slideInterval);			
+				updateSlideShowState();
+				
+				
+				//pause video
+				if(MP){
+					MP.pause();
+				}
+				
 			}else{
-				//
+				
+				thumbClass.onKill();
+				thumbClass = null;
+				
+				if(c){
+					this.stage.removeChild(c);
+				}
+				
+				if(slideMax > 1){
+					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
+				}
+				
+				//toggle icon
+				mc.gotoAndStop('thumbnail');
+				
+				//reactivate stuffs
+				c = Utils.$(ui,'toggle');
+				c.mouseEnabled = true;
+				c.alpha = 1.0;
+				
+				c = Utils.$(ui,'nav_prev');
+				c.mouseEnabled = true;
+				c.alpha = 1.0;
+				
+				c = Utils.$(ui,'nav_next');
+				c.mouseEnabled = true;
+				c.alpha = 1.0;
+			}
+		}
+		
+		private function updateSlideShowState():void
+		{
+			var ui = Utils.$(this.stage,'ui');
+			var l = Utils.$(ui,'toggle');
+			var mc = Utils.$(l,'circ')
+						
+			if(flagPlaying){
+				l.gotoAndStop('pause');
+				TweenLite.to(mc,0.5,{alpha:1.0});
+			}else{
+				l.gotoAndStop('play');
+				TweenLite.to(mc,0.5,{alpha:0.0});
 			}
 		}
 		
 		private function toggleSlideShow(e:Event = null):void
 		{
+			showUI();
 			flagPlaying = !flagPlaying;
-			clearTimeout(slideInterval);
-			
-			//swap the icon state
-			var ui = Utils.$(this.stage,'ui');
-			var l = Utils.$(ui,'toggle');
-			var mc;
-			
 			if(flagPlaying){
 				advanceSlide(1);
-				l.gotoAndStop('pause');
-				mc = Utils.$(Utils.$(Utils.$(this.stage,'ui'),'toggle'),'circ');
-				TweenLite.to(mc,0.5,{alpha:1.0});
 			}else{
-				l.gotoAndStop('play');
 				clearInterval(progressInterval);
-				//myTimer.stop();
-				mc = Utils.$(Utils.$(Utils.$(this.stage,'ui'),'toggle'),'circ');
-				TweenLite.to(mc,0.5,{alpha:0.0});
-				//fade it out
 			}
+			clearTimeout(slideInterval);			
+			updateSlideShowState();
 		}
 		
 		private function initVideo(e:Event)
@@ -457,6 +553,12 @@ package
 			var mc = Utils.$(MP._view.ref,'controls');
 			mc.alpha = 0.0;
 			onResize();
+		}
+		
+		public function viewSlideByIndex(value:Number):void
+		{
+			slideIndex = value;
+			viewSlide();
 		}
 		
 		private function viewSlide():void
@@ -469,8 +571,10 @@ package
 			this.stage.setChildIndex(slide,0);
 			var holder = Utils.createmc(slide,'holder');
 			
+			clearInterval(progressInterval);
+			
 			var file:String = slideA[slideIndex].file;
-			var ext = file.substring(file.lastIndexOf('.')+1,file.length);
+			var ext = file.substring(file.lastIndexOf('.')+1,file.length).toLowerCase();
 			
 			if(MP){
 				MP._view.removeEventListener('updateSize', initVideo, false);
@@ -482,6 +586,7 @@ package
 				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,file,{hasView:true});
 				MP._view.addEventListener('updateSize', onResize, false, 0, true);
 				flagPlaying = false;
+				updateSlideShowState();
 				revealSlide();
 			}
 			
@@ -498,7 +603,9 @@ package
 				var tf = Utils.$(l,'displayText');
 				tf.text = (slideIndex+1) + '/' + slideMax;
 			}
-			//kick back the listener			
+			//kick back the listener
+			
+						
 			
 		}
 		
@@ -515,7 +622,6 @@ package
 		
 		private function renderProgress(p:Number):void
 		{
-
 			var dO = 3.6;
 			var r = 20;
 									
@@ -561,17 +667,14 @@ package
 					mc.graphics.clear();
 					mc.scaleY = -1.0;
 					
-					clearInterval(progressInterval);
-					progressInterval = setInterval(slideProgressSegment,configObj.duration/100);
-					
-					/*
-					myTimer = new Timer(slideDuration/100, 100);
-					myTimer.addEventListener("timer", slideProgressSegment);
-					myTimer.start();
-					*/
 					
 					progressOffset = 0;
-					slideProgressSegment();
+					
+					if(flagPlaying){
+						progressInterval = setInterval(slideProgressSegment,configObj.duration/100);
+						slideProgressSegment();
+					}
+					
 				}
 			}
 			
@@ -591,7 +694,6 @@ package
 				var imgX = slide._width;
 				var imgY = slide._height;
 			
-				
 				if(MP != null)
 				{
 					var tA = MP.getDimensions();
@@ -599,26 +701,12 @@ package
 					imgY = tA.height;
 				}
 
-				var scale = 100;
-
-				//switch out floor for ceil
-				switch(true){
-
-					case imgY > stage.stageHeight - Layout.marginY*2-Layout.menuBarH:
-						scale = Math.ceil(100 *(stage.stageHeight - Layout.marginY*2 - Layout.menuBarH)/imgY);
-						if((scale/100) * imgX > stage.stageWidth - Layout.marginX*2){
-							scale = Math.ceil(100 *(stage.stageWidth - Layout.marginX*2)/imgX);
-						}
-					break;
-
-					case imgX > stage.stageWidth - Layout.marginX*2:
-						scale = Math.ceil(100 *(stage.stageWidth - Layout.marginX*2)/imgX);
-						if((scale/100) * imgY > stage.stageWidth - Layout.marginY*2-Layout.menuBarH){
-							scale = Math.ceil(100 *(stage.stageHeight - Layout.marginY*2 - Layout.menuBarH)/imgY);
-						}
-					break;
-
+				var mode = 'fit';
+				if(MP != null && configObj.scalestage){
+					mode = 'scale';
 				}
+				var scale = Utils.getScale(imgX,imgY,stage.stageWidth-(Layout.marginX*2),stage.stageHeight-(Layout.marginY*2),mode).x;
+
 												
 				scale = scale/100;
 				//if we're a image
@@ -626,7 +714,7 @@ package
 					slide.scaleX = scale;
 					slide.scaleY = scale;
 					slide.x = stage.stageWidth/2 - slide.width/2;
-					slide.y = (stage.stageHeight-Layout.menuBarH)/2 - slide.height/2;
+					slide.y = (stage.stageHeight)/2 - slide.height/2;
 				}
 				
 				//if we're a video
@@ -644,7 +732,7 @@ package
 						mc.height = Math.ceil(tA.height*scale);
 					
 						mc.x = stage.stageWidth/2 - mc.width/2;
-						mc.y = (stage.stageHeight-Layout.menuBarH)/2 - mc.height/2;
+						mc.y = (stage.stageHeight)/2 - mc.height/2;
 					}
 					
 					//do overlay icon
@@ -657,16 +745,40 @@ package
 					mc = Utils.$(MP._view.ref,'cover');
 					if(mc != null){
 						mc.x = stage.stageWidth/2 - tA.width/2;
-						mc.y = (stage.stageHeight-Layout.menuBarH)/2 - tA.height/2;					
+						mc.y = (stage.stageHeight)/2 - tA.height/2;					
 					}
 					MP.setWidth(stage.stageWidth);
 					if(MP._view._controls != null){
 						MP._view._controls.y = stage.stageHeight - 20;
 					}
 					
+					
 				}
 			
+				//scaleStage();
+			
 			}
+			
+			
+		
+		}
+		
+		private function scaleStage():void
+		{
+			//Optionally use hardware acceleration
+			/*
+			if(MP){
+				var mc = Utils.$(MP._view.ref,'myvideo');
+				var screenRectangle:Rectangle = new Rectangle();
+				screenRectangle.x = 0;
+				screenRectangle.y = 0;
+				screenRectangle.width=mc.width;
+				screenRectangle.height=mc.height;
+				stage.fullScreenSourceRect = screenRectangle;			
+			}else{
+				stage.fullScreenSourceRect = null;
+			}
+			*/
 		}	
 		
 	}

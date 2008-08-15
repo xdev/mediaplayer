@@ -1,47 +1,58 @@
-<data>
-	<RecordSet Type="Config">
+<root>
+	<config>
 		<fullscreen>0</fullscreen>
 		<thumbgrid>1</thumbgrid>
 		<duration>5000</duration>
-	</RecordSet>
+	</config>
 	
-	<RecordSet Type="Slides">
-		<Row>
-			<file>../img/1954889127_2ab22835b6_b.jpg</file>
-		</Row>
+	<slides>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/1954889127_2ab22835b6_b.jpg</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
+		</slide>
+		
+		<slide>
+			<file>http://mediaplayer.local/assets/img/final_reel.flv</file>
+		</slide>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/final_reel.flv</file>
+		</slide>
 		<!--
-		<Row>
-			<file>../img/final_reel.flv</file>
-		</Row>
-		<Row>
-			<file>../img/Control.mp3</file>
-		</Row>
-	-->
-		<Row>
-			<file>../img/1955616248_3b2e80546c_b.jpg</file>
-		</Row>
-		<Row>
-			<file>../img/1877119707_92c3fe7928_b.jpg</file>
-		</Row>
-		<Row>
-			<file>../img/boy.jpg</file>
-		</Row>
-		
-		
-		<Row>
-			<file>../img/chaps.jpg</file>
-		</Row>
-		<Row>
-			<file>../img/crab.jpg</file>
-		</Row>
-		<Row>
-			<file>../img/dandelion.jpg</file>
-		</Row>
-		<Row>
-			<file>../img/flowers.jpg</file>
-		</Row>
-		<Row>
-			<file>../img/lake.jpg</file>
-		</Row>			
-	</RecordSet>	
-</data>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/Control.mp3</file>
+		</slide>
+		-->
+		<slide>
+			<file>http://mediaplayer.local/assets/img/1955616248_3b2e80546c_b.jpg</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+		</slide>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/1877119707_92c3fe7928_b.jpg</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/1877119707_92c3fe7928_b.jpg</thumb>
+		</slide>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/boy.jpg</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/boy.jpg</thumb>
+		</slide>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/chaps.jpg</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/chaps.jpg</thumb>
+		</slide>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/crab.jpg</thumb>
+		</slide>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/dandelion.jpg</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/dandelion.jpg</thumb>
+		</slide>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/flowers.jpg</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/flowers.jpg</thumb>
+		</slide>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/lake.jpg</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/lake.jpg</thumb>
+		</slide>			
+	</slides>	
+</root>
