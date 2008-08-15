@@ -39,14 +39,14 @@ package
 	{
 		
 		private var _ref:MovieClip;
-		private var Layout:Object;
+		public var Layout:Object;
 		
 		private var flagFullscreen:Boolean;
 		private var flagPlaying:Boolean;
 		private var flagThumbs:Boolean;
 		
 		public var slideIndex:int;
-		private var slideMax:int;
+		public var slideMax:int;
 		private var slideA:Array;
 		
 		private var slideInterval:Number;
@@ -149,11 +149,6 @@ package
 			}
 			
 			
-		}
-		
-		private function testHandler(e:CustomEvent):void
-		{
-			//trace(e.props.name);
 		}
 		
 		private function mouseListener(e:Event):void
@@ -461,9 +456,11 @@ package
 				thumbClass = new ThumbGrid(c,this,slideA);
 				
 				//deactivate majority of ui controls
+				/*
 				c = Utils.$(ui,'toggle');
 				c.mouseEnabled = false;
 				c.alpha = 0.2;
+				*/
 				
 				c = Utils.$(ui,'nav_prev');
 				c.mouseEnabled = false;

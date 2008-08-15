@@ -10,7 +10,11 @@ package
 	import flash.ui.Keyboard;
 	import flash.geom.Rectangle;
 	
-	import com.a12.util.*;
+	//import com.a12.util.*;
+	import com.a12.util.Utils;
+	import com.a12.util.CustomEvent;
+	import com.a12.util.LoadMovie;
+	
 	import com.a12.modules.mediaplayback.*;
 	
 	import com.gs.TweenLite;
@@ -23,6 +27,7 @@ package
 		
 		private var thumbWidth:Number;
 		private var thumbHeight:Number;
+		private var padding:Number;
 		
 		public function ThumbGrid(_r,_p,_obj)
 		{
@@ -32,6 +37,7 @@ package
 			
 			thumbWidth = 140;
 			thumbHeight = 140;
+			padding = 10;
 			
 			_ref.alpha = 0;
 			
@@ -64,7 +70,7 @@ package
 			}
 			if(e.type == MouseEvent.MOUSE_OUT){
 				if(mc.state == 'normal'){
-					Utils.$(mc,'hit').alpha = 0.2;
+					Utils.$(mc,'hit').alpha = 0.0;
 				}
 			}
 			if(e.type == MouseEvent.CLICK){
@@ -122,7 +128,7 @@ package
 				//back
 				Utils.drawRect(Utils.createmc(clip,'back'),thumbWidth,thumbHeight,0x222222,1.0);
 				//img
-				var img = Utils.createmc(clip,'img',{alpha:0});
+				var img = Utils.createmc(clip,'img',{alpha:0.0});
 				var movie = new LoadMovie(img,file);
 				movie.addEventListener(Event.COMPLETE,revealThumb);
 				
@@ -132,7 +138,7 @@ package
 				img.mask = m;
 				
 				//stroke
-				Utils.drawRect(Utils.createmc(clip,'hit',{alpha:0.2}),thumbWidth,thumbHeight,0x333333,0.0,[1.0,0xFFFFFF,1.0]);
+				Utils.drawRect(Utils.createmc(clip,'hit',{alpha:0.0}),thumbWidth,thumbHeight,0x333333,0.0,[1.0,0xFFFFFF,1.0]);
 				
 				clip.mouseEnabled = true;
 				clip.addEventListener(MouseEvent.MOUSE_OVER,handleMouse,false,0,true);
@@ -199,8 +205,41 @@ package
 			
 			
 			var rowC = 0;
+			var rowM = 5;
 			var colC = 0;
 			var colM = 5;
+			
+			//begin 1001 journals code
+			
+			var tx = _ref.stage.stageWidth - ((thumbWidth+padding)*1);
+
+			colM = Math.floor(tx/(thumbWidth+padding));
+
+			if(colM > 5){
+				//colM = 5;
+			}
+
+			var ty = _ref.stage.stageHeight - _parent.Layout.marginY - ((thumbWidth+padding)*1);
+
+			rowM = Math.floor(ty/(thumbWidth+padding));
+
+			if(rowM > 5){
+				//rowM = 5;
+			}
+
+			var gm =(Math.ceil(_parent.slideMax/colM)*colM);
+
+			if(gm%colM != 0){
+				gm += colM;
+			}
+
+			var thumbScroll = gm/colM;
+
+			if(gm <(colM*rowM)){
+				gm =(colM*rowM);
+			}
+			
+			//
 			
 			var cont = Utils.$(_ref,'cont');
 			
@@ -218,6 +257,10 @@ package
 					rowC++;
 				}
 			}
+			
+			cont.x = (_ref.stage.stageWidth/2) - (((thumbWidth+padding) * colM)/2);
+			cont.y = (_ref.stage.stageHeight/2) - _parent.Layout.marginY - (((thumbWidth+padding) * rowM)/2);
+		
 		}
 		
 	}
