@@ -41,7 +41,7 @@ package
 		private var _ref:MovieClip;
 		public var Layout:Object;
 		
-		private var flagFullscreen:Boolean;
+		//private var flagFullscreen:Boolean;
 		private var flagPlaying:Boolean;
 		private var flagThumbs:Boolean;
 		
@@ -67,6 +67,22 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			
+			configObj = 
+			{
+				thumbgrid:true,
+				fullscreen:true,
+				duration:5000,
+				slideshow:true,
+				scalestage:true
+			}
+			
+			Layout = 
+			{
+				marginX:0,
+				marginY:0
+			}
+			
+			
 			var xml;
 			
 			if(Capabilities.playerType == "External"){
@@ -76,27 +92,27 @@ package
 				
 			}
 			
+			//root.loaderInfo.parameters.src = '/assets/img/final_reel.flv';
 			
-			if(root.loaderInfo.parameters.xml){
-				xml = root.loaderInfo.parameters.xml;
+			if(root.loaderInfo.parameters.src){
+				slideA = [{id:0,file:root.loaderInfo.parameters.src}];
+				slideMax = 1;
+				init();
+			}else{
+			
+				if(root.loaderInfo.parameters.xml){
+					xml = root.loaderInfo.parameters.xml;
+				}
+				new XMLLoader(xml,parseXML,this);
 			}
 			
-			new XMLLoader(xml,parseXML,this);
 			
-			Layout = 
-			{
-				marginX:0,
-				marginY:0
-			}
 			
-			configObj = 
-			{
-				thumbgrid:true,
-				fullscreen:true,
-				duration:5000,
-				slideshow:true,
-				scalestage:true
-			}
+			
+			//slideA = [{id:0,file:'/assets/img/final_reel.flv'}];
+			//slideMax = 1;
+			//init();
+			
 			
 			//Debug.clear();
 			
@@ -124,6 +140,15 @@ package
 				i++;
 			}			
 			slideMax = i;
+			
+			
+			init();
+			
+			
+		}
+		
+		private function init():void
+		{
 			flagThumbs = false;
 			
 			if(slideMax > 1){
@@ -133,12 +158,6 @@ package
 				buildUI();
 				advanceSlide(1);
 						
-				//listen to the mouse event to hide or show ui
-				stage.addEventListener(Event.MOUSE_LEAVE, mouseListener);
-				stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseListener);
-				//track keyboard navigation
-				stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
-			
 			}else{
 				flagPlaying = false;
 				configObj.slideshow = false;
@@ -148,7 +167,11 @@ package
 				advanceSlide(1);
 			}
 			
-			
+			//listen to the mouse event to hide or show ui
+			stage.addEventListener(Event.MOUSE_LEAVE, mouseListener);
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseListener);
+			//track keyboard navigation
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
 		}
 		
 		private function mouseListener(e:Event):void
@@ -371,7 +394,12 @@ package
 		
 		private function onFullScreen(e:FullScreenEvent):void
 		{
-			//Debug.log('wooot' + stage.displayState);
+			var mc = Utils.$(Utils.$(stage,'ui'),'fullscreen');
+			if(stage.displayState == "fullScreen"){
+				mc.gotoAndStop('fullscreen_off');
+			}else{
+				mc.gotoAndStop('fullscreen');
+			}
 		}
 		
 		private function keyListener(e:KeyboardEvent):void
@@ -379,19 +407,27 @@ package
 			switch(e.keyCode)
 			{
 				case Keyboard.LEFT:
-					advanceSlide(-1);
+					if(slideMax>1){
+						advanceSlide(-1);
+					}
 				break;
 				
 				case Keyboard.RIGHT:
-					advanceSlide(1);
+					if(slideMax>1){
+						advanceSlide(1);
+					}
 				break;
 				
 				case 38:
-					advanceSlide(-1);
+					if(slideMax>1){
+						advanceSlide(-1);
+					}
 				break;
 				
 				case 40:
-					advanceSlide(1);
+					if(slideMax>1){
+						advanceSlide(1);
+					}
 				break;
 				
 				case Keyboard.SPACE:
@@ -399,7 +435,7 @@ package
 						MP.toggle();
 					}
 				break;
-				
+				/*
 				case 70:
 					toggleFullScreen();
 				break;
@@ -411,26 +447,26 @@ package
 				case 84:			
 					toggleThumbs();
 				break;
+				*/
 			}
 		}
 		
 		
 		
 		private function toggleFullScreen(e:Event = null):void
-		{
-			flagFullscreen = !flagFullscreen;
-			var mc = Utils.$(Utils.$(stage,'ui'),'fullscreen');
+		{					
+			switch(true){
 			
-			if(flagFullscreen){
-				stage.displayState = "fullScreen";
-				//update icon
-				mc.gotoAndStop('fullscreen_off');
-			}else{
-				stage.displayState = "normal";
-				//update icon
-				mc.gotoAndStop('fullscreen');
-			}
-			
+				case stage.displayState == "fullScreen":
+					stage.displayState = "normal";
+				break;
+				
+				case stage.displayState == "normal":
+					stage.displayState = "fullScreen";
+				break;
+				
+			}	
+					
 		}
 		
 		public function toggleThumbs(e:Event = null):void
@@ -521,14 +557,16 @@ package
 		{
 			var ui = Utils.$(this.stage,'ui');
 			var l = Utils.$(ui,'toggle');
-			var mc = Utils.$(l,'circ')
+			if(l){
+				var mc = Utils.$(l,'circ')
 						
-			if(flagPlaying){
-				l.gotoAndStop('pause');
-				TweenLite.to(mc,0.5,{alpha:1.0});
-			}else{
-				l.gotoAndStop('play');
-				TweenLite.to(mc,0.5,{alpha:0.0});
+				if(flagPlaying){
+					l.gotoAndStop('pause');
+					TweenLite.to(mc,0.5,{alpha:1.0});
+				}else{
+					l.gotoAndStop('play');
+					TweenLite.to(mc,0.5,{alpha:0.0});
+				}
 			}
 		}
 		
@@ -698,12 +736,11 @@ package
 					imgY = tA.height;
 				}
 
-				var mode = 'fit';
+				var m = 100;
 				if(MP != null && configObj.scalestage){
-					mode = 'scale';
+					m = undefined;
 				}
-				var scale = Utils.getScale(imgX,imgY,stage.stageWidth-(Layout.marginX*2),stage.stageHeight-(Layout.marginY*2),mode).x;
-
+				var scale = Utils.getScale(imgX,imgY,stage.stageWidth-(Layout.marginX*2),stage.stageHeight-(Layout.marginY*2),'scale',m).x;
 												
 				scale = scale/100;
 				//if we're a image
