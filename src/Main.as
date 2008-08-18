@@ -939,7 +939,6 @@ package
 					if(mc != null){
 						mc.width = Math.ceil(tA.width*scale);
 						mc.height = Math.ceil(tA.height*scale);
-					
 						mc.x = stage.stageWidth/2 - mc.width/2;
 						mc.y = (stage.stageHeight)/2 - mc.height/2;
 					}
@@ -948,7 +947,6 @@ package
 					if(mc != null){
 						mc.width = Math.ceil(tA.width*scale);
 						mc.height = Math.ceil(tA.height*scale);
-					
 						mc.x = stage.stageWidth/2 - mc.width/2;
 						mc.y = (stage.stageHeight)/2 - mc.height/2;
 					}
@@ -963,8 +961,10 @@ package
 					
 					mc = Utils.$(MP._view.ref,'cover');
 					if(mc != null){
-						mc.x = stage.stageWidth/2 - tA.width/2;
-						mc.y = (stage.stageHeight)/2 - tA.height/2;					
+						mc.width = Math.ceil(tA.width*scale);
+						mc.height = Math.ceil(tA.height*scale);
+						mc.x = stage.stageWidth/2 - mc.width/2;
+						mc.y = (stage.stageHeight)/2 - mc.height/2;						
 					}
 					MP.setWidth(stage.stageWidth);
 					if(MP._view._controls != null){
