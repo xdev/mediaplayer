@@ -723,7 +723,11 @@ package
 			}
 									
 			if(slideA[slideIndex].mode == 'media'){
-				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,slideA[slideIndex].file,{hasView:true,still:slideA[slideIndex].still});
+				var obj = {hasView:true,still:slideA[slideIndex].still};
+				if(obj.still){
+					obj.paused = true;
+				}
+				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,slideA[slideIndex].file,obj);
 				MP._view.addEventListener('updateSize', onResize, false, 0, true);
 				//MP._view.addEventListener('onStill', onResize, false, 0, true);
 				flagPlaying = false;
