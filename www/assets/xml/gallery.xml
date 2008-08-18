@@ -1,25 +1,56 @@
 <root>
-	<config>
-		<fullscreen>0</fullscreen>
-		<thumbgrid>1</thumbgrid>
-		<duration>5000</duration>
-	</config>
-	
+		
 	<slides>
+		<slide>
+			<file>http://mediaplayer.local/assets/img/dre1.png</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+		</slide>
+		
+		<slide>
+			<file>http://mediaplayer.local/assets/img/dre2.png</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+		</slide>
+		
+		<slide>
+			<file>http://mediaplayer.local/assets/img/dre3.png</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+		</slide>
+		
+		<slide>
+			<file>http://mediaplayer.local/assets/img/dre4.png</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+		</slide>
+		
+	
+		<slide>
+			<file>http://mediaplayer.local/assets/img/final_reel.flv</file>
+			<thumb>http://mediaplayer.local/assets/img/thumbs/video.jpg</thumb>
+			<still>http://mediaplayer.local/assets/img/video.jpg</still>
+		</slide>
+		<!--
+				<slide>
+					<file>http://mediaplayer.local/assets/img/stripefin.jpg</file>
+					<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+				</slide>
+
+				<slide>
+					<file>http://mediaplayer.local/assets/img/engine_fin.jpg</file>
+					<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+				</slide>
+			<slide>
+				<file>http://mediaplayer.local/assets/img/Control.mp3</file>
+			</slide>
+		
+	-->
 		<slide>
 			<file>http://mediaplayer.local/assets/img/1954889127_2ab22835b6_b.jpg</file>
 			<thumb>http://mediaplayer.local/assets/img/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
 		</slide>
 		
-		<slide>
-			<file>http://mediaplayer.local/assets/img/final_reel.flv</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/video.jpg</thumb>
-		</slide>
+		
+		
+		
 	
-	
-		<slide>
-			<file>http://mediaplayer.local/assets/img/Control.mp3</file>
-		</slide>
 	
 		<slide>
 			<file>http://mediaplayer.local/assets/img/1955616248_3b2e80546c_b.jpg</file>
@@ -51,10 +82,7 @@
 			<thumb>http://mediaplayer.local/assets/img/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
 		</slide>
 		
-		<slide>
-			<file>http://mediaplayer.local/assets/img/final_reel.flv</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/video.jpg</thumb>
-		</slide>
+	
 		
 		<slide>
 			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
@@ -69,10 +97,7 @@
 			<thumb>http://mediaplayer.local/assets/img/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
 		</slide>
 		
-		<slide>
-			<file>http://mediaplayer.local/assets/img/final_reel.flv</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/video.jpg</thumb>
-		</slide>
+		
 		
 		<slide>
 			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
@@ -87,15 +112,6 @@
 			<thumb>http://mediaplayer.local/assets/img/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
 		</slide>
 		
-		<slide>
-			<file>http://mediaplayer.local/assets/img/final_reel.flv</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/video.jpg</thumb>
-		</slide>
-	
-	
-		<slide>
-			<file>http://mediaplayer.local/assets/img/Control.mp3</file>
-		</slide>
 	
 		<slide>
 			<file>http://mediaplayer.local/assets/img/chaps.jpg</file>

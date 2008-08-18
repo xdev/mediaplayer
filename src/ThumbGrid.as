@@ -8,6 +8,7 @@ package
 	import flash.events.MouseEvent;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
+	import flash.text.TextFormat;
 	
 	//A12 Classes
 	import com.a12.util.Utils;
@@ -31,12 +32,14 @@ package
 		
 		private var rowC:Number;
 		private var rowM:Number;
+		private var colM:Number;
 		
 		private var Scrolla:Scrollbar;
 		private var lastP:Number;
 		private var p:Number;
 		
 		private var pageIndex:Number;
+		private var pageMax:Number;
 		
 		public function ThumbGrid(_r,_p,_obj)
 		{
@@ -47,6 +50,8 @@ package
 			thumbWidth = 140;
 			thumbHeight = 140;
 			padding = 10;
+			
+			pageIndex = 0;
 			
 			lastP = 0;
 			
@@ -86,6 +91,7 @@ package
 			}
 			if(e.type == MouseEvent.CLICK){
 				//close and load that index son
+				//setIndex(mc.id);
 				_parent.viewSlideByIndex(mc.id);
 				_parent.toggleThumbs();
 			}
@@ -104,33 +110,24 @@ package
 			switch(e.keyCode)
 			{
 				case Keyboard.LEFT:
-					advanceSlide(-1);
+					advancePage(-1);
 				break;
 				
 				case Keyboard.RIGHT:
-					advanceSlide(1);
+					advancePage(1);
 				break;
 				
 				case 38:
-					advanceSlide(-1);
+					advancePage(-1);
 				break;
 				
 				case 40:
-					advanceSlide(1);
+					advancePage(1);
 				break;
 			}
 		}
 		
-		private function advanceSlide(dir:Number):void
-		{
-			var pageMax = '';
-			switch(true){
-				case pageIndex < pageMax:
-				
-				break;
-				
-			}
-		}
+		
 		
 		private function buildGrid():void
 		{
@@ -140,6 +137,11 @@ package
 			var g = Utils.createmc(cont,'grid');
 			//mask
 			g.mask = Utils.createmc(cont,'mask');
+			
+			var tf = new TextFormat();
+			tf.font = 'Akzidenz Grotesk';
+			tf.size = 10;
+			tf.color = 0xFFFFFF;
 			
 			//scroller
 			Scrolla = new Scrollbar(Utils.createmc(cont,'scroller'),
@@ -191,7 +193,9 @@ package
 				img.mask = m;
 				
 				//stroke
-				Utils.drawRect(Utils.createmc(clip,'hit',{alpha:0.0}),thumbWidth,thumbHeight,0x333333,0.0,[1.0,0xFFFFFF,1.0]);
+				Utils.drawPunchedRect(Utils.createmc(clip,'hit',{alpha:0.0}),thumbWidth,thumbHeight,1,0xFFFFFF,1.0);
+				
+				//Utils.makeTextfield(Utils.createmc(clip,'txt',{x:2,y:2}),i+1,tf,{width:100});
 				
 				clip.mouseEnabled = true;
 				clip.buttonMode = true;
@@ -232,8 +236,9 @@ package
 			mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse);
 			mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse);
 			mc.addEventListener(MouseEvent.CLICK,handleIconsMouse);
-			
-			layoutGrid();
+		
+			onResize();
+		
 		}
 		
 		private function handleIconsMouse(e:MouseEvent):void
@@ -255,12 +260,51 @@ package
 		
 		private function advancePage(dir:Number):void
 		{
+			switch(true)
+			{
+				case pageIndex + dir > pageMax - 1:
+					pageIndex = 0;
+				break;
+
+				case pageIndex + dir < 0:
+					pageIndex = pageMax - 1;
+				break;
+
+				default:
+					pageIndex += dir;
+				break;
+			}
 			
+			slideToPage();
 		}
 		
-		private function setIndex(value:Number):void
+		public function setIndex(value:Number):void
 		{
-			
+			trackThumbs(value);
+			focusPage();
+		}
+		
+		private function focusPage():void
+		{
+			//adjust slide location to show item in current page
+			var pIndex = Math.floor(_parent.slideIndex / (colM * rowM));
+			pageIndex = pIndex;
+			slideToPage();
+		}
+		
+		private function trackThumbs(value:Number):void
+		{
+			var c = Utils.$(Utils.$(_ref,'cont'),'grid');
+			for(var i=0;i<_parent.slideMax;i++){
+				var mc = Utils.$(c,'clip'+i);
+				if(value == i){
+					mc.state = 'hit';
+					Utils.$(mc,'hit').alpha = 1.0;
+				}else{
+					mc.state = 'normal';
+					Utils.$(mc,'hit').alpha = 0.0;
+				}
+			}
 		}
 		
 		private function revealThumb(e:CustomEvent):void
@@ -286,7 +330,7 @@ package
 			
 		}
 		
-		private function onResize(e:Event):void
+		private function onResize(e:Event=null):void
 		{
 			//redraw the base, or something
 			var mc = Utils.$(_ref,'block');
@@ -294,6 +338,16 @@ package
 			mc.height = _ref.stage.stageHeight;
 			
 			layoutGrid();
+			
+			focusPage();
+			
+		}
+		
+		private function slideToPage():void
+		{
+			var mc = Utils.$(Utils.$(_ref,'cont'),'grid');
+			TweenLite.to(mc,0.5,{y:-pageIndex * (rowM*(thumbHeight+padding))});
+			trackPagination();
 		}
 		
 		private function scrollGrid(e:CustomEvent):void
@@ -302,10 +356,32 @@ package
 			Utils.$(Utils.$(_ref,'cont'),'grid').y = -Math.floor(((rowC-(rowM-1)) * (thumbHeight+padding)) * (p/100));
 			
 			var unitSize = (((thumbHeight+padding) * rowM) - padding) / rowM;
-			//trace(unitSize);
-			
+						
 			
 			lastP = p;
+		}
+		
+		private function trackPagination():void
+		{
+			var mc;
+			mc = Utils.$(_ref,'nav_prev');
+			if(pageIndex == 0){
+				mc.mouseEnabled = false;
+				mc.alpha = 0.2;
+			}else{
+				mc.mouseEnabled = true;
+				mc.alpha = 1.0;
+			}
+									
+			mc = Utils.$(_ref,'nav_next');
+			if(pageIndex < (pageMax-1)){
+				mc.mouseEnabled = true;
+				mc.alpha = 1.0;
+			}else{
+				mc.mouseEnabled = false;
+				mc.alpha = 0.2;
+			}
+			
 		}
 		
 		private function layoutGrid():void
@@ -314,7 +390,7 @@ package
 			rowC = 0;
 			rowM = 5;
 			var colC = 0;
-			var colM = 5;
+			colM = 5;
 			
 			var tx = _ref.stage.stageWidth - ((thumbWidth+padding)*1);
 
@@ -338,11 +414,13 @@ package
 				gm += colM;
 			}
 
-			var thumbScroll = gm/colM;
+			
 
 			if(gm <(colM*rowM)){
 				gm =(colM*rowM);
 			}
+			
+			pageMax = Math.ceil((gm/colM) / rowM);
 			
 			//
 			var cont = Utils.$(_ref,'cont');
@@ -363,6 +441,7 @@ package
 					rowC++;
 				}
 			}
+			
 			
 			//adjust mask			
 			var m = Utils.$(cont,'mask');
@@ -399,11 +478,12 @@ package
 			var mc = Utils.$(_ref,'nav_prev');
 			mc.x = _ref.stage.stageWidth/2;
 			mc.y = cont.y-(padding*2);
-			
+						
 			mc = Utils.$(_ref,'nav_next');
 			mc.x = _ref.stage.stageWidth/2;
 			mc.y = cont.y+mh+(padding*2);
 			
+			trackPagination();
 			
 		
 		}

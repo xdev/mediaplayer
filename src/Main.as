@@ -45,6 +45,7 @@ package
 	
 	//3rd party Classes
 	import com.gs.TweenLite;
+	import com.carlcalderon.arthropod.Debug;
 	
 	//Application Classes	
 	import ThumbGrid;	
@@ -67,6 +68,7 @@ package
 		
 		private var progressOffset:Number;
 		private var progressInterval:Number;
+		private var preloadInterval:Number;
 		
 		private var configObj:Object;
 		private var timestamp:Number;	
@@ -94,7 +96,48 @@ package
 				marginY:0
 			}
 			
+			//check the parameters.
+			var params:Object = root.loaderInfo.parameters;
+			var v;					
+			if(params['duration']){
+				configObj.duration = Number(params['duration']);
+			}
+			v = params['thumbgrid'];
+			if(v){
+				if(v == 'true'){
+					configObj.thumbgrid = true;
+				}else{
+					configObj.thumbgrid = false;
+				}
+			}
+			v = params['fullscreen'];
+			if(v){
+				if(v == 'true'){
+					configObj.fullscreen = true;
+				}else{
+					configObj.fullscreen = false;
+				}
+			}
+			v = params['slideshow'];
+			if(v){
+				if(v == 'true'){
+					configObj.slideshow = true;
+				}else{
+					configObj.slideshow = false;
+				}
+			}
+			v = params['scalestage'];
+			if(v){
+				if(v == 'true'){
+					configObj.scalestage = true;
+				}else{
+					configObj.scalestage = false;
+				}
+			}
 			
+			//Debug.clear();
+			//Debug.object(configObj);
+						
 			var xml;
 			
 			if(Capabilities.playerType == "External"){
@@ -104,31 +147,21 @@ package
 				
 			}
 			
-			
-			
-			//root.loaderInfo.parameters.src = '/assets/img/final_reel.flv';
-			
-			if(root.loaderInfo.parameters.src){
-				parseXML('<xml><slides><slide><file>'+root.loaderInfo.parameters.src+'</file></slide></slides></xml>');
-				//slideA = [{id:0,file:root.loaderInfo.parameters.src}];
-				//slideMax = 1;
-				//init();
+			if(params['src']){
+				
+				var still = '';
+				if(params['still']){
+					still = '<still>'+params['still']+'</still>';
+				}
+				parseXML('<xml><slides><slide><file>'+params['src']+'</file>' + still + '</slide></slides></xml>');
+				
 			}else{
 			
-				if(root.loaderInfo.parameters.xml){
-					xml = root.loaderInfo.parameters.xml;
+				if(params['xml']){
+					xml = params['xml'];
 				}
 				new XMLLoader(xml,parseXML,this);
 			}
-			
-			
-			
-			
-			//slideA = [{id:0,file:'/assets/img/final_reel.flv'}];
-			//slideMax = 1;
-			//init();
-			
-			
 			
 			stage.addEventListener(Event.RESIZE, onResize);
 			stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
@@ -158,8 +191,8 @@ package
 				
 				if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
 					tObj.mode = 'media';
-					if(node.frame){
-						tObj.frame = node.frame.toString();
+					if(node.still){
+						tObj.still = node.still.toString();
 					}
 				}
 				
@@ -192,7 +225,9 @@ package
 				slideIndex = -1;
 				buildUI();
 				advanceSlide(1);
-						
+				
+				Utils.createmc(stage,'thumbs');
+				
 			}else{
 				flagPlaying = false;
 				configObj.slideshow = false;
@@ -224,7 +259,7 @@ package
 			//start timer to hideUI
 			clearTimeout(uiInterval);
 			uiInterval = setTimeout(hideUI,3000);
-			TweenLite.to(MovieClip(this.stage.getChildByName('ui')),0.3,{alpha:1.0});
+			TweenLite.to(MovieClip(stage.getChildByName('ui')),0.3,{alpha:1.0});
 			
 			if(MP != null){
 				var mc = Utils.$(MP._view.ref,'controls');
@@ -235,7 +270,7 @@ package
 		private function hideUI():void
 		{
 			clearTimeout(uiInterval);
-			TweenLite.to(MovieClip(this.stage.getChildByName('ui')),0.5,{alpha:0.0});
+			TweenLite.to(MovieClip(stage.getChildByName('ui')),0.5,{alpha:0.0});
 			
 			if(MP != null){
 				var mc = Utils.$(MP._view.ref,'controls');
@@ -264,7 +299,7 @@ package
 		
 		private function buildUI():void
 		{			
-			var ui = Utils.createmc(this.stage,'ui',{alpha:0});
+			var ui = Utils.createmc(stage,'ui',{alpha:0});
 			//this.stage.setChildIndex(ui,1);
 			//top bar			
 			//full screen, thumbnail, timer/toggle, status
@@ -426,7 +461,7 @@ package
 		
 		private function onResize(e:Event = null):void
 		{
-			var ui = Utils.$(this.stage,'ui');
+			var ui = Utils.$(stage,'ui');
 			var mc;
 			
 			mc = Utils.$(ui,'fullscreen');
@@ -437,6 +472,12 @@ package
 			mc = Utils.$(ui,'thumbnail');
 			if(mc){
 				mc.x = stage.stageWidth - mc.xPos;
+			}
+			
+			mc = Utils.$(stage,'preload');
+			if(mc){
+				mc.x = stage.stageWidth/2 - mc.width/2;
+				mc.y = stage.stageHeight/2 - 8;
 			}
 			
 			if(slideMax > 1){
@@ -535,7 +576,7 @@ package
 			var ui = Utils.$(stage,'ui');
 			var mc = Utils.$(ui,'thumbnail');
 			
-			var c = Utils.$(this.stage,'thumbs');
+			var c = Utils.$(stage,'thumbs');
 				
 			
 			if(flagThumbs){
@@ -543,13 +584,15 @@ package
 				
 				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener);
 				
-				if(c){
-					this.stage.removeChild(c);
-				}
-				c = Utils.createmc(stage,'thumbs');
+				
 				//swap depth with ui
 				stage.setChildIndex(c,stage.numChildren - 2);
-				thumbClass = new ThumbGrid(c,this,slideA);
+				if(thumbClass == null){
+					thumbClass = new ThumbGrid(c,this,slideA);
+				}else{
+					thumbClass.setIndex(slideIndex);
+					c.visible = true;
+				}
 				
 				//deactivate majority of ui controls
 				/*
@@ -584,11 +627,11 @@ package
 				
 			}else{
 				
-				thumbClass.onKill();
-				thumbClass = null;
+				//thumbClass.onKill();
+				//thumbClass = null;
 				
-				if(c){
-					this.stage.removeChild(c);
+				if(thumbClass){
+					c.visible = false;
 				}
 				
 				if(slideMax > 1){
@@ -615,7 +658,7 @@ package
 		
 		private function updateSlideShowState():void
 		{
-			var ui = Utils.$(this.stage,'ui');
+			var ui = Utils.$(stage,'ui');
 			var l = Utils.$(ui,'toggle');
 			if(l){
 				var mc = Utils.$(l,'circ')
@@ -662,43 +705,87 @@ package
 		
 		private function viewSlide():void
 		{
-			var s = Utils.$(this.stage,'slide');
+			var s = Utils.$(stage,'slide');
 			if(s){
-				this.stage.removeChild(s);
+				stage.removeChild(s);
 			}
-			var slide = Utils.createmc(this.stage,'slide',{alpha:0});
-			this.stage.setChildIndex(slide,0);
+			var slide = Utils.createmc(stage,'slide',{alpha:0});
+			stage.setChildIndex(slide,0);
 			var holder = Utils.createmc(slide,'holder');
 			
+			clearTimeout(preloadInterval);
 			clearInterval(progressInterval);
 						
 			if(MP){
-				MP._view.removeEventListener('updateSize', initVideo, false);
+				MP._view.removeEventListener('updateSize', onResize, false);
 				MP.kill();
 				MP = null;
 			}
 									
 			if(slideA[slideIndex].mode == 'media'){
-				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,slideA[slideIndex].file,{hasView:true});
+				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,slideA[slideIndex].file,{hasView:true,still:slideA[slideIndex].still});
 				MP._view.addEventListener('updateSize', onResize, false, 0, true);
+				//MP._view.addEventListener('onStill', onResize, false, 0, true);
 				flagPlaying = false;
 				updateSlideShowState();
 				revealSlide();
 			}
 			
+			//build preload clip
+			var mc = Utils.$(stage,'preload');
+			if(mc){
+				stage.removeChild(mc);
+			}
+			mc = Utils.createmc(stage,'preload',{alpha:0.0});
+			stage.setChildIndex(mc,0);
+			
 			if(slideA[slideIndex].mode == 'image'){
 				
+				var tf = new TextFormat();
+				tf.font = 'Akzidenz Grotesk';
+				tf.size = 10;
+				tf.color = 0xFFFFFF;
+				tf.align = 'center';
+				
+				Utils.makeTextfield(mc,'',tf,{width:100});
+				mc.x = stage.stageWidth/2 - mc.width/2;
+				mc.y = stage.stageHeight/2 - 8;
+								
+				//do the drop shadow son
+				
+				mc.filters = [
+				new DropShadowFilter
+				(
+					1,
+	                45,
+	                0x000000,
+	                1.0,
+	                1,
+	                1,
+	                0.8,
+	                BitmapFilterQuality.HIGH,
+	                false,
+	                false)
+				];
+				
 				var movie = new LoadMovie(holder,slideA[slideIndex].file);
-				movie.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,revealSlide);				
+				movie.addEventListener(Event.COMPLETE,revealSlide);	
+				movie.loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,handlePreload);
+				
+				clearTimeout(preloadInterval);
+				preloadInterval = setTimeout(renderPreload,500);
+				
+				
+				
+								
 			}
 			
 			//update the text
-			var ui = Utils.$(this.stage,'ui');
+			var ui = Utils.$(stage,'ui');
 			
 			if(slideMax > 1){
-				var tf = Utils.$(Utils.$(Utils.$(ui,'label'),'txt'),'displayText');
-				tf.text = (slideIndex+1) + '/' + slideMax;
-				
+				mc = Utils.$(Utils.$(Utils.$(ui,'label'),'txt'),'displayText');
+				mc.text = (slideIndex+1) + '/' + slideMax;				
 				
 				//var b = Utils.$(Utils.$(ui,'label'),'back');
 				//b.width = tf.textWidth + 5;
@@ -709,6 +796,26 @@ package
 			
 		}
 		
+		private function renderPreload():void
+		{
+			clearTimeout(preloadInterval);
+			//fade clip in
+			var mc = Utils.$(stage,'preload');
+			TweenLite.to(mc,0.5,{alpha:1.0});
+		}
+		
+		private function handlePreload(e:ProgressEvent):void
+		{
+			var p = Math.ceil(100*(e.bytesLoaded / e.bytesTotal));
+			var mc = Utils.$(Utils.$(stage,'preload'),'displayText');			
+			mc.text = p + '%';
+			if(p == 100){
+				TweenLite.to(mc,0.5,{alpha:0.0});
+			}
+			
+			//update to clip
+		}
+
 		//display preloading of next image?
 		private function slideProgressListener(e:ProgressEvent):void
 		{
@@ -737,7 +844,7 @@ package
 			var y2 = r*Math.cos((progressOffset+dO)*Math.PI/180);
 			
 			//stage
-			var mc = Utils.$(Utils.$(Utils.$(this.stage,'ui'),'toggle'),'circ');			
+			var mc = Utils.$(Utils.$(Utils.$(stage,'ui'),'toggle'),'circ');			
 
 			mc.graphics.moveTo(0,0);
 			mc.graphics.beginFill(0x222222,0.75);//404040
@@ -749,8 +856,11 @@ package
 		
 		private function revealSlide(e:Event=null):void
 		{
-			var slide = Utils.$(this.stage,'slide');
+			var slide = Utils.$(stage,'slide');
 			TweenLite.to(MovieClip(slide),1.0,{alpha:1.0});
+			
+			clearTimeout(preloadInterval);
+			
 			if(flagPlaying){
 				
 				
@@ -763,7 +873,7 @@ package
 					slideInterval = setTimeout(advanceSlide,configObj.duration,1);
 
 					//
-					var mc = Utils.$(Utils.$(Utils.$(this.stage,'ui'),'toggle'),'circ');
+					var mc = Utils.$(Utils.$(Utils.$(stage,'ui'),'toggle'),'circ');
 					mc.graphics.clear();
 					mc.scaleY = -1.0;
 					
@@ -788,8 +898,8 @@ package
 		
 		private function scaleSlide():void
 		{
-			
-			var slide = Utils.$(this.stage,'slide');
+			var mc;
+			var slide = Utils.$(stage,'slide');
 			if(slide){			
 				var imgX = slide._width;
 				var imgY = slide._height;
@@ -825,7 +935,7 @@ package
 					slide.x = 0;
 					slide.y = 0;
 					
-					var mc = Utils.$(MP._view.ref,'myvideo');
+					mc = Utils.$(MP._view.ref,'myvideo');
 					if(mc != null){
 						mc.width = Math.ceil(tA.width*scale);
 						mc.height = Math.ceil(tA.height*scale);
@@ -833,6 +943,16 @@ package
 						mc.x = stage.stageWidth/2 - mc.width/2;
 						mc.y = (stage.stageHeight)/2 - mc.height/2;
 					}
+					
+					mc = Utils.$(MP._view.ref,'still');
+					if(mc != null){
+						mc.width = Math.ceil(tA.width*scale);
+						mc.height = Math.ceil(tA.height*scale);
+					
+						mc.x = stage.stageWidth/2 - mc.width/2;
+						mc.y = (stage.stageHeight)/2 - mc.height/2;
+					}
+					
 					
 					//do overlay icon
 					mc = Utils.$(MP._view.ref,'video_overlay_play');
