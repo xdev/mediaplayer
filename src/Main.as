@@ -2,10 +2,6 @@
 
 Complete thumb grid
 
-Create toggle icon states for
-thubnail
-fullscreen
-
 Add basic preloader for images
 
 Consider overlay centered video controls while in fullscreen
@@ -16,24 +12,42 @@ Offer defaults and overrides for configuration
 
 package
 {
-	
-	import flash.display.*;
-	import flash.utils.*;
-	import flash.net.*;
-	import flash.events.*;
-	import flash.text.*;
+	//Flash Classes
+	import flash.display.Sprite;
+	import flash.display.MovieClip;
+	import flash.display.DisplayObject;
+	import flash.display.StageScaleMode;
+	import flash.display.StageAlign;
+	import flash.utils.setInterval;
+	import flash.utils.clearInterval;
+	import flash.utils.getTimer;
+	import flash.utils.setTimeout;
+	import flash.utils.clearTimeout;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.events.KeyboardEvent;
+	import flash.events.FullScreenEvent;
+	import flash.events.ProgressEvent;
+	import flash.text.TextFormat;
 	import flash.system.Capabilities;
 	import flash.ui.Keyboard;
 	import flash.geom.Rectangle;
+	import flash.filters.BitmapFilter;
+	import flash.filters.BitmapFilterQuality;
+	import flash.filters.DropShadowFilter;
 	
-	import com.a12.util.*;
+	//A12 Classes
+	import com.a12.util.Utils;
+	import com.a12.util.LoadMovie;
+	import com.a12.util.XMLLoader;
+	import com.a12.util.CustomEvent;
 	import com.a12.modules.mediaplayback.*;
 	
+	//3rd party Classes
 	import com.gs.TweenLite;
 	
-	import ThumbGrid;
-	
-	import com.carlcalderon.arthropod.Debug;
+	//Application Classes	
+	import ThumbGrid;	
 	
 	final public class Main extends Sprite
 	{
@@ -41,7 +55,6 @@ package
 		private var _ref:MovieClip;
 		public var Layout:Object;
 		
-		//private var flagFullscreen:Boolean;
 		private var flagPlaying:Boolean;
 		private var flagThumbs:Boolean;
 		
@@ -56,7 +69,6 @@ package
 		private var progressInterval:Number;
 		
 		private var configObj:Object;
-		private var myTimer:Timer;	
 		private var timestamp:Number;	
 		
 		private var MP:com.a12.modules.mediaplayback.MediaPlayback;
@@ -92,12 +104,15 @@ package
 				
 			}
 			
+			
+			
 			//root.loaderInfo.parameters.src = '/assets/img/final_reel.flv';
 			
 			if(root.loaderInfo.parameters.src){
-				slideA = [{id:0,file:root.loaderInfo.parameters.src}];
-				slideMax = 1;
-				init();
+				parseXML('<xml><slides><slide><file>'+root.loaderInfo.parameters.src+'</file></slide></slides></xml>');
+				//slideA = [{id:0,file:root.loaderInfo.parameters.src}];
+				//slideMax = 1;
+				//init();
 			}else{
 			
 				if(root.loaderInfo.parameters.xml){
@@ -114,7 +129,6 @@ package
 			//init();
 			
 			
-			//Debug.clear();
 			
 			stage.addEventListener(Event.RESIZE, onResize);
 			stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
@@ -130,13 +144,34 @@ package
 			var i:int=0;
 			slideA = [];			
 			for each(var node:XML in snip..slide){
-				slideA.push(
-					{
-						id		: i,
-						file	: node.file,
-						thumb	: node.thumb
+				
+				var file = node.file.toString();
+				var ext = file.substring(file.lastIndexOf('.')+1,file.length).toLowerCase();
+								
+				var tObj = {};
+				tObj.file = file;
+				tObj.id = i;
+				
+				if(node.thumb){
+					tObj.thumb = node.thumb.toString();
+				}
+				
+				if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
+					tObj.mode = 'media';
+					if(node.frame){
+						tObj.frame = node.frame.toString();
 					}
-				);
+				}
+				
+				if(ext == 'jpg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
+					tObj.mode = 'image';
+				}
+				
+				if(tObj.mode){
+					slideA.push(tObj);	
+				}
+				
+				
 				i++;
 			}			
 			slideMax = i;
@@ -189,11 +224,11 @@ package
 			//start timer to hideUI
 			clearTimeout(uiInterval);
 			uiInterval = setTimeout(hideUI,3000);
-			TweenLite.to(MovieClip(this.stage.getChildByName('ui')),0.5,{alpha:1.0});
+			TweenLite.to(MovieClip(this.stage.getChildByName('ui')),0.3,{alpha:1.0});
 			
 			if(MP != null){
 				var mc = Utils.$(MP._view.ref,'controls');
-				TweenLite.to(MovieClip(mc),0.5,{alpha:1.0});
+				TweenLite.to(MovieClip(mc),0.3,{alpha:1.0});
 			}
 		}
 		
@@ -303,9 +338,32 @@ package
 				tf.color = 0xFFFFFF;
 			
 				mc = Utils.createmc(ui,'label');
-				Utils.makeTextfield(mc,'',tf,{width:100});
+				
+				//make back
+				//Utils.drawRect(Utils.createmc(mc,'back',{alpha:0.75,y:-3}),60,20,0x404040,1.0);
+								
+				//make txt,
+				Utils.makeTextfield(Utils.createmc(mc,'txt'),'',tf,{width:100});
 				mc.x = xPos;
 				mc.y = 7;
+				
+				//do the drop shadow son
+				
+				mc.filters = [
+				new DropShadowFilter
+				(
+					1,
+	                45,
+	                0x000000,
+	                1.0,
+	                1,
+	                1,
+	                0.8,
+	                BitmapFilterQuality.HIGH,
+	                false,
+	                false)
+				];
+				
 				
 				//nav 
 				//left, right
@@ -335,7 +393,9 @@ package
 				mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse);
 				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse);
 				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse);
-			
+				
+				
+				
 			}
 			
 			onResize();
@@ -500,11 +560,11 @@ package
 				
 				c = Utils.$(ui,'nav_prev');
 				c.mouseEnabled = false;
-				c.alpha = 0.2;
+				c.alpha = 0.0;
 				
 				c = Utils.$(ui,'nav_next');
 				c.mouseEnabled = false;
-				c.alpha = 0.2;
+				c.alpha = 0.0;
 				
 				//toggle icon
 				mc.gotoAndStop('thumbnail_off');
@@ -575,6 +635,10 @@ package
 			showUI();
 			flagPlaying = !flagPlaying;
 			if(flagPlaying){
+				//
+				if(flagThumbs){
+					toggleThumbs();
+				}
 				advanceSlide(1);
 			}else{
 				clearInterval(progressInterval);
@@ -607,26 +671,24 @@ package
 			var holder = Utils.createmc(slide,'holder');
 			
 			clearInterval(progressInterval);
-			
-			var file:String = slideA[slideIndex].file;
-			var ext = file.substring(file.lastIndexOf('.')+1,file.length).toLowerCase();
-			
+						
 			if(MP){
 				MP._view.removeEventListener('updateSize', initVideo, false);
 				MP.kill();
 				MP = null;
 			}
 									
-			if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
-				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,file,{hasView:true});
+			if(slideA[slideIndex].mode == 'media'){
+				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,slideA[slideIndex].file,{hasView:true});
 				MP._view.addEventListener('updateSize', onResize, false, 0, true);
 				flagPlaying = false;
 				updateSlideShowState();
 				revealSlide();
 			}
 			
-			if(ext == 'jpg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
-				var movie = new LoadMovie(holder,file);
+			if(slideA[slideIndex].mode == 'image'){
+				
+				var movie = new LoadMovie(holder,slideA[slideIndex].file);
 				movie.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,revealSlide);				
 			}
 			
@@ -634,9 +696,12 @@ package
 			var ui = Utils.$(this.stage,'ui');
 			
 			if(slideMax > 1){
-				var l = Utils.$(ui,'label');
-				var tf = Utils.$(l,'displayText');
+				var tf = Utils.$(Utils.$(Utils.$(ui,'label'),'txt'),'displayText');
 				tf.text = (slideIndex+1) + '/' + slideMax;
+				
+				
+				//var b = Utils.$(Utils.$(ui,'label'),'back');
+				//b.width = tf.textWidth + 5;
 			}
 			//kick back the listener
 			
@@ -789,11 +854,7 @@ package
 					
 				}
 			
-				//scaleStage();
-			
 			}
-			
-			
 		
 		}
 		
