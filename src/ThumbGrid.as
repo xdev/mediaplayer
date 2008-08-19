@@ -33,6 +33,8 @@ package
 		private var thumbWidth:Number;
 		private var thumbHeight:Number;
 		private var padding:Number;
+		private var marginX:Number;
+		private var marginY:Number;
 		
 		private var rowC:Number;
 		private var rowM:Number;
@@ -45,15 +47,17 @@ package
 		private var pageIndex:Number;
 		private var pageMax:Number;
 		
-		public function ThumbGrid(_r,_p,_obj)
+		public function ThumbGrid(_r,_p,_obj,obj)
 		{
 			_ref = _r;
 			_parent = _p;
 			slideA = _obj;
 			
-			thumbWidth = 140;
-			thumbHeight = 140;
-			padding = 10;
+			thumbWidth = obj.thumbWidth;
+			thumbHeight = obj.thumbHeight;
+			padding = obj.padding;
+			marginX = obj.marginX;
+			marginY = obj.marginY;
 			
 			pageIndex = 0;
 			
@@ -442,7 +446,7 @@ package
 				//colM = 5;
 			}
 
-			var ty = _ref.stage.stageHeight - _parent.Layout.marginY - ((thumbWidth+padding)*1);
+			var ty = _ref.stage.stageHeight - marginY - ((thumbWidth+padding)*1);
 
 			rowM = Math.floor(ty/(thumbWidth+padding));
 
@@ -515,7 +519,7 @@ package
 			
 			//center container
 			cont.x = (_ref.stage.stageWidth/2) - ((((thumbWidth+padding) * colM)-padding)/2);
-			cont.y = (_ref.stage.stageHeight/2) - _parent.Layout.marginY - (((thumbWidth+padding) * rowM)/2);
+			cont.y = (_ref.stage.stageHeight/2) - marginY - (((thumbWidth+padding) * rowM)/2);
 			
 			var mc = Utils.$(_ref,'nav_prev');
 			mc.x = _ref.stage.stageWidth/2;

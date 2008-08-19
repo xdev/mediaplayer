@@ -42,7 +42,6 @@ package
 	{
 		
 		private var _ref:MovieClip;
-		public var Layout:Object;
 		
 		private var flagPlaying:Boolean;
 		private var flagThumbs:Boolean;
@@ -58,7 +57,7 @@ package
 		private var progressInterval:Number;
 		private var preloadInterval:Number;
 		
-		private var configObj:Object;
+		public var configObj:Object;
 		private var timestamp:Number;	
 		
 		private var MP:com.a12.modules.mediaplayback.MediaPlayback;
@@ -76,21 +75,41 @@ package
 				duration:5000,
 				slideshow:true,
 				scalevideo:true,
-				scaleimage:false
-			}
-			
-			Layout = 
-			{
+				scaleimage:false,
 				marginX:0,
-				marginY:0
+				marginY:0,
+				thumbWidth:140,
+				thumbHeight:140,
+				padding:10
 			}
-			
+						
 			//check the parameters.
 			var params:Object = root.loaderInfo.parameters;
-			var v;					
-			if(params['duration']){
-				configObj.duration = Number(params['duration']);
+			var v;
+			v = params['duration'];
+			if(v){
+				configObj.duration = Number(v);
 			}
+			v = params['thumbWidth'];
+			if(v){
+				configObj.thumbWidth = Number(v);
+			}
+			v = params['thumbHeight'];
+			if(v){
+				configObj.thumbHeight = Number(v);
+			}
+			v = params['padding'];
+			if(v){
+				configObj.padding = Number(v);
+			}
+			v = params['marginX'];
+			if(v){
+				configObj.marginX = Number(v);
+			}
+			v = params['marginY'];
+			if(v){
+				configObj.marginY = Number(v);
+			}			
 			v = params['thumbgrid'];
 			if(v){
 				if(v == 'true'){
@@ -193,7 +212,7 @@ package
 					}
 				}
 				
-				if(ext == 'jpg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
+				if(ext == 'jpg' || ext == 'jpeg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
 					tObj.mode = 'image';
 				}
 				
@@ -599,8 +618,8 @@ package
 				//swap depth with ui
 				stage.setChildIndex(c,stage.numChildren - 2);
 				if(thumbClass == null){
-					c.alpha = 0.0;
-					thumbClass = new ThumbGrid(c,this,slideA);
+					c.alpha = 0.0;					
+					thumbClass = new ThumbGrid(c,this,slideA,configObj);
 					
 				}else{
 					thumbClass.setIndex(slideIndex);
@@ -946,7 +965,7 @@ package
 					}
 				}
 			
-				var scale = Utils.getScale(imgX,imgY,stage.stageWidth-(Layout.marginX*2),stage.stageHeight-(Layout.marginY*2),'scale',m).x;
+				var scale = Utils.getScale(imgX,imgY,stage.stageWidth-(configObj.marginX*2),stage.stageHeight-(configObj.marginY*2),'scale',m).x;
 												
 				scale = scale/100;
 				//if we're a image

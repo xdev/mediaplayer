@@ -41,18 +41,28 @@
 	// <![CDATA[
 
 	var flashvars = {};
-	flashvars.xml = 'assets/xml/gallery.xml';
-	flashvars.thumbgrid = 'true'; //	default true
-	flashvars.slideshow = 'true'; //	default true
-	flashvars.fullscreen = 'true'; //	default true
-	flashvars.duration = '5000'; //		default 5000
-	flashvars.scaleimage = 'true'; //	default false
-	flashvars.scalevideo = 'true'; //	default true
+	//required
+	flashvars.xml = 'assets/xml/gallery.xml';//		the location of the xml source (gallery)
+	//flashvars.src = 'filename.jpg'; //			to load just one file
+	//flashvars.still = 'filename.jpg';//			optional still frame if src is video
+		
+	//optional config variables
+	flashvars.thumbgrid = 'true';//		default true - allow for thumbnails
+	flashvars.slideshow = 'true';//		default true - allow auto slideshow
+	flashvars.fullscreen = 'true';//	default true - allow fullscreen
+	flashvars.duration = '5000';//		default 5000 - this is as fast as it should be, increase to 7500 for more time
+	flashvars.scaleimage = 'false';//	default false - scale past 100% to fit screen
+	flashvars.scalevideo = 'true';//	default true - looks fine for video
+	flashvars.marginX = '0';//			default 0 - overall margin for the movie when viewing slides
+	flashvars.marginY = '0';//			default 0
+	flashvars.padding = '10';//			default 10 - used for gutter between images in thumbGrid
+	flashvars.thumbWidth = '75';//		default 140 - size of thumbnail, images will be masked, scaled, and centered to fit space
+	flashvars.thumbHeight = '75';//		default 140
 	
 	var params = {};
-	params.menu = "false";
-	params.allowfullscreen = "true";
-	params.bgcolor = "#FFFFFF";
+	params.menu = "false";//			optionally hide the default flash menu
+	params.allowfullscreen = "true";//	necessary to allow fullscreen
+	params.bgcolor = "#000000";//		set the color here
 	
 	var attributes = {};
 

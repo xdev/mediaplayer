@@ -31,10 +31,14 @@
 <script type="text/javascript">
 	// <![CDATA[
 
-	var flashvars = {};	
-	flashvars.src = '/assets/img/final_reel.flv';
-	flashvars.still = '/assets/img/video.jpg';
-
+	var flashvars = {};
+	//required
+	flashvars.src = '/assets/img/final_reel.flv';//		location of file
+	flashvars.still = '/assets/img/video.jpg';//		location of still frame (in case of video)
+	
+	//or
+	//flashvars.xml = 'mygallery.xml';//				location of xml for gallery
+	
 	var params = {};
 	params.menu = "false";
 	params.allowfullscreen = "true";
