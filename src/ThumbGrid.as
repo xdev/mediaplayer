@@ -10,10 +10,6 @@ package
 	import flash.ui.Keyboard;
 	import flash.text.TextFormat;
 	
-	import flash.filters.BitmapFilter;
-	import flash.filters.BitmapFilterQuality;
-	import flash.filters.GlowFilter;
-	
 	//A12 Classes
 	import com.a12.util.Utils;
 	import com.a12.util.CustomEvent;
@@ -24,7 +20,7 @@ package
 	//3rd party Classes
 	import com.gs.TweenLite;
 	
-	public class ThumbGrid
+	public class ThumbGrid extends Sprite
 	{
 		private var slideA:Array;
 		private var _ref:MovieClip;
@@ -44,6 +40,7 @@ package
 		private var lastP:Number;
 		private var p:Number;
 		
+		private var slideIndex:Number;
 		private var pageIndex:Number;
 		private var pageMax:Number;
 		
@@ -101,8 +98,7 @@ package
 			if(e.type == MouseEvent.CLICK){
 				//close and load that index son
 				//setIndex(mc.id);
-				_parent.viewSlideByIndex(mc.id);
-				_parent.toggleThumbs(false);
+				dispatchEvent(new CustomEvent('onThumbClick',true,false,{id:mc.id}));				
 			}
 		}
 		
@@ -247,7 +243,7 @@ package
 				clip.addEventListener(MouseEvent.MOUSE_OUT,handleMouse,false,0,true);
 				clip.addEventListener(MouseEvent.CLICK,handleMouse,false,0,true);
 				
-				if(_parent.slideIndex == i){
+				if(slideIndex == i){
 					clip.state = 'hit';
 					Utils.$(clip,'hit').alpha = 1.0;
 				}
@@ -324,6 +320,7 @@ package
 		
 		public function setIndex(value:Number):void
 		{
+			slideIndex = value;
 			trackThumbs(value);
 			focusPage();
 		}
@@ -331,7 +328,7 @@ package
 		private function focusPage():void
 		{
 			//adjust slide location to show item in current page
-			var pIndex = Math.floor(_parent.slideIndex / (colM * rowM));
+			var pIndex = Math.floor(slideIndex / (colM * rowM));
 			pageIndex = pIndex;
 			slideToPage();
 		}
@@ -339,7 +336,7 @@ package
 		private function trackThumbs(value:Number):void
 		{
 			var c = Utils.$(Utils.$(_ref,'cont'),'grid');
-			for(var i=0;i<_parent.slideMax;i++){
+			for(var i=0;i<slideA.length;i++){
 				var mc = Utils.$(c,'clip'+i);
 				if(value == i){
 					mc.state = 'hit';
@@ -454,7 +451,7 @@ package
 				//rowM = 5;
 			}
 
-			var gm =(Math.ceil(_parent.slideMax/colM)*colM);
+			var gm =(Math.ceil(slideA.length/colM)*colM);
 
 			if(gm%colM != 0){
 				gm += colM;

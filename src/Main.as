@@ -46,8 +46,8 @@ package
 		private var flagPlaying:Boolean;
 		private var flagThumbs:Boolean;
 		
-		public var slideIndex:int;
-		public var slideMax:int;
+		private var slideIndex:int;
+		private var slideMax:int;
 		private var slideA:Array;
 		
 		private var slideInterval:Number;
@@ -57,7 +57,7 @@ package
 		private var progressInterval:Number;
 		private var preloadInterval:Number;
 		
-		public var configObj:Object;
+		private var configObj:Object;
 		private var timestamp:Number;	
 		
 		private var MP:com.a12.modules.mediaplayback.MediaPlayback;
@@ -596,7 +596,13 @@ package
 					
 		}
 		
-		public function toggleThumbs(fade:Boolean=true):void
+		private function handleThumb(e:CustomEvent):void
+		{
+			viewSlideByIndex(e.props.id);
+			toggleThumbs(false);
+		}
+		
+		private function toggleThumbs(fade:Boolean=true):void
 		{
 			flagThumbs = !flagThumbs;
 			var ui = Utils.$(stage,'ui');
@@ -620,6 +626,9 @@ package
 				if(thumbClass == null){
 					c.alpha = 0.0;					
 					thumbClass = new ThumbGrid(c,this,slideA,configObj);
+					thumbClass.addEventListener('onThumbClick',handleThumb,false,0,true);
+					thumbClass.setIndex(slideIndex);
+					
 					
 				}else{
 					thumbClass.setIndex(slideIndex);
@@ -736,7 +745,7 @@ package
 			onResize();
 		}
 		
-		public function viewSlideByIndex(value:Number):void
+		private function viewSlideByIndex(value:Number):void
 		{
 			slideIndex = value;
 			viewSlide();
