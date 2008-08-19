@@ -80,7 +80,9 @@ package
 				marginY:0,
 				thumbWidth:140,
 				thumbHeight:140,
-				padding:10
+				padding:10,
+				animate:false,
+				shownumbers:false
 			}
 						
 			//check the parameters.

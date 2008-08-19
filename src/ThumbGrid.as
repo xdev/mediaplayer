@@ -15,7 +15,6 @@ package
 	import com.a12.util.CustomEvent;
 	import com.a12.util.LoadMovie;
 	import com.a12.modules.mediaplayback.*;
-	import com.a12.ui.Scrollbar;
 	
 	//3rd party Classes
 	import com.gs.TweenLite;
@@ -25,6 +24,7 @@ package
 		private var slideA:Array;
 		private var _ref:MovieClip;
 		private var _parent:Object;
+		private var _options:Object;
 		
 		private var thumbWidth:Number;
 		private var thumbHeight:Number;
@@ -36,7 +36,6 @@ package
 		private var rowM:Number;
 		private var colM:Number;
 		
-		private var Scrolla:Scrollbar;
 		private var lastP:Number;
 		private var p:Number;
 		
@@ -44,11 +43,12 @@ package
 		private var pageIndex:Number;
 		private var pageMax:Number;
 		
-		public function ThumbGrid(_r,_p,_obj,obj)
+		public function ThumbGrid(_r:MovieClip,_p:Object,_obj:Array,obj:Object=null)
 		{
 			_ref = _r;
 			_parent = _p;
 			slideA = _obj;
+			_options = obj;
 			
 			thumbWidth = obj.thumbWidth;
 			thumbHeight = obj.thumbHeight;
@@ -147,24 +147,7 @@ package
 			tf.font = 'Akzidenz Grotesk';
 			tf.size = 10;
 			tf.color = 0xFFFFFF;
-			
-			//scroller
-			Scrolla = new Scrollbar(Utils.createmc(cont,'scroller'),
-			{
-				mode:'vertical',
-				clr_bar:0x222222,
-				clr_nip:0xFFFFFF,
-				barW:20,
-				barH:360,
-				nipW:20,
-				nipH:60,
-				offsetH:0,
-				shiftAmount:0
-			});
-			
-			Scrolla.addEventListener('onScroll', scrollGrid);
-			
-			
+						
 			for(var i=0;i<slideA.length;i++){
 				var clip = Utils.createmc(g,'clip'+i);
 				var file = String(slideA[i].thumb);
@@ -202,40 +185,11 @@ package
 				
 				//stroke
 				Utils.drawPunchedRect(Utils.createmc(clip,'hit',{alpha:0.0}),thumbWidth,thumbHeight,1,0xFFFFFF,1.0);
-				//var p = padding/2;
-				//mc = Utils.createmc(clip,'hit',{alpha:0.0,x:-p,y:-p});
-				//Utils.drawRect(mc,thumbWidth+(2*p),thumbHeight+(2*p),0x000000,1.0);
-				//clip.setChildIndex(mc,0);
 				
-				
-				/*
-				Utils.$(clip,'hit').filters = [
-				
-				new GlowFilter(
-					0xFFFFFF,
-					0.5,
-					5,
-					5,
-					BitmapFilterQuality.HIGH
-				)
-				/*
-				new DropShadowFilter
-				(
-					1,
-	                45,
-	                0x000000,
-	                1.0,
-	                1,
-	                1,
-	                0.8,
-	                BitmapFilterQuality.HIGH,
-	                false,
-	                false)
-				];
-				*/
-				
-				
-				//Utils.makeTextfield(Utils.createmc(clip,'txt',{x:2,y:2}),i+1,tf,{width:100});
+				//label
+				if(_options.shownumber){				
+					Utils.makeTextfield(Utils.createmc(clip,'txt',{x:2,y:2}),i+1,tf,{width:100});
+				}
 				
 				clip.mouseEnabled = true;
 				clip.buttonMode = true;
@@ -393,16 +347,7 @@ package
 			trackPagination();
 		}
 		
-		private function scrollGrid(e:CustomEvent):void
-		{
-			var p = e.props.percent;
-			Utils.$(Utils.$(_ref,'cont'),'grid').y = -Math.floor(((rowC-(rowM-1)) * (thumbHeight+padding)) * (p/100));
-			
-			var unitSize = (((thumbHeight+padding) * rowM) - padding) / rowM;
-						
-			
-			lastP = p;
-		}
+		
 		
 		private function trackPagination():void
 		{
@@ -473,8 +418,12 @@ package
 				var clip = Utils.$(g,'clip'+i);
 				
 				//update position
-				clip.x = colC*(thumbWidth+padding);
-				clip.y = rowC*(thumbHeight+padding);
+				if(_options.animate == true){
+					TweenLite.to(clip,0.2,{x:colC*(thumbWidth+padding),y:rowC*(thumbHeight+padding)});
+				}else{
+					clip.x = colC*(thumbWidth+padding);
+					clip.y = rowC*(thumbHeight+padding);
+				}
 				
 				if(colC<colM){
 					colC++;
@@ -491,27 +440,6 @@ package
 			m.graphics.clear();
 			var mh = ((thumbHeight+padding) * rowM)-padding;
 			Utils.drawRect(m,(thumbWidth+padding) * colM,mh,0xFF0000,1.0);			
-			
-			/*
-			//adjust scrollbar
-			if((rowM * colM) < _parent.slideMax){
-				//enable and update
-				Scrolla.ref.visible = true;
-				Scrolla.setEnabled(true);
-				Scrolla.ref.x = (thumbWidth+padding) * colM;
-				Scrolla.setHeight(((thumbHeight+padding) * rowM) - padding);
-				Scrolla.setValue(lastP/100);
-			}else{
-				//disable
-				Scrolla.ref.visible = false;
-				Scrolla.setEnabled(false);
-			}
-			*/
-			Scrolla.ref.visible = false;
-			Scrolla.setEnabled(false);
-			
-			
-			
 			
 			
 			//center container
