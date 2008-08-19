@@ -10,6 +10,10 @@ package
 	import flash.ui.Keyboard;
 	import flash.text.TextFormat;
 	
+	import flash.filters.BitmapFilter;
+	import flash.filters.BitmapFilterQuality;
+	import flash.filters.GlowFilter;
+	
 	//A12 Classes
 	import com.a12.util.Utils;
 	import com.a12.util.CustomEvent;
@@ -54,14 +58,12 @@ package
 			pageIndex = 0;
 			
 			lastP = 0;
-			
-			_ref.alpha = 0;
-			
+									
 			_ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
 			
 			//build back block
 			var mc = Utils.createmc(_ref,'block',{alpha:1});
-			Utils.drawRect(mc,_ref.stage.stageWidth,_ref.stage.stageHeight,0x000000,1.0);
+			Utils.drawRect(mc,_ref.stage.stageWidth,_ref.stage.stageHeight,0x000000,0.0);
 			
 			//
 			mc.mouseEnabled = true;
@@ -73,8 +75,7 @@ package
 			
 			buildGrid();
 			_ref.stage.addEventListener(Event.RESIZE,onResize,false,0,true);
-			
-			TweenLite.to(_ref,0.5,{alpha:1.0});
+						
 			
 		}
 		
@@ -82,18 +83,22 @@ package
 		{
 			var mc = e.currentTarget;
 			if(e.type == MouseEvent.MOUSE_OVER){
-				Utils.$(mc,'hit').alpha = 1.0;
+				//Utils.$(mc,'hit').alpha = 1.0;
+				TweenLite.to(Utils.$(mc,'hit'),0.05,{alpha:1.0});
+				TweenLite.to(Utils.$(mc,'back'),0.05,{alpha:1.0});
 			}
 			if(e.type == MouseEvent.MOUSE_OUT){
 				if(mc.state == 'normal'){
-					Utils.$(mc,'hit').alpha = 0.0;
+					TweenLite.to(Utils.$(mc,'hit'),0.3,{alpha:0.0});
+					TweenLite.to(Utils.$(mc,'back'),0.3,{alpha:0.75});
+					//Utils.$(mc,'hit').alpha = 0.0;
 				}
 			}
 			if(e.type == MouseEvent.CLICK){
 				//close and load that index son
 				//setIndex(mc.id);
 				_parent.viewSlideByIndex(mc.id);
-				_parent.toggleThumbs();
+				_parent.toggleThumbs(false);
 			}
 		}
 		
@@ -168,7 +173,7 @@ package
 				clip.id = i;
 				clip.state = 'normal';
 				//back
-				Utils.drawRect(Utils.createmc(clip,'back'),thumbWidth,thumbHeight,0x222222,1.0);
+				Utils.drawRect(Utils.createmc(clip,'back',{alpha:0.75}),thumbWidth,thumbHeight,0x404040,1.0);
 				//img
 				var img = Utils.createmc(clip,'img',{alpha:0.0});
 				var movie = new LoadMovie(img,file);
@@ -183,6 +188,9 @@ package
 					mc.scaleX = 0.5;
 					mc.scaleY = 0.5;
 					
+					mc.mouseEnabled = false;
+					mc.childrenEnabled = false;
+					
 					mc.x = thumbWidth/2;
 					mc.y = thumbHeight/2;
 				}
@@ -194,6 +202,38 @@ package
 				
 				//stroke
 				Utils.drawPunchedRect(Utils.createmc(clip,'hit',{alpha:0.0}),thumbWidth,thumbHeight,1,0xFFFFFF,1.0);
+				//var p = padding/2;
+				//mc = Utils.createmc(clip,'hit',{alpha:0.0,x:-p,y:-p});
+				//Utils.drawRect(mc,thumbWidth+(2*p),thumbHeight+(2*p),0x000000,1.0);
+				//clip.setChildIndex(mc,0);
+				
+				
+				/*
+				Utils.$(clip,'hit').filters = [
+				
+				new GlowFilter(
+					0xFFFFFF,
+					0.5,
+					5,
+					5,
+					BitmapFilterQuality.HIGH
+				)
+				/*
+				new DropShadowFilter
+				(
+					1,
+	                45,
+	                0x000000,
+	                1.0,
+	                1,
+	                1,
+	                0.8,
+	                BitmapFilterQuality.HIGH,
+	                false,
+	                false)
+				];
+				*/
+				
 				
 				//Utils.makeTextfield(Utils.createmc(clip,'txt',{x:2,y:2}),i+1,tf,{width:100});
 				
@@ -300,9 +340,11 @@ package
 				if(value == i){
 					mc.state = 'hit';
 					Utils.$(mc,'hit').alpha = 1.0;
+					Utils.$(mc,'back').alpha = 1.0;
 				}else{
 					mc.state = 'normal';
 					Utils.$(mc,'hit').alpha = 0.0;
+					Utils.$(mc,'back').alpha = 0.75;
 				}
 			}
 		}

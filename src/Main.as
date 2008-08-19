@@ -1,15 +1,3 @@
-/*
-
-Complete thumb grid
-
-Add basic preloader for images
-
-Consider overlay centered video controls while in fullscreen
-
-Offer defaults and overrides for configuration
-
-*/
-
 package
 {
 	//Flash Classes
@@ -87,7 +75,8 @@ package
 				fullscreen:true,
 				duration:5000,
 				slideshow:true,
-				scalestage:true
+				scalevideo:true,
+				scaleimage:false
 			}
 			
 			Layout = 
@@ -126,12 +115,20 @@ package
 					configObj.slideshow = false;
 				}
 			}
-			v = params['scalestage'];
+			v = params['scalevideo'];
 			if(v){
 				if(v == 'true'){
-					configObj.scalestage = true;
+					configObj.scalevideo = true;
 				}else{
-					configObj.scalestage = false;
+					configObj.scalevideo = false;
+				}
+			}
+			v = params['scaleimage'];
+			if(v){
+				if(v == 'true'){
+					configObj.scaleimage = true;
+				}else{
+					configObj.scaleimage = false;
 				}
 			}
 			
@@ -163,8 +160,8 @@ package
 				new XMLLoader(xml,parseXML,this);
 			}
 			
-			stage.addEventListener(Event.RESIZE, onResize);
-			stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
+			stage.addEventListener(Event.RESIZE, onResize,false,0,true);
+			stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen,false,0,true);
 		}
 		
 		private function parseXML(xml:String):void
@@ -238,10 +235,10 @@ package
 			}
 			
 			//listen to the mouse event to hide or show ui
-			stage.addEventListener(Event.MOUSE_LEAVE, mouseListener);
-			stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseListener);
+			stage.addEventListener(Event.MOUSE_LEAVE, mouseListener,false,0,true);
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseListener,false,0,true);
 			//track keyboard navigation
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
 		}
 		
 		private function mouseListener(e:Event):void
@@ -281,8 +278,7 @@ package
 		private function handleIconsMouse(e:Event):void
 		{
 			//get the type, process the target
-			var mc = DisplayObject(e.target);
-			
+			var mc = e.currentTarget;
 			if(mc.name == 'nav_prev' || mc.name == 'nav_next'){
 				if(e.type == MouseEvent.MOUSE_OVER){
 					TweenLite.to(MovieClip(mc),0.2,{scaleX:1.2,scaleY:1.2});
@@ -291,8 +287,19 @@ package
 					TweenLite.to(MovieClip(mc),0.5,{scaleX:1.0,scaleY:1.0});
 				}
 				if(e.type == MouseEvent.CLICK){
-					//TweenLite.to(MovieClip(mc),0.2,{scaleX:1.0,scaleY:1.0});
 					advanceSlide(mc.dir);
+				}
+				
+			}
+			if(e.type == MouseEvent.CLICK){
+				if(mc.name == 'thumbnail'){
+					toggleThumbs();
+				}
+				if(mc.name == 'toggle'){
+					toggleSlideShow();
+				}
+				if(mc.name == 'fullscreen'){
+					toggleFullScreen();
 				}
 			}
 		}
@@ -318,9 +325,9 @@ package
 				mc.name = 'fullscreen';
 				mc.buttonMode = true;
 				mc.y = 14;
-				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse);
-				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse);
-				mc.addEventListener(MouseEvent.CLICK,toggleFullScreen);
+				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 				mc.xPos = 14;
 				xPos = 14;
 			
@@ -333,9 +340,9 @@ package
 				mc.name = 'thumbnail';
 				mc.buttonMode = true;
 				mc.y = 14;
-				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse);
-				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse);
-				mc.addEventListener(MouseEvent.CLICK,toggleThumbs);
+				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 				if(xPos == 14){
 					mc.xPos = 38;
 				}else{
@@ -357,9 +364,9 @@ package
 				mc.buttonMode = true;	
 				mc.x = 14;
 				mc.y = 14;
-				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse);
-				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse);
-				mc.addEventListener(MouseEvent.CLICK,toggleSlideShow);
+				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 				xPos = 28;
 			}		
 				
@@ -411,9 +418,9 @@ package
 				mc.y = 100;
 				mc.alpha = 0.75;
 				mc.buttonMode = true;
-				mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse);
-				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse);
-				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse);
+				mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 			
 				i = new mediaplayer_icons();
 				i.gotoAndStop('nav_arrow');
@@ -425,9 +432,9 @@ package
 				mc.y = 100;
 				mc.alpha = 0.75;
 				mc.buttonMode = true;
-				mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse);
-				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse);
-				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse);
+				mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse,false,0,true);
+				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 				
 				
 				
@@ -554,7 +561,7 @@ package
 		
 		
 		
-		private function toggleFullScreen(e:Event = null):void
+		private function toggleFullScreen():void
 		{					
 			switch(true){
 			
@@ -570,29 +577,39 @@ package
 					
 		}
 		
-		public function toggleThumbs(e:Event = null):void
+		public function toggleThumbs(fade:Boolean=true):void
 		{
 			flagThumbs = !flagThumbs;
 			var ui = Utils.$(stage,'ui');
 			var mc = Utils.$(ui,'thumbnail');
 			
 			var c = Utils.$(stage,'thumbs');
-				
+			var slide = Utils.$(stage,'slide');	
 			
 			if(flagThumbs){
 				//tell it to activate
 				
-				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener);
+				
+				TweenLite.to(MovieClip(slide),0.05,{alpha:0.0});
+				//slide.alpha = 0.0;
+				
+				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener,false);
 				
 				
 				//swap depth with ui
 				stage.setChildIndex(c,stage.numChildren - 2);
 				if(thumbClass == null){
+					c.alpha = 0.0;
 					thumbClass = new ThumbGrid(c,this,slideA);
+					
 				}else{
 					thumbClass.setIndex(slideIndex);
-					c.visible = true;
+					c.alpha = 0.0;
+					c.visible = true;					
 				}
+				
+				TweenLite.to(c,0.5,{alpha:1.0});
+				
 				
 				//deactivate majority of ui controls
 				/*
@@ -622,20 +639,23 @@ package
 				
 				//pause video
 				if(MP){
-					MP.pause();
+					MP.stop();
 				}
 				
 			}else{
 				
 				//thumbClass.onKill();
 				//thumbClass = null;
+				if(fade == true){
+					TweenLite.to(MovieClip(slide),0.5,{alpha:1.0});
+				}
 				
 				if(thumbClass){
 					c.visible = false;
 				}
 				
 				if(slideMax > 1){
-					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
+					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
 				}
 				
 				//toggle icon
@@ -673,7 +693,7 @@ package
 			}
 		}
 		
-		private function toggleSlideShow(e:Event = null):void
+		private function toggleSlideShow():void
 		{
 			showUI();
 			flagPlaying = !flagPlaying;
@@ -727,6 +747,8 @@ package
 				if(obj.still){
 					obj.paused = true;
 				}
+				
+				//Consider overlay centered video controls while in fullscreen				
 				MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,slideA[slideIndex].file,obj);
 				MP._view.addEventListener('updateSize', onResize, false, 0, true);
 				//MP._view.addEventListener('onStill', onResize, false, 0, true);
@@ -774,7 +796,7 @@ package
 				
 				var movie = new LoadMovie(holder,slideA[slideIndex].file);
 				movie.addEventListener(Event.COMPLETE,revealSlide);	
-				movie.loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,handlePreload);
+				movie.loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,handlePreload,false,0,true);
 				
 				clearTimeout(preloadInterval);
 				preloadInterval = setTimeout(renderPreload,500);
@@ -907,18 +929,23 @@ package
 			if(slide){			
 				var imgX = slide._width;
 				var imgY = slide._height;
-			
+				var m = 100;
+				
 				if(MP != null)
 				{
 					var tA = MP.getDimensions();
 					imgX = tA.width;
 					imgY = tA.height;
+					
+					if(configObj.scalevideo){
+						m = undefined;
+					}
+				}else{
+					if(configObj.scaleimage){
+						m = undefined;
+					}
 				}
-
-				var m = 100;
-				if(MP != null && configObj.scalestage){
-					m = undefined;
-				}
+			
 				var scale = Utils.getScale(imgX,imgY,stage.stageWidth-(Layout.marginX*2),stage.stageHeight-(Layout.marginY*2),'scale',m).x;
 												
 				scale = scale/100;
