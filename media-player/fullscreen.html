@@ -4,24 +4,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>MediaPlayer Embed</title>
+	<title>Media Player (Fullscree)</title>
+	
 	<meta http-equiv="cache-control" content="no-cache" ></meta>
 	
 	<style type="text/css">
-		body
-		{
-			font-family: arial,sans-serif;
-			font-size: 14px;
-		}
+
+	html
+	{
+		height: 100%;
+	}
+
+	body {
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		background-color: #000000;
+	}
+
 	</style>
 	
 </head>
 <body>
 
-<h2>MediaPlayer</h2>
-
+<!-- BEGIN MEDIA PLAYER ************************************************* -->
 <div id="mediaplayer">
-	<script src="/assets/js/swfobject/swfobject.js" type="text/javascript" charset="utf-8"></script>
+	<!-- Load swfobject.js 2.1 -->
+	<script src="swfobject/swfobject.js" type="text/javascript" charset="utf-8"></script>
+	<!-- Configure and embed Media Player -->
 	<script type="text/javascript">
 		
 		var mediaplayer = {};
@@ -31,16 +41,16 @@
 		
 		/* MEDIAPLAYER SETTINGS ------------- */
 		mediaplayer.id        = 'mediaplayer';// Id of the element to replace with the Media Player
-		mediaplayer.height    = '300';// Height of the Media Player (e.g., "100%", "400" for pixels)
-		mediaplayer.width     = '400';// Width of the Media Player (e.g., "100%", "400" for pixels)
-		mediaplayer.swf       = '/assets/swf/mediaplayer.swf';// Path to the mediaplayer.swf file
-		mediaplayer.install   = '/assets/swf/expressInstall.swf';// Path to the expressInstall.swf file
+		mediaplayer.height    = '100%';// Height of the Media Player (e.g., "100%", "400" for pixels)
+		mediaplayer.width     = '100%';// Width of the Media Player (e.g., "100%", "400" for pixels)
+		mediaplayer.swf       = 'mediaplayer.swf';// Path to the mediaplayer.swf file
+		mediaplayer.install   = 'swfobject/expressInstall.swf';// Path to the expressInstall.swf file
 		mediaplayer.version   = '9.0.0';// Minimum required Flash version for the SWF file
 		
 		/* MEDIA SOURCE CONFIG -------------- */
-		//flashvars.xml         = '/assets/xml/gallery.xml';// Path the xml source (gallery)
-		flashvars.src         = '/assets/img/final_reel.flv';// Alternatively, you can load just one file instead of the XML
-		flashvars.still       = '/assets/img/video.jpg';// Optional still key-frame if src is video
+		flashvars.xml         = '/assets/xml/gallery.xml';// Path the xml source (gallery)
+		//flashvars.src         = 'filename.jpg';// Alternatively, you can load just one file instead of the XML
+		//flashvars.still       = 'filename.jpg';// Optional still key-frame if src is video
 		
 		/* OPTIONAL CONFIG VARIABLES -------- */
 		//flashvars.thumbgrid   = 'false';// Default true - allow for thumbnails
@@ -75,9 +85,8 @@
 		
 	</script>
 </div>
-
-<p>This is an example of how the MediaPlayer works as an embedded inline player (with one file only).</p>
-<p><a href="fullscreen.html">Here is an example</a> of how the MediaPlayer works in a dedicated space (with a complete gallery).</p>
+<!-- END MEDIA PLAYER *************************************************** -->
 
 </body>
 </html>
+
