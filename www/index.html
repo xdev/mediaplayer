@@ -5,7 +5,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>MediaPlayer Embed</title>
-	<script type="text/javascript" src="assets/js/swfobject/swfobject.js"></script>
 	<meta http-equiv="cache-control" content="no-cache" ></meta>
 	
 	<style type="text/css">
@@ -21,34 +20,64 @@
 
 <h2>MediaPlayer</h2>
 
-<div id="media_player">
-	
+<div id="mediaplayer">
+	<script src="/assets/js/swfobject/swfobject.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		
+		var mediaplayer = {};
+		var flashvars   = {};
+		var params      = {};
+		var attributes  = {};
+		
+		/* MEDIAPLAYER SETTINGS ------------- */
+		mediaplayer.id        = 'mediaplayer';// Id of the element to replace with the Media Player
+		mediaplayer.height    = '300';// Height of the Media Player (e.g., "100%", "400" for pixels)
+		mediaplayer.width     = '400';// Width of the Media Player (e.g., "100%", "400" for pixels)
+		mediaplayer.swf       = '/assets/swf/mediaplayer.swf';// Path to the mediaplayer.swf file
+		mediaplayer.install   = '/assets/swf/expressInstall.swf';// Path to the expressInstall.swf file
+		mediaplayer.version   = '9.0.0';// Minimum required Flash version for the SWF file
+		
+		/* MEDIA SOURCE CONFIG -------------- */
+		//flashvars.xml         = '/assets/xml/gallery.xml';// Path the xml source (gallery)
+		flashvars.src         = '/assets/img/final_reel.flv';// Alternatively, you can load just one file instead of the XML
+		flashvars.still       = '/assets/img/video.jpg';// Optional still key-frame if src is video
+		
+		/* OPTIONAL CONFIG VARIABLES -------- */
+		//flashvars.thumbgrid   = 'false';// Default true - allow for thumbnails
+		//flashvars.slideshow   = 'false';// Default true - allow auto slideshow
+		//flashvars.fullscreen  = 'false';// Default true - allow fullscreen
+		//flashvars.duration    = '7500';// Default 5000 - this is as fast as it should be, increase to 7500 for more time
+		//flashvars.scaleimage  = 'true';// Default false - scale past 100% to fit screen
+		//flashvars.scalevideo  = 'false';// Default true - looks fine for video
+		//flashvars.marginX     = '0';// Default 0 - overall margin for the movie when viewing slides
+		//flashvars.marginY     = '0';// Default 0
+		//flashvars.padding     = '10';// Default 10 - used for gutter between images in thumbGrid
+		//flashvars.thumbWidth  = '75';// Default 140 - size of thumbnail, images will be masked, scaled, and centered to fit space
+		//flashvars.thumbHeight = '75';// Default 140
+		
+		/* OPTIONAL PLAYER PARAMETERS ------- */
+		params.menu            = "false";// Show the default flash menu
+		params.allowfullscreen = "true";// Allow fullscreen?
+		params.bgcolor         = "#000000";// Background color
+		
+		/* RUN SWFOBJECT -------------------- */
+		swfobject.embedSWF(
+			mediaplayer.swf,
+			mediaplayer.id,
+			mediaplayer.width,
+			mediaplayer.height,
+			mediaplayer.version,
+			mediaplayer.install,
+			flashvars,
+			params,
+			attributes
+		);
+		
+	</script>
 </div>
 
 <p>This is an example of how the MediaPlayer works as an embedded inline player (with one file only).</p>
 <p><a href="fullscreen.html">Here is an example</a> of how the MediaPlayer works in a dedicated space (with a complete gallery).</p>
-
-<script type="text/javascript">
-	// <![CDATA[
-
-	var flashvars = {};
-	//required
-	flashvars.src = '/assets/img/final_reel.flv';//		location of file
-	flashvars.still = '/assets/img/video.jpg';//		location of still frame (in case of video)
-	
-	//or
-	//flashvars.xml = 'mygallery.xml';//				location of xml for gallery
-	
-	var params = {};
-	params.menu = "false";
-	params.allowfullscreen = "true";
-	params.bgcolor = "#000000";
-	
-	var attributes = {};
-
-	swfobject.embedSWF("assets/swf/mediaplayer.swf", "media_player", "400", "300", "9.0.0","/assets/swf/expressInstall.swf", flashvars, params, attributes);
-	// ]]>
-</script>
 
 </body>
 </html>

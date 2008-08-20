@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>MediaPlayer Embed</title>
-	<script type="text/javascript" src="assets/js/swfobject/swfobject.js"></script>
+	
 	<meta http-equiv="cache-control" content="no-cache" ></meta>
 	
 	<style type="text/css">
@@ -22,53 +22,66 @@
 		background-color: #000000;
 	}
 
-	#flash_wrapper
-	{
-		height: 100%;
-	}
-
 	</style>
 	
 </head>
 <body>
 
-
-<div id="flash_wrapper">
-	<div id="media_player"></div>
-</div>
-
-<script type="text/javascript">
-	// <![CDATA[
-
-	var flashvars = {};
-	//required
-	flashvars.xml = 'assets/xml/gallery.xml';//		the location of the xml source (gallery)
-	//flashvars.src = 'filename.jpg'; //			to load just one file
-	//flashvars.still = 'filename.jpg';//			optional still frame if src is video
+<div id="mediaplayer">
+	<script src="/assets/js/swfobject/swfobject.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
 		
-	//optional config variables
-	flashvars.thumbgrid = 'true';//		default true - allow for thumbnails
-	flashvars.slideshow = 'true';//		default true - allow auto slideshow
-	flashvars.fullscreen = 'true';//	default true - allow fullscreen
-	flashvars.duration = '5000';//		default 5000 - this is as fast as it should be, increase to 7500 for more time
-	flashvars.scaleimage = 'false';//	default false - scale past 100% to fit screen
-	flashvars.scalevideo = 'true';//	default true - looks fine for video
-	flashvars.marginX = '0';//			default 0 - overall margin for the movie when viewing slides
-	flashvars.marginY = '0';//			default 0
-	flashvars.padding = '10';//			default 10 - used for gutter between images in thumbGrid
-	flashvars.thumbWidth = '75';//		default 140 - size of thumbnail, images will be masked, scaled, and centered to fit space
-	flashvars.thumbHeight = '75';//		default 140
-	
-	var params = {};
-	params.menu = "false";//			optionally hide the default flash menu
-	params.allowfullscreen = "true";//	necessary to allow fullscreen
-	params.bgcolor = "#000000";//		set the color here
-	
-	var attributes = {};
-
-	swfobject.embedSWF("assets/swf/mediaplayer.swf", "media_player", "100%", "100%", "9.0.0","/assets/swf/expressInstall.swf", flashvars, params, attributes);
-	// ]]>
-</script>
+		var mediaplayer = {};
+		var flashvars   = {};
+		var params      = {};
+		var attributes  = {};
+		
+		/* MEDIAPLAYER SETTINGS ------------- */
+		mediaplayer.id        = 'mediaplayer';// Id of the element to replace with the Media Player
+		mediaplayer.height    = '100%';// Height of the Media Player (e.g., "100%", "400" for pixels)
+		mediaplayer.width     = '100%';// Width of the Media Player (e.g., "100%", "400" for pixels)
+		mediaplayer.swf       = '/assets/swf/mediaplayer.swf';// Path to the mediaplayer.swf file
+		mediaplayer.install   = '/assets/swf/expressInstall.swf';// Path to the expressInstall.swf file
+		mediaplayer.version   = '9.0.0';// Minimum required Flash version for the SWF file
+		
+		/* MEDIA SOURCE CONFIG -------------- */
+		flashvars.xml         = '/assets/xml/gallery.xml';// Path the xml source (gallery)
+		//flashvars.src         = 'filename.jpg';// Alternatively, you can load just one file instead of the XML
+		//flashvars.still       = 'filename.jpg';// Optional still key-frame if src is video
+		
+		/* OPTIONAL CONFIG VARIABLES -------- */
+		//flashvars.thumbgrid   = 'false';// Default true - allow for thumbnails
+		//flashvars.slideshow   = 'false';// Default true - allow auto slideshow
+		//flashvars.fullscreen  = 'false';// Default true - allow fullscreen
+		//flashvars.duration    = '7500';// Default 5000 - this is as fast as it should be, increase to 7500 for more time
+		//flashvars.scaleimage  = 'true';// Default false - scale past 100% to fit screen
+		//flashvars.scalevideo  = 'false';// Default true - looks fine for video
+		//flashvars.marginX     = '0';// Default 0 - overall margin for the movie when viewing slides
+		//flashvars.marginY     = '0';// Default 0
+		//flashvars.padding     = '10';// Default 10 - used for gutter between images in thumbGrid
+		//flashvars.thumbWidth  = '75';// Default 140 - size of thumbnail, images will be masked, scaled, and centered to fit space
+		//flashvars.thumbHeight = '75';// Default 140
+		
+		/* OPTIONAL PLAYER PARAMETERS ------- */
+		params.menu            = "false";// Show the default flash menu
+		params.allowfullscreen = "true";// Allow fullscreen?
+		params.bgcolor         = "#000000";// Background color
+		
+		/* RUN SWFOBJECT -------------------- */
+		swfobject.embedSWF(
+			mediaplayer.swf,
+			mediaplayer.id,
+			mediaplayer.width,
+			mediaplayer.height,
+			mediaplayer.version,
+			mediaplayer.install,
+			flashvars,
+			params,
+			attributes
+		);
+		
+	</script>
+</div>
 
 </body>
 </html>
