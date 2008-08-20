@@ -21,195 +21,195 @@ Tag names are case and name sensitive
 <root>
 	<slides>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dre1.png</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dre1.png</thumb>
+			<file>files/dre1.png</file>
+			<thumb>files/dre1.png</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dre2.png</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dre2.png</thumb>
+			<file>files/dre2.png</file>
+			<thumb>files/thumbs/dre2.png</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dre3.png</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dre3.png</thumb>
+			<file>files/dre3.png</file>
+			<thumb>files/thumbs/dre3.png</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dre4.png</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dre4.png</thumb>
+			<file>files/dre4.png</file>
+			<thumb>files/thumbs/dre4.png</thumb>
 		</slide>
 		<!-- example video slide -->
 		<slide>
-			<file>http://mediaplayer.local/assets/img/final_reel.flv</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/video.jpg</thumb>
-			<still>http://mediaplayer.local/assets/img/video.jpg</still>
+			<file>demo/files/final_reel.flv</file>
+			<thumb>files/thumbs/video.jpg</thumb>
+			<still>files/video.jpg</still>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1954889127_2ab22835b6_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
+			<file>files/1954889127_2ab22835b6_b.jpg</file>
+			<thumb>files/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1955616248_3b2e80546c_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+			<file>files/1955616248_3b2e80546c_b.jpg</file>
+			<thumb>files/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1877119707_92c3fe7928_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1877119707_92c3fe7928_b.jpg</thumb>
+			<file>files/1877119707_92c3fe7928_b.jpg</file>
+			<thumb>files/thumbs/1877119707_92c3fe7928_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/boy.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/boy.jpg</thumb>
+			<file>files/boy.jpg</file>
+			<thumb>files/thumbs/boy.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/chaps.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/chaps.jpg</thumb>
+			<file>files/chaps.jpg</file>
+			<thumb>files/thumbs/chaps.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/crab.jpg</thumb>
+			<file>files/crab.jpg</file>
+			<thumb>files/thumbs/crab.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dandelion.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dandelion.jpg</thumb>
+			<file>files/dandelion.jpg</file>
+			<thumb>files/thumbs/dandelion.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1954889127_2ab22835b6_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
+			<file>files/1954889127_2ab22835b6_b.jpg</file>
+			<thumb>files/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
 		</slide>
 
 		<slide>
-			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/crab.jpg</thumb>
+			<file>files/crab.jpg</file>
+			<thumb>files/thumbs/crab.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dandelion.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dandelion.jpg</thumb>
+			<file>files/dandelion.jpg</file>
+			<thumb>files/thumbs/dandelion.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1954889127_2ab22835b6_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
+			<file>files/1954889127_2ab22835b6_b.jpg</file>
+			<thumb>files/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/crab.jpg</thumb>
+			<file>files/crab.jpg</file>
+			<thumb>files/thumbs/crab.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dandelion.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dandelion.jpg</thumb>
+			<file>files/dandelion.jpg</file>
+			<thumb>files/thumbs/dandelion.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1954889127_2ab22835b6_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
+			<file>files/1954889127_2ab22835b6_b.jpg</file>
+			<thumb>files/thumbs/1954889127_2ab22835b6_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/chaps.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/chaps.jpg</thumb>
+			<file>files/chaps.jpg</file>
+			<thumb>files/thumbs/chaps.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/crab.jpg</thumb>
+			<file>files/crab.jpg</file>
+			<thumb>files/thumbs/crab.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dandelion.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dandelion.jpg</thumb>
+			<file>files/dandelion.jpg</file>
+			<thumb>files/thumbs/dandelion.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1955616248_3b2e80546c_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+			<file>files/1955616248_3b2e80546c_b.jpg</file>
+			<thumb>files/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1877119707_92c3fe7928_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1877119707_92c3fe7928_b.jpg</thumb>
+			<file>files/1877119707_92c3fe7928_b.jpg</file>
+			<thumb>files/thumbs/1877119707_92c3fe7928_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/boy.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/boy.jpg</thumb>
+			<file>files/boy.jpg</file>
+			<thumb>files/thumbs/boy.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/chaps.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/chaps.jpg</thumb>
+			<file>files/chaps.jpg</file>
+			<thumb>files/thumbs/chaps.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/crab.jpg</thumb>
+			<file>files/crab.jpg</file>
+			<thumb>files/thumbs/crab.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dandelion.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dandelion.jpg</thumb>
+			<file>files/dandelion.jpg</file>
+			<thumb>files/thumbs/dandelion.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/flowers.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/flowers.jpg</thumb>
+			<file>files/flowers.jpg</file>
+			<thumb>files/thumbs/flowers.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1955616248_3b2e80546c_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+			<file>files/1955616248_3b2e80546c_b.jpg</file>
+			<thumb>files/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1877119707_92c3fe7928_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1877119707_92c3fe7928_b.jpg</thumb>
+			<file>files/1877119707_92c3fe7928_b.jpg</file>
+			<thumb>files/thumbs/1877119707_92c3fe7928_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/boy.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/boy.jpg</thumb>
+			<file>files/boy.jpg</file>
+			<thumb>files/thumbs/boy.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/chaps.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/chaps.jpg</thumb>
+			<file>files/chaps.jpg</file>
+			<thumb>files/thumbs/chaps.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/crab.jpg</thumb>
+			<file>files/crab.jpg</file>
+			<thumb>files/thumbs/crab.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dandelion.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dandelion.jpg</thumb>
+			<file>files/dandelion.jpg</file>
+			<thumb>files/thumbs/dandelion.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/flowers.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/flowers.jpg</thumb>
+			<file>files/flowers.jpg</file>
+			<thumb>files/thumbs/flowers.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1955616248_3b2e80546c_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
+			<file>files/1955616248_3b2e80546c_b.jpg</file>
+			<thumb>files/thumbs/1955616248_3b2e80546c_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/1877119707_92c3fe7928_b.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/1877119707_92c3fe7928_b.jpg</thumb>
+			<file>files/1877119707_92c3fe7928_b.jpg</file>
+			<thumb>files/thumbs/1877119707_92c3fe7928_b.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/boy.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/boy.jpg</thumb>
+			<file>files/boy.jpg</file>
+			<thumb>files/thumbs/boy.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/chaps.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/chaps.jpg</thumb>
+			<file>files/chaps.jpg</file>
+			<thumb>files/thumbs/chaps.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/crab.jpg</thumb>
+			<file>files/crab.jpg</file>
+			<thumb>files/thumbs/crab.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dandelion.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dandelion.jpg</thumb>
+			<file>files/dandelion.jpg</file>
+			<thumb>files/thumbs/dandelion.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/flowers.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/flowers.jpg</thumb>
+			<file>files/flowers.jpg</file>
+			<thumb>files/thumbs/flowers.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/lake.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/lake.jpg</thumb>
+			<file>files/lake.jpg</file>
+			<thumb>files/thumbs/lake.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/chaps.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/chaps.jpg</thumb>
+			<file>files/chaps.jpg</file>
+			<thumb>files/thumbs/chaps.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/crab.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/crab.jpg</thumb>
+			<file>files/crab.jpg</file>
+			<thumb>files/thumbs/crab.jpg</thumb>
 		</slide>
 		<slide>
-			<file>http://mediaplayer.local/assets/img/dandelion.jpg</file>
-			<thumb>http://mediaplayer.local/assets/img/thumbs/dandelion.jpg</thumb>
+			<file>files/dandelion.jpg</file>
+			<thumb>files/thumbs/dandelion.jpg</thumb>
 		</slide>
 	</slides>	
 </root>
