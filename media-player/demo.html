@@ -17,7 +17,7 @@
 
 <!-- BEGIN MEDIA PLAYER MARKUP ****************************************** -->
 <div id="mediaplayer">
-	<script src="../swfobject/swfobject.js" type="text/javascript" charset="utf-8"></script>
+	<script src="swfobject/swfobject.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		
 		var mediaplayer = {};
@@ -29,14 +29,14 @@
 		mediaplayer.id        = 'mediaplayer';// Id of the element to replace with the Media Player
 		mediaplayer.height    = '300';// Height of the Media Player (e.g., "100%", "400" for pixels)
 		mediaplayer.width     = '400';// Width of the Media Player (e.g., "100%", "400" for pixels)
-		mediaplayer.swf       = '../media-player.swf';// Path to the mediaplayer.swf file
-		mediaplayer.install   = '../swfobject/expressInstall.swf';// Path to the expressInstall.swf file
+		mediaplayer.swf       = 'media-player.swf';// Path to the mediaplayer.swf file
+		mediaplayer.install   = 'swfobject/expressInstall.swf';// Path to the expressInstall.swf file
 		mediaplayer.version   = '9.0.0';// Minimum required Flash version for the SWF file
 		
 		/* MEDIA SOURCE CONFIG -------------- */
-		//flashvars.xml         = '/assets/xml/gallery.xml';// Path the xml source (gallery)
-		flashvars.src         = 'demo/files/final_reel.flv';// Alternatively, you can load just one file instead of the XML
-		flashvars.still       = 'files/video.jpg';// Optional still key-frame if src is video
+		//flashvars.xml         = 'demo_slideshow.xml';// Path the xml source (gallery)
+		flashvars.src         = 'demo_video.flv';// Alternatively, you can load just one file instead of the XML
+		flashvars.still       = 'demo_video.jpg';// Optional still key-frame if src is video
 		
 		/* OPTIONAL CONFIG VARIABLES -------- */
 		//flashvars.thumbgrid   = 'false';// Default true - allow for thumbnails
@@ -81,7 +81,7 @@
 <!-- BEGIN MEDIA PLAYER MARKUP ****************************************** -->
 <div id="mediaplayer_2">
 	<!-- Load swfobject.js 2.1 -->
-	<script src="../swfobject/swfobject.js" type="text/javascript" charset="utf-8"></script>
+	<script src="swfobject/swfobject.js" type="text/javascript" charset="utf-8"></script>
 	<!-- Configure and embed Media Player -->
 	<script type="text/javascript">
 		
@@ -94,14 +94,14 @@
 		mediaplayer.id        = 'mediaplayer_2';// Id of the element to replace with the Media Player
 		mediaplayer.height    = '600';// Height of the Media Player (e.g., "100%", "400" for pixels)
 		mediaplayer.width     = '800';// Width of the Media Player (e.g., "100%", "400" for pixels)
-		mediaplayer.swf       = '../media-player.swf';// Path to the mediaplayer.swf file
-		mediaplayer.install   = '../swfobject/expressInstall.swf';// Path to the expressInstall.swf file
+		mediaplayer.swf       = 'media-player.swf';// Path to the mediaplayer.swf file
+		mediaplayer.install   = 'swfobject/expressInstall.swf';// Path to the expressInstall.swf file
 		mediaplayer.version   = '9.0.0';// Minimum required Flash version for the SWF file
 		
 		/* MEDIA SOURCE CONFIG -------------- */
-		flashvars.xml         = 'gallery.xml';// Path the xml source (gallery)
-		//flashvars.src         = 'filename.jpg';// Alternatively, you can load just one file instead of the XML
-		//flashvars.still       = 'filename.jpg';// Optional still key-frame if src is video
+		flashvars.xml         = 'demo_slideshow.xml';// Path the xml source (gallery)
+		//flashvars.src         = 'demo_video.flv';// Alternatively, you can load just one file instead of the XML
+		//flashvars.still       = 'demo_video.jpg';// Optional still key-frame if src is video
 		
 		/* OPTIONAL CONFIG VARIABLES -------- */
 		//flashvars.thumbgrid   = 'false';// Default true - allow for thumbnails

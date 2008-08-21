@@ -1,0 +1,44 @@
+<!--
+
+Tag names are case and name sensitive. For best results, always use absolute paths.
+
+<slide>
+	<file> - required
+	location of media to be loaded
+		jpg, jpeg, gif, swf, png for images
+		flv, mov, mp4, m4v for videos (file has to be flv or encoded with h.264 in container formats)
+		mp3 for audio
+	
+	<thumb> - optional
+	should be sized within the constraint of the thumbWidth/thumbHeight, but will be scaled as necessary to fit
+	
+	<still> - optional
+	location of freeze frame when playing a video, should be a jpg still at the native size of the video
+	
+-->
+
+
+<root>
+	<slides>
+		<slide>
+			<file>demo_img1.jpg</file>
+			<thumb>demo_thumb1.jpg</thumb>
+		</slide>
+		<slide>
+			<file>demo_img2.jpg</file>
+			<thumb>demo_thumb2.jpg</thumb>
+		</slide>
+		<slide>
+			<file>demo_img3.jpg</file>
+			<thumb>demo_thumb3.jpg</thumb>
+		</slide>
+		<slide>
+			<file>demo_img4.jpg</file>
+			<thumb>demo_thumb4.jpg</thumb>
+		</slide>
+		<slide>
+			<file>demo_img5.jpg</file>
+			<thumb>demo_thumb5.jpg</thumb>
+		</slide>
+	</slides>	
+</root>
