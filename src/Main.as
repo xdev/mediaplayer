@@ -161,13 +161,9 @@ package
 			//Debug.object(configObj);
 						
 			var xml;
+			xml = '../media-player/demo_slideshow.xml';
 			
-			if(Capabilities.playerType == "External"){
-				xml = '../xml/gallery.xml';
-			}
-			else {
-				
-			}
+			if(Capabilities.playerType == "External"){}
 			
 			if(params['src']){
 				
