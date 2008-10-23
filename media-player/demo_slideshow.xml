@@ -26,6 +26,11 @@ Tag names are case and name sensitive. For best results, always use absolute pat
 			<file>demo_img1.jpg</file>
 			<thumb>demo_thumb1.jpg</thumb>
 		</slide>
+		
+		<slide>
+			<file>demo_video.flv</file>
+			<thumb>demo_video.jpg</thumb>
+		</slide>
 		<slide>
 			<file>demo_img2.jpg</file>
 			<thumb>demo_thumb2.jpg</thumb>

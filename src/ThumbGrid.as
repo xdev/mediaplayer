@@ -289,7 +289,7 @@ package
 		
 		private function trackThumbs(value:Number):void
 		{
-			var c = Utils.$(Utils.$(_ref,'cont'),'grid');
+			var c = Utils.$(_ref,'cont.grid');
 			for(var i=0;i<slideA.length;i++){
 				var mc = Utils.$(c,'clip'+i);
 				if(value == i){
@@ -342,7 +342,7 @@ package
 		
 		private function slideToPage():void
 		{
-			var mc = Utils.$(Utils.$(_ref,'cont'),'grid');
+			var mc = Utils.$(_ref,'cont.grid');
 			TweenLite.to(mc,0.5,{y:-pageIndex * (rowM*(thumbHeight+padding))});
 			trackPagination();
 		}

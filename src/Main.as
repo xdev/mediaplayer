@@ -157,16 +157,16 @@ package
 				}
 			}
 			
+			
 			//Debug.clear();
 			//Debug.object(configObj);
 						
 			var xml;
 			
-			if(Capabilities.playerType == "External"){
-				xml = '../xml/gallery.xml';
-			}
-			else {
-				
+			if(Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone"){
+				xml = 'demo_slideshow.xml';
+				//params.still = 'demo_video.jpg';
+				//params.src = 'demo_video.flv';
 			}
 			
 			if(params['src']){
@@ -216,6 +216,7 @@ package
 					if(node.still){
 						tObj.still = node.still.toString();
 					}
+					Debug.log('do it up vidz');
 				}
 				
 				if(ext == 'jpg' || ext == 'jpeg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
@@ -248,6 +249,7 @@ package
 				buildUI();
 				advanceSlide(1);
 				
+				//only do this if we need them yo
 				Utils.createmc(stage,'thumbs');
 				
 			}else{
@@ -527,7 +529,7 @@ package
 		
 		private function onFullScreen(e:FullScreenEvent):void
 		{
-			var mc = Utils.$(Utils.$(stage,'ui'),'fullscreen');
+			var mc = Utils.$(stage,'ui.fullscreen');
 			if(stage.displayState == "fullScreen"){
 				mc.gotoAndStop('fullscreen_off');
 			}else{
@@ -611,6 +613,9 @@ package
 		private function toggleThumbs(fade:Boolean=true):void
 		{
 			flagThumbs = !flagThumbs;
+			
+			//Debug.log('toggleThumbs - ' + flagThumbs.toString());
+			
 			var ui = Utils.$(stage,'ui');
 			var mc = Utils.$(ui,'thumbnail');
 			
@@ -620,6 +625,7 @@ package
 			if(flagThumbs){
 				//tell it to activate
 				
+				//Debug.log('in true section');
 				
 				TweenLite.to(MovieClip(slide),0.05,{alpha:0.0});
 				//slide.alpha = 0.0;
@@ -649,7 +655,7 @@ package
 				/*
 				c = Utils.$(ui,'toggle');
 				c.mouseEnabled = false;
-				c.alpha = 0.2;
+				c.alpha = 0.0;
 				*/
 				
 				c = Utils.$(ui,'nav_prev');
@@ -678,6 +684,7 @@ package
 				
 			}else{
 				
+				//Debug.log('in false section');
 				//thumbClass.onKill();
 				//thumbClass = null;
 				if(fade == true){
@@ -695,14 +702,22 @@ package
 				//toggle icon
 				mc.gotoAndStop('thumbnail');
 				
+				
+				
 				//reactivate stuffs
-				c = Utils.$(ui,'toggle');
+				
+				//c = Utils.$(ui,'toggle');
+				//c.mouseEnabled = true;
+				//c.alpha = 1.0;
+				
+				//Debug.log('BREAK!');
+				
+				c = Utils.$(ui,'nav_prev');
+				
 				c.mouseEnabled = true;
 				c.alpha = 1.0;
 				
-				c = Utils.$(ui,'nav_prev');
-				c.mouseEnabled = true;
-				c.alpha = 1.0;
+				//Debug.log(c.toString());
 				
 				c = Utils.$(ui,'nav_next');
 				c.mouseEnabled = true;
@@ -744,7 +759,7 @@ package
 			updateSlideShowState();
 		}
 		
-		private function initVideo(e:Event)
+		private function initVideo(e:Event):void
 		{
 			var mc = Utils.$(MP._view.ref,'controls');
 			mc.alpha = 0.0;
@@ -844,10 +859,9 @@ package
 			var ui = Utils.$(stage,'ui');
 			
 			if(slideMax > 1){
-				mc = Utils.$(Utils.$(Utils.$(ui,'label'),'txt'),'displayText');
-				mc.text = (slideIndex+1) + '/' + slideMax;				
+				TextField(Utils.$(ui,'label.txt.displayText')).text = (slideIndex+1) + '/' + slideMax;				
 				
-				//var b = Utils.$(Utils.$(ui,'label'),'back');
+				//var b = Utils.$(ui,'label.back');
 				//b.width = tf.textWidth + 5;
 			}
 			//kick back the listener
@@ -867,7 +881,7 @@ package
 		private function handlePreload(e:ProgressEvent):void
 		{
 			var p = Math.ceil(100*(e.bytesLoaded / e.bytesTotal));
-			var mc = Utils.$(Utils.$(stage,'preload'),'displayText');			
+			var mc = Utils.$(stage,'preload.displayText');			
 			mc.text = p + '%';
 			if(p == 100){
 				TweenLite.to(mc,0.5,{alpha:0.0});
@@ -904,7 +918,7 @@ package
 			var y2 = r*Math.cos((progressOffset+dO)*Math.PI/180);
 			
 			//stage
-			var mc = Utils.$(Utils.$(Utils.$(stage,'ui'),'toggle'),'circ');			
+			var mc = Utils.$(stage,'ui.toggle.circ');			
 
 			mc.graphics.moveTo(0,0);
 			mc.graphics.beginFill(0x222222,0.75);//404040
@@ -933,7 +947,7 @@ package
 					slideInterval = setTimeout(advanceSlide,configObj.duration,1);
 
 					//
-					var mc = Utils.$(Utils.$(Utils.$(stage,'ui'),'toggle'),'circ');
+					var mc = Utils.$(stage,'ui.toggle.circ');
 					mc.graphics.clear();
 					mc.scaleY = -1.0;
 					
