@@ -158,19 +158,18 @@ package
 				}
 			}
 			
-			
 			//Debug.clear();
 			//Debug.object(configObj);
 						
 			var xml;
-			xml = '../media-player/demo_slideshow.xml';
 			
 			if(Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone"){
-				xml = 'demo_slideshow.xml';
-				//params.still = 'demo_video.jpg';
-				//params.src = 'demo_video.flv';
+				xml = 'demo_slideshow.xml';				
 			}
 			
+			//params.still = 'demo_video.jpg';
+			//params.src = 'demo_video.flv';
+						
 			if(params['src']){
 				
 				var still = '';
@@ -195,30 +194,28 @@ package
 		{
 			var tXML:XML = new XML(xml);
 			//parse config information
-			
 			//var snip:XMLList = tXML.RecordSet.(@Type == "Slides");
 			var snip:XMLList = tXML.slides;
 			var i:int=0;
 			slideA = [];			
 			for each(var node:XML in snip..slide){
 				
-				var file = node.file.toString();
+				var file = node.file.toString();				
 				var ext = file.substring(file.lastIndexOf('.')+1,file.length).toLowerCase();
 								
 				var tObj = {};
 				tObj.file = file;
 				tObj.id = i;
 				
-				if(node.thumb){
+				if(node.thumb != undefined){
 					tObj.thumb = node.thumb.toString();
 				}
 				
 				if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
 					tObj.mode = 'media';
-					if(node.still){
+					if(node.still != undefined){						
 						tObj.still = node.still.toString();
 					}
-					Debug.log('do it up vidz');
 				}
 				
 				if(ext == 'jpg' || ext == 'jpeg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
@@ -229,14 +226,11 @@ package
 					slideA.push(tObj);	
 				}
 				
-				
 				i++;
 			}			
 			slideMax = i;
 			
-			
 			init();
-			
 			
 		}
 		
@@ -796,7 +790,7 @@ package
 			if(slideA[slideIndex].mode == 'media'){
 				var obj = {hasView:true,still:slideA[slideIndex].still};
 				if(obj.still){
-					obj.paused = true;
+					//obj.paused = true;
 				}
 				
 				//Consider overlay centered video controls while in fullscreen				
