@@ -21,6 +21,7 @@ package
 	import flash.events.FullScreenEvent;
 	import flash.events.ProgressEvent;
 	import flash.text.TextFormat;
+	import flash.text.TextField;
 	import flash.system.Capabilities;
 	import flash.ui.Keyboard;
 	import flash.geom.Rectangle;
@@ -164,15 +165,11 @@ package
 			var xml;
 			xml = '../media-player/demo_slideshow.xml';
 			
-<<<<<<< HEAD:src/Main.as
 			if(Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone"){
 				xml = 'demo_slideshow.xml';
 				//params.still = 'demo_video.jpg';
 				//params.src = 'demo_video.flv';
 			}
-=======
-			if(Capabilities.playerType == "External"){}
->>>>>>> b0597ac00fcb50dca79688ac60a644d01012678a:src/Main.as
 			
 			if(params['src']){
 				
