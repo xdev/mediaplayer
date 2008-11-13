@@ -37,7 +37,7 @@ package
 	import com.a12.modules.mediaplayback.*;
 	
 	//3rd party Classes
-	import com.gs.TweenLite;
+	import gs.TweenLite;
 	import com.carlcalderon.arthropod.Debug;
 	
 	//Application Classes	

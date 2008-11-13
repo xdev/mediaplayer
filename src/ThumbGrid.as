@@ -17,7 +17,7 @@ package
 	import com.a12.modules.mediaplayback.*;
 	
 	//3rd party Classes
-	import com.gs.TweenLite;
+	import gs.TweenLite;
 	
 	public class ThumbGrid extends Sprite
 	{
