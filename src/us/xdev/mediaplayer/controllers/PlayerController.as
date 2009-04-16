@@ -1,41 +1,72 @@
 package us.xdev.mediaplayer.controllers
 {
-	
+
+	import flash.events.KeyboardEvent;
+	import flash.external.ExternalInterface;
+	import flash.ui.Keyboard;
+
+	import com.a12.util.CustomEvent;
+
 	public class PlayerController
 	{
 
+		private var model:*;
+
+		public function PlayerController(model:*)
+		{
+			this.model = model;
+		}
+
+		private function handleTransport(e:CustomEvent):void
+		{
+			if(e.props.mode == true){
+				sendExternal('playMedia');
+			}else{
+				sendExternal('stopMedia');
+			}
+		}
+
 		private function sendExternal(e:String,args:Array=null):void
 		{
-			//if we are supposed to send
-			var _args = [];
+			var _args:Array = [];
 			_args.push(e);
 			if(args){
-				for(var i=0;i<args.length;i++){
+				for(var i:int=0;i<args.length;i++){
 					_args.push(args[i]);
 				}
 			}
-			var method = ExternalInterface.call;			
+			var method:Function = ExternalInterface.call;
 			method.apply(ExternalInterface,_args);
 		}
 
 		private function toggleFullScreen():void
 		{
+			//Move to View, since this is purely visual..?
+			/*
 			switch(true){
-	
+
 				case stage.displayState == "fullScreen":
 					stage.displayState = "normal";
 				break;
-		
+
 				case stage.displayState == "normal":
 					stage.displayState = "fullScreen";
 				break;
-		
-			}	
-			
+
+			}
+			*/
+
 		}
-		
+
+		private function viewSlideByIndex(value:Number):void
+		{
+			//slideIndex = value;
+			//viewSlide();
+		}
+
 		private function toggleSlideShow():void
 		{
+			/*
 			showUI();
 			flagPlaying = !flagPlaying;
 			if(flagPlaying){
@@ -47,88 +78,75 @@ package us.xdev.mediaplayer.controllers
 			}else{
 				clearInterval(progressInterval);
 			}
-			clearTimeout(slideInterval);			
+			clearTimeout(slideInterval);
 			updateSlideShowState();
+			*/
 		}
-		
+
 		private function advanceSlide(dir:int):void
 		{
-			clearTimeout(slideInterval);
-			switch(true)
-			{
-				case slideIndex + dir > slideMax - 1:
-					slideIndex = 0;
-				break;
+			//clearTimeout(slideInterval);
+			model.advanceSlide(dir);			
 
-				case slideIndex + dir < 0:
-					slideIndex = slideMax - 1;
-				break;
+			//viewSlide();
 
-				default:
-					slideIndex += dir;
-				break;
-			}
-				
-			viewSlide();
-				
 		}
-		
-		private function keyListener(e:KeyboardEvent):void
+
+		public function handleKey(e:KeyboardEvent):void
 		{
 			switch(e.keyCode)
 			{
 				case Keyboard.LEFT:
-					if(slideMax>1){
+					if(model.slideMax>1){
 						advanceSlide(-1);
 					}
 				break;
-		
+
 				case Keyboard.RIGHT:
-					if(slideMax>1){
+					if(model.slideMax>1){
 						advanceSlide(1);
 					}
 				break;
-		
+
 				case 38:
-					if(slideMax>1){
+					if(model.slideMax>1){
 						advanceSlide(-1);
 					}
 				break;
-		
+
 				case 40:
-					if(slideMax>1){
+					if(model.slideMax>1){
 						advanceSlide(1);
 					}
 				break;
-		
+
 				case Keyboard.SPACE:
-					if(MP){
-						MP.toggle();
-					}
+					//if(MP){
+					//	MP.toggle();
+					//}
 				break;
 				/*
 				case 70:
 					toggleFullScreen();
 				break;
-		
+
 				case 83:
-					toggleSlideShow();				
+					toggleSlideShow();
 				break;
-		
-				case 84:			
+
+				case 84:
 					toggleThumbs();
 				break;
 				*/
 			}
 		}
-		
+
 		private function handleThumb(e:CustomEvent):void
 		{
 			viewSlideByIndex(e.props.id);
-			toggleThumbs(false);
+			//toggleThumbs(false);
 		}
-	
-		
+
 	}
 
 }
