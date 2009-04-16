@@ -1,22 +1,19 @@
-package us.xdev.mediaplayer
+package us.xdev.mediaplayer.views
 {
 	//Flash Classes
-	import flash.display.Sprite;
-	import flash.display.MovieClip;
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.KeyboardEvent;
-	import flash.ui.Keyboard;
-	import flash.text.TextFormat;
-	
-	//A12 Classes
-	import com.a12.util.Utils;
+	import com.a12.modules.mediaplayback.*;
 	import com.a12.util.CustomEvent;
 	import com.a12.util.LoadMovie;
-	import com.a12.modules.mediaplayback.*;
+	import com.a12.util.Utils;
 	
-	//3rd party Classes
+	import flash.display.MovieClip;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
+	import flash.text.TextFormat;
+	import flash.ui.Keyboard;
+	
 	import gs.TweenLite;
 	
 	public class ThumbGrid extends Sprite
@@ -43,6 +40,12 @@ package us.xdev.mediaplayer
 		private var pageIndex:Number;
 		private var pageMax:Number;
 		
+		[Embed(source='library.swf', symbol='mediaplayback_icons')] 
+    	private var mediaplayback_icons:Class;
+    	
+    	[Embed(source='library.swf', symbol='mediaplayer_icons')] 
+    	private var mediaplayer_icons:Class;
+		
 		public function ThumbGrid(_r:MovieClip,_p:Object,_obj:Array,obj:Object=null)
 		{
 			_ref = _r;
@@ -63,7 +66,7 @@ package us.xdev.mediaplayer
 			_ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
 			
 			//build back block
-			var mc = Utils.createmc(_ref,'block',{alpha:1});
+			var mc:MovieClip = Utils.createmc(_ref,'block',{alpha:1});
 			Utils.drawRect(mc,_ref.stage.stageWidth,_ref.stage.stageHeight,0x000000,0.0);
 			
 			//
@@ -82,7 +85,7 @@ package us.xdev.mediaplayer
 		
 		private function handleMouse(e:MouseEvent):void
 		{
-			var mc = e.currentTarget;
+			var mc:MovieClip = MovieClip(e.currentTarget);
 			if(e.type == MouseEvent.MOUSE_OVER){
 				//Utils.$(mc,'hit').alpha = 1.0;
 				TweenLite.to(Utils.$(mc,'hit'),0.05,{alpha:1.0});
@@ -136,21 +139,21 @@ package us.xdev.mediaplayer
 		
 		private function buildGrid():void
 		{
-			var cont = Utils.createmc(_ref,'cont');
+			var cont:MovieClip = Utils.createmc(_ref,'cont');
 			
 			//grid
-			var g = Utils.createmc(cont,'grid');
+			var g:MovieClip = Utils.createmc(cont,'grid');
 			//mask
 			g.mask = Utils.createmc(cont,'mask');
 			
-			var tf = new TextFormat();
+			var tf:TextFormat = new TextFormat();
 			tf.font = 'Akzidenz Grotesk';
 			tf.size = 10;
 			tf.color = 0xFFFFFF;
 						
-			for(var i=0;i<slideA.length;i++){
-				var clip = Utils.createmc(g,'clip'+i);
-				var file = String(slideA[i].thumb);
+			for(var i:int=0;i<slideA.length;i++){
+				var clip:MovieClip = Utils.createmc(g,'clip'+i);
+				var file:String = String(slideA[i].thumb);
 				
 				//What to do if there is no thumb? Display file name?
 				clip.id = i;
@@ -158,15 +161,15 @@ package us.xdev.mediaplayer
 				//back
 				Utils.drawRect(Utils.createmc(clip,'back',{alpha:0.75}),thumbWidth,thumbHeight,0x404040,1.0);
 				//img
-				var img = Utils.createmc(clip,'img',{alpha:0.0});
-				var movie = new LoadMovie(img,file);
+				var img:MovieClip = Utils.createmc(clip,'img',{alpha:0.0});
+				var movie:LoadMovie = new LoadMovie(img,file);
 				movie.addEventListener(Event.COMPLETE,revealThumb);
 				
 				//if we're a video put the play icon on small style
 				if(slideA[i].mode == 'media'){
-					var ic = new mediaplayback_icons();
+					var ic:* = new mediaplayback_icons();
 					ic.gotoAndStop('video_overlay_play');
-					var mc = clip.addChild(ic);
+					var mc:* = clip.addChild(ic);
 					mc.name = 'overlay';
 					mc.scaleX = 0.5;
 					mc.scaleY = 0.5;
@@ -179,7 +182,7 @@ package us.xdev.mediaplayer
 				}
 				
 				//mask
-				var m = Utils.createmc(clip,'mask');
+				var m:MovieClip = Utils.createmc(clip,'mask');
 				Utils.drawRect(m,thumbWidth,thumbHeight,0x333333,1.0);
 				img.mask = m;
 				
@@ -188,7 +191,7 @@ package us.xdev.mediaplayer
 				
 				//label
 				if(_options.shownumber){				
-					Utils.makeTextfield(Utils.createmc(clip,'txt',{x:2,y:2}),i+1,tf,{width:100});
+					Utils.makeTextfield(Utils.createmc(clip,'txt',{x:2,y:2}),String(i+1),tf,{width:100});
 				}
 				
 				clip.mouseEnabled = true;
@@ -205,9 +208,10 @@ package us.xdev.mediaplayer
 			}
 			
 			//left, right
-			i = new mediaplayer_icons();
-			i.gotoAndStop('nav_arrow');
-			mc = _ref.addChild(i);
+			var icon:*;
+			icon = new mediaplayer_icons();
+			icon.gotoAndStop('nav_arrow');
+			mc = _ref.addChild(icon);
 			mc.dir = -1;
 			mc.name = 'nav_prev';
 			mc.rotation = 90;
@@ -218,9 +222,9 @@ package us.xdev.mediaplayer
 			mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse);
 			mc.addEventListener(MouseEvent.CLICK,handleIconsMouse);
 		
-			i = new mediaplayer_icons();
-			i.gotoAndStop('nav_arrow');
-			mc = _ref.addChild(i);
+			icon = new mediaplayer_icons();
+			icon.gotoAndStop('nav_arrow');
+			mc = _ref.addChild(icon);
 			mc.dir = 1;
 			mc.name = 'nav_next';
 			mc.rotation = 270;
@@ -237,7 +241,7 @@ package us.xdev.mediaplayer
 		
 		private function handleIconsMouse(e:MouseEvent):void
 		{
-			var mc = e.currentTarget;
+			var mc:MovieClip = MovieClip(e.currentTarget);
 			if(e.type == MouseEvent.CLICK){
 				
 				advancePage(mc.dir);
@@ -282,16 +286,16 @@ package us.xdev.mediaplayer
 		private function focusPage():void
 		{
 			//adjust slide location to show item in current page
-			var pIndex = Math.floor(slideIndex / (colM * rowM));
+			var pIndex:int = Math.floor(slideIndex / (colM * rowM));
 			pageIndex = pIndex;
 			slideToPage();
 		}
 		
 		private function trackThumbs(value:Number):void
 		{
-			var c = Utils.$(_ref,'cont.grid');
-			for(var i=0;i<slideA.length;i++){
-				var mc = Utils.$(c,'clip'+i);
+			var c:MovieClip = Utils.$(_ref,'cont.grid');
+			for(var i:int=0;i<slideA.length;i++){
+				var mc:MovieClip = Utils.$(c,'clip'+i);
 				if(value == i){
 					mc.state = 'hit';
 					Utils.$(mc,'hit').alpha = 1.0;
@@ -307,14 +311,14 @@ package us.xdev.mediaplayer
 		private function revealThumb(e:CustomEvent):void
 		{
 			//mc
-			var mc = e.props.mc;
+			var mc:MovieClip = e.props.mc;
 			
 			//assign initial values
 			mc._width = mc.width;
 			mc._height = mc.height;
 			
 			//scale
-			var scale = Utils.getScale(mc._width,mc._height,thumbWidth,thumbHeight).x/100;
+			var scale:Number = Utils.getScale(mc._width,mc._height,thumbWidth,thumbHeight).x/100;
 			mc.scaleX = scale;
 			mc.scaleY = scale;
 			
@@ -330,7 +334,7 @@ package us.xdev.mediaplayer
 		private function onResize(e:Event=null):void
 		{
 			//redraw the base, or something
-			var mc = Utils.$(_ref,'block');
+			var mc:MovieClip = Utils.$(_ref,'block');
 			mc.width = _ref.stage.stageWidth;
 			mc.height = _ref.stage.stageHeight;
 			
@@ -342,7 +346,7 @@ package us.xdev.mediaplayer
 		
 		private function slideToPage():void
 		{
-			var mc = Utils.$(_ref,'cont.grid');
+			var mc:MovieClip = Utils.$(_ref,'cont.grid');
 			TweenLite.to(mc,0.5,{y:-pageIndex * (rowM*(thumbHeight+padding))});
 			trackPagination();
 		}
@@ -351,7 +355,7 @@ package us.xdev.mediaplayer
 		
 		private function trackPagination():void
 		{
-			var mc;
+			var mc:MovieClip;
 			mc = Utils.$(_ref,'nav_prev');
 			if(pageIndex == 0){
 				mc.mouseEnabled = false;
@@ -377,10 +381,10 @@ package us.xdev.mediaplayer
 	
 			rowC = 0;
 			rowM = 5;
-			var colC = 0;
+			var colC:int = 0;
 			colM = 5;
 			
-			var tx = _ref.stage.stageWidth - ((thumbWidth+padding)*1);
+			var tx:int = _ref.stage.stageWidth - ((thumbWidth+padding)*1);
 
 			colM = Math.floor(tx/(thumbWidth+padding));
 
@@ -388,7 +392,7 @@ package us.xdev.mediaplayer
 				//colM = 5;
 			}
 
-			var ty = _ref.stage.stageHeight - marginY - ((thumbWidth+padding)*1);
+			var ty:int = _ref.stage.stageHeight - marginY - ((thumbWidth+padding)*1);
 
 			rowM = Math.floor(ty/(thumbWidth+padding));
 
@@ -396,7 +400,7 @@ package us.xdev.mediaplayer
 				//rowM = 5;
 			}
 
-			var gm =(Math.ceil(slideA.length/colM)*colM);
+			var gm:int =(Math.ceil(slideA.length/colM)*colM);
 
 			if(gm%colM != 0){
 				gm += colM;
@@ -411,11 +415,11 @@ package us.xdev.mediaplayer
 			pageMax = Math.ceil((gm/colM) / rowM);
 			
 			//
-			var cont = Utils.$(_ref,'cont');
-			var g = Utils.$(cont,'grid');
+			var cont:MovieClip = Utils.$(_ref,'cont');
+			var g:MovieClip = Utils.$(cont,'grid');
 			
-			for(var i=0;i<slideA.length;i++){
-				var clip = Utils.$(g,'clip'+i);
+			for(var i:int=0;i<slideA.length;i++){
+				var clip:MovieClip = Utils.$(g,'clip'+i);
 				
 				//update position
 				if(_options.animate == true){
@@ -436,9 +440,9 @@ package us.xdev.mediaplayer
 			
 			
 			//adjust mask			
-			var m = Utils.$(cont,'mask');
+			var m:MovieClip = Utils.$(cont,'mask');
 			m.graphics.clear();
-			var mh = ((thumbHeight+padding) * rowM)-padding;
+			var mh:int = ((thumbHeight+padding) * rowM)-padding;
 			Utils.drawRect(m,(thumbWidth+padding) * colM,mh,0xFF0000,1.0);			
 			
 			
@@ -446,7 +450,7 @@ package us.xdev.mediaplayer
 			cont.x = (_ref.stage.stageWidth/2) - ((((thumbWidth+padding) * colM)-padding)/2);
 			cont.y = (_ref.stage.stageHeight/2) - marginY - (((thumbWidth+padding) * rowM)/2);
 			
-			var mc = Utils.$(_ref,'nav_prev');
+			var mc:MovieClip = Utils.$(_ref,'nav_prev');
 			mc.x = _ref.stage.stageWidth/2;
 			mc.y = cont.y-(padding*2);
 						
