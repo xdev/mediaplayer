@@ -1,6 +1,7 @@
 package us.xdev.mediaplayer.models
 {
 
+	import com.a12.util.CustomEvent;
 	import com.a12.util.XMLLoader;
 	
 	import flash.events.EventDispatcher;
@@ -15,6 +16,7 @@ package us.xdev.mediaplayer.models
 		
 		public var configObj:Object;
 		private var params:Object;
+		
 
 		public function PlayerModel(p:Object)
 		{
@@ -31,6 +33,7 @@ package us.xdev.mediaplayer.models
 
 			//params.still = 'demo_video.jpg';
 			//params.src = 'demo_video.flv';
+			params.xml = 'http://media.local/demo_slideshow.xml';
 
 			if(params['src']){
 
@@ -49,6 +52,11 @@ package us.xdev.mediaplayer.models
 			}
 		}
 		
+		private function update(obj:Object):void
+		{
+			dispatchEvent(new CustomEvent('onUpdate',true,true,obj));
+		}
+		
 		public function getConfig():Object
 		{
 			return configObj;	
@@ -57,6 +65,8 @@ package us.xdev.mediaplayer.models
 		public function setSlide(ind:int):void
 		{
 			slideIndex = ind;
+			
+			update({action:'viewSlide'});
 			//update	
 		}
 		
@@ -77,6 +87,7 @@ package us.xdev.mediaplayer.models
 				break;
 			}
 			
+			update({action:'viewSlide'});
 			//update for a viewSlide	
 		}
 
@@ -85,23 +96,17 @@ package us.xdev.mediaplayer.models
 			//flagThumbs = false;
 
 			if(slideMax > 1){
-
 				//flagPlaying = true;
 				slideIndex = -1;
-
-
-				//only do this if we need them yo
-				//Utils.createmc(stage,'thumbs');
-
 			}else{
 				//flagPlaying = false;
 				configObj.slideshow = false;
 				configObj.thumbgrid = false;
 				slideIndex = -1;
-
 			}
 
 			//broadcast out a ready signal for view
+			update({action:'init'});
 		}
 
 		private function setConfig():void

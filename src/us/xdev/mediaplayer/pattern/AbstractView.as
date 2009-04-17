@@ -2,7 +2,7 @@ package us.xdev.mediaplayer.pattern
 {
 	
 	import flash.display.Sprite;
-	import flash.events.Event;
+	import com.a12.util.CustomEvent;
 	
 	public class AbstractView extends Sprite
 	{
@@ -10,9 +10,11 @@ package us.xdev.mediaplayer.pattern
 		protected var model:Object;
 		protected var controller:Object;
 		protected var childA:Array;
+		protected var ref:Object;
 		
-		public function AbstractView(model:Object,controller:Object=null)
+		public function AbstractView(ref:Object,model:Object,controller:Object=null)
 		{
+			this.ref = ref;
 			this.model = model;
 			this.controller = controller;
 			childA = new Array();
@@ -37,9 +39,11 @@ package us.xdev.mediaplayer.pattern
 			return childA[i];
 		}
 		
-		public function update(event:Event=null):void
+		public function update(event:CustomEvent=null):void
 		{
-			
+			for(var i:int=0;i<childA.length;i++){
+				childA[i].update(event);	
+			}
 		}
 		
 	}

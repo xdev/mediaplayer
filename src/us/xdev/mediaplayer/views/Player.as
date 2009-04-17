@@ -4,6 +4,7 @@ package us.xdev.mediaplayer.views
 	import com.a12.modules.mediaplayback.*;
 	import com.a12.util.LoadMovie;
 	import com.a12.util.Utils;
+	import com.a12.util.CustomEvent;
 	
 	import flash.display.MovieClip;
 	import flash.display.StageAlign;
@@ -50,25 +51,36 @@ package us.xdev.mediaplayer.views
 		private var flagThumbs:Boolean;
 
 
-		public function Player(model:*,controller:*=null)
-		{	
+		public function Player(ref:Object,model:*,controller:*=null)
+		{
 			
-			super(model,controller);
+			super(ref,model,controller);
 			
 			configObj = model.getConfig();
 			
-			this.stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align = StageAlign.TOP_LEFT;
+			ref.stage.scaleMode = StageScaleMode.NO_SCALE;
+			ref.stage.align = StageAlign.TOP_LEFT;
 
-			stage.addEventListener(Event.RESIZE, onResize,false,0,true);
-			stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen,false,0,true);
+			ref.stage.addEventListener(Event.RESIZE, onResize,false,0,true);
+			ref.stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen,false,0,true);
 
-			//listen to the mouse event to hide or show ui
-			stage.addEventListener(Event.MOUSE_LEAVE, mouseListener,false,0,true);
-			stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseListener,false,0,true);
-			//track keyboard navigation
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
+			
 
+		}
+		
+		override public function update(event:CustomEvent=null):void
+		{
+			//dish out to all children
+			super.update(event);
+			//handle local stuff
+			
+			if(event.props.action == 'init'){
+				init();
+			}
+			
+			if(event.props.action == 'viewSlide'){
+				viewSlide();
+			}
 		}
 		
 		private function keyListener(e:KeyboardEvent):void
@@ -79,8 +91,14 @@ package us.xdev.mediaplayer.views
 		public function init():void
 		{
 			buildUI();
+			
+			//listen to the mouse event to hide or show ui
+			ref.stage.addEventListener(Event.MOUSE_LEAVE, mouseListener,false,0,true);
+			ref.stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseListener,false,0,true);
+			//track keyboard navigation
+			ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
+			
 			controller.advanceSlide(1);
-			//advanceSlide(1);
 		}
 
 		private function mouseListener(e:Event):void
@@ -98,7 +116,7 @@ package us.xdev.mediaplayer.views
 			//start timer to hideUI
 			clearTimeout(uiInterval);
 			uiInterval = setTimeout(hideUI,3000);
-			TweenLite.to(MovieClip(stage.getChildByName('ui')),0.3,{alpha:1.0});
+			TweenLite.to(MovieClip(ref.getChildByName('ui')),0.3,{alpha:1.0});
 			
 			/*
 			if(MP != null){
@@ -111,7 +129,7 @@ package us.xdev.mediaplayer.views
 		private function hideUI():void
 		{
 			clearTimeout(uiInterval);
-			TweenLite.to(MovieClip(stage.getChildByName('ui')),0.5,{alpha:0.0});
+			TweenLite.to(MovieClip(ref.getChildByName('ui')),0.5,{alpha:0.0});
 			
 			/*
 			if(MP != null){
@@ -141,11 +159,11 @@ package us.xdev.mediaplayer.views
 				TweenLite.to(MovieClip(slide),0.05,{alpha:0.0});
 				//slide.alpha = 0.0;
 
-				stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener,false);
+				ref.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener,false);
 
 
 				//swap depth with ui
-				stage.setChildIndex(c,stage.numChildren - 2);
+				ref.setChildIndex(c,ref.numChildren - 2);
 				/*
 				if(thumbClass == null){
 					c.alpha = 0.0;
@@ -209,7 +227,7 @@ package us.xdev.mediaplayer.views
 				//}
 
 				if(model.slideMax > 1){
-					stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
+					ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
 				}
 
 				//toggle icon
@@ -276,7 +294,7 @@ package us.xdev.mediaplayer.views
 
 		private function buildUI():void
 		{
-			var ui:MovieClip = Utils.createmc(stage,'ui',{alpha:0});
+			var ui:MovieClip = Utils.createmc(ref,'ui',{alpha:0});
 			//this.stage.setChildIndex(ui,1);
 			//top bar
 			//full screen, thumbnail, timer/toggle, status
@@ -285,7 +303,7 @@ package us.xdev.mediaplayer.views
 			//handle mouse over generic
 			//handle mouse out generic
 
-			var i:*,mc:MovieClip,xPos:int;
+			var i:MovieClip,mc:MovieClip,xPos:int;
 
 			if(configObj.fullscreen == true){
 
@@ -298,7 +316,7 @@ package us.xdev.mediaplayer.views
 				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
-				mc.xPos = 14;
+				//mc.xPos = 14;
 				xPos = 14;
 
 			}
@@ -314,9 +332,9 @@ package us.xdev.mediaplayer.views
 				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 				if(xPos == 14){
-					mc.xPos = 38;
+					//mc.xPos = 38;
 				}else{
-					mc.xPos = 14;
+					//mc.xPos = 14;
 				}
 			}
 
@@ -382,7 +400,7 @@ package us.xdev.mediaplayer.views
 				i = new mediaplayer_icons();
 				i.gotoAndStop('nav_arrow');
 				mc = MovieClip(ui.addChild(i));
-				mc.dir = -1;
+				//mc.dir = -1;
 				mc.name = 'nav_prev';
 				mc.x = 15;
 				mc.y = 100;
@@ -395,7 +413,7 @@ package us.xdev.mediaplayer.views
 				i = new mediaplayer_icons();
 				i.gotoAndStop('nav_arrow');
 				mc = MovieClip(ui.addChild(i));
-				mc.dir = 1;
+				//mc.dir = 1;
 				mc.name = 'nav_next';
 				mc.rotation = 180;
 				mc.x = 575;
@@ -416,32 +434,32 @@ package us.xdev.mediaplayer.views
 
 		private function onResize(e:Event = null):void
 		{
-			var ui:MovieClip = Utils.$(stage,'ui');
+			var ui:MovieClip = Utils.$(ref,'ui');
 			var mc:MovieClip;
 
 			mc = Utils.$(ui,'fullscreen');
 			if(mc){
-				mc.x = stage.stageWidth - mc.xPos;
+				//mc.x = ref.stage.stageWidth - mc.xPos;
 			}
 
 			mc = Utils.$(ui,'thumbnail');
 			if(mc){
-				mc.x = stage.stageWidth - mc.xPos;
+				//mc.x = ref.stage.stageWidth - mc.xPos;
 			}
 
-			mc = Utils.$(stage,'preload');
+			mc = Utils.$(ref,'preload');
 			if(mc){
-				mc.x = stage.stageWidth/2 - mc.width/2;
-				mc.y = stage.stageHeight/2 - 8;
+				mc.x = ref.stage.stageWidth/2 - mc.width/2;
+				mc.y = ref.stage.stageHeight/2 - 8;
 			}
 
 			if(model.slideMax > 1){
 				mc = Utils.$(ui,'nav_prev');
-				mc.y = Math.floor(stage.stageHeight/2);
+				mc.y = Math.floor(ref.stage.stageHeight/2);
 
 				mc = Utils.$(ui,'nav_next');
-				mc.y = Math.floor(stage.stageHeight/2);
-				mc.x = stage.stageWidth - 15;
+				mc.y = Math.floor(ref.stage.stageHeight/2);
+				mc.x = ref.stage.stageWidth - 15;
 			}
 
 			scaleSlide();
@@ -450,8 +468,8 @@ package us.xdev.mediaplayer.views
 
 		private function onFullScreen(e:FullScreenEvent):void
 		{
-			var mc:MovieClip = Utils.$(stage,'ui.fullscreen');
-			if(stage.displayState == "fullScreen"){
+			var mc:MovieClip = Utils.$(ref,'ui.fullscreen');
+			if(ref.stage.displayState == "fullScreen"){
 				mc.gotoAndStop('fullscreen_off');
 			}else{
 				mc.gotoAndStop('fullscreen');
@@ -460,7 +478,7 @@ package us.xdev.mediaplayer.views
 
 		private function updateSlideShowState():void
 		{
-			var ui:MovieClip = Utils.$(stage,'ui');
+			var ui:MovieClip = Utils.$(ref,'ui');
 			var l:MovieClip = Utils.$(ui,'toggle');
 			if(l){
 				var mc:MovieClip = Utils.$(l,'circ')
@@ -477,12 +495,12 @@ package us.xdev.mediaplayer.views
 
 		private function viewSlide():void
 		{
-			var s:MovieClip = Utils.$(stage,'slide');
+			var s:MovieClip = Utils.$(ref,'slide');
 			if(s){
-				stage.removeChild(s);
+				ref.removeChild(s);
 			}
-			var slide:MovieClip = Utils.createmc(stage,'slide',{alpha:0});
-			stage.setChildIndex(slide,0);
+			var slide:MovieClip = Utils.createmc(ref,'slide',{alpha:0});
+			ref.setChildIndex(slide,0);
 			var holder:MovieClip = Utils.createmc(slide,'holder');
 
 			clearTimeout(preloadInterval);
@@ -518,12 +536,12 @@ package us.xdev.mediaplayer.views
 			}
 
 			//build preload clip
-			var mc:MovieClip = Utils.$(stage,'preload');
+			var mc:MovieClip = Utils.$(ref,'preload');
 			if(mc){
-				stage.removeChild(mc);
+				ref.removeChild(mc);
 			}
-			mc = Utils.createmc(stage,'preload',{alpha:0.0});
-			stage.setChildIndex(mc,0);
+			mc = Utils.createmc(ref,'preload',{alpha:0.0});
+			ref.setChildIndex(mc,0);
 
 			if(model.slideA[model.slideIndex].mode == 'image'){
 
@@ -567,7 +585,7 @@ package us.xdev.mediaplayer.views
 			}
 
 			//update the text
-			var ui:MovieClip = Utils.$(stage,'ui');
+			var ui:MovieClip = Utils.$(ref,'ui');
 
 			if(model.slideMax > 1){
 				TextField(Utils.$(ui,'label.txt.displayText')).text = (model.slideIndex+1) + '/' + model.slideMax;
@@ -585,14 +603,14 @@ package us.xdev.mediaplayer.views
 		{
 			clearTimeout(preloadInterval);
 			//fade clip in
-			var mc:MovieClip = Utils.$(stage,'preload');
+			var mc:MovieClip = Utils.$(ref,'preload');
 			TweenLite.to(mc,0.5,{alpha:1.0});
 		}
 
 		private function handlePreload(e:ProgressEvent):void
 		{
 			var p:int = Math.ceil(100*(e.bytesLoaded / e.bytesTotal));
-			var mc:MovieClip = Utils.$(stage,'preload.displayText');
+			var mc:MovieClip = Utils.$(ref,'preload.displayText');
 			mc.text = p + '%';
 			if(p == 100){
 				TweenLite.to(mc,0.5,{alpha:0.0});
@@ -628,7 +646,7 @@ package us.xdev.mediaplayer.views
 			var y2:Number = r*Math.cos((progressOffset+dO)*Math.PI/180);
 
 			//stage
-			var mc:MovieClip = Utils.$(stage,'ui.toggle.circ');
+			var mc:MovieClip = Utils.$(ref,'ui.toggle.circ');
 
 			mc.graphics.moveTo(0,0);
 			mc.graphics.beginFill(0x222222,0.75);//404040
@@ -640,7 +658,7 @@ package us.xdev.mediaplayer.views
 
 		private function revealSlide(e:Event=null):void
 		{
-			var slide:MovieClip = Utils.$(stage,'slide');
+			var slide:MovieClip = Utils.$(ref,'slide');
 			TweenLite.to(MovieClip(slide),1.0,{alpha:1.0});
 
 			clearTimeout(preloadInterval);

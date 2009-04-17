@@ -39,7 +39,7 @@ package us.xdev.mediaplayer.controllers
 			method.apply(ExternalInterface,_args);
 		}
 
-		private function toggleFullScreen():void
+		public function toggleFullScreen():void
 		{
 			//Move to View, since this is purely visual..?
 			/*
@@ -58,13 +58,12 @@ package us.xdev.mediaplayer.controllers
 
 		}
 
-		private function viewSlideByIndex(value:Number):void
+		public function viewSlideByIndex(value:Number):void
 		{
-			//slideIndex = value;
-			//viewSlide();
+			model.setSlide(value);			
 		}
 
-		private function toggleSlideShow():void
+		public function toggleSlideShow():void
 		{
 			/*
 			showUI();
@@ -83,7 +82,7 @@ package us.xdev.mediaplayer.controllers
 			*/
 		}
 
-		private function advanceSlide(dir:int):void
+		public function advanceSlide(dir:int):void
 		{
 			//clearTimeout(slideInterval);
 			model.advanceSlide(dir);			
