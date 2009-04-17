@@ -26,8 +26,10 @@ package us.xdev.mediaplayer.controllers
 			}
 		}
 
-		private function sendExternal(e:String,args:Array=null):void
+		public function sendExternal(e:String,args:Array=null):void
 		{
+			return;
+			
 			var _args:Array = [];
 			_args.push(e);
 			if(args){

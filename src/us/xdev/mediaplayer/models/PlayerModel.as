@@ -12,7 +12,9 @@ package us.xdev.mediaplayer.models
 
 		public var slideIndex:int;
 		public var slideMax:int;
-		public var slideA:Array;		
+		public var slideA:Array;
+		
+		public var flagPlaying:Boolean;	
 		
 		public var configObj:Object;
 		private var params:Object;
@@ -23,7 +25,8 @@ package us.xdev.mediaplayer.models
 
 			params = p;
 			setConfig();
-
+			
+			setPlaying(false);
 
 			var xml:String;
 
@@ -50,6 +53,11 @@ package us.xdev.mediaplayer.models
 				}
 				new XMLLoader(xml,parseXML,this);
 			}
+		}
+		
+		public function setPlaying(val:Boolean):void
+		{
+			flagPlaying = val;
 		}
 		
 		private function update(obj:Object):void
@@ -96,10 +104,10 @@ package us.xdev.mediaplayer.models
 			//flagThumbs = false;
 
 			if(slideMax > 1){
-				//flagPlaying = true;
+				flagPlaying = true;
 				slideIndex = -1;
 			}else{
-				//flagPlaying = false;
+				flagPlaying = false;
 				configObj.slideshow = false;
 				configObj.thumbgrid = false;
 				slideIndex = -1;

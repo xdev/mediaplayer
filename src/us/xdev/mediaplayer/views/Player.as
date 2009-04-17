@@ -1,11 +1,11 @@
 package us.xdev.mediaplayer.views
 {
-	
+
 	import com.a12.modules.mediaplayback.*;
 	import com.a12.util.LoadMovie;
 	import com.a12.util.Utils;
 	import com.a12.util.CustomEvent;
-	
+
 	import flash.display.MovieClip;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -23,9 +23,9 @@ package us.xdev.mediaplayer.views
 	import flash.utils.getTimer;
 	import flash.utils.setInterval;
 	import flash.utils.setTimeout;
-	
+
 	import gs.TweenLite;
-	
+
 	import us.xdev.mediaplayer.pattern.AbstractView;
 
 	public class Player extends AbstractView
@@ -41,63 +41,64 @@ package us.xdev.mediaplayer.views
 
 		private var progressOffset:Number;
 		private var progressInterval:Number;
-		private var preloadInterval:Number;
 		
+
 		private var timestamp:Number;
-		
+
 		private var configObj:Object;
-		
-		private var flagPlaying:Boolean;
+
 		private var flagThumbs:Boolean;
+		
+		private var slideView:Slide;
 
 
 		public function Player(ref:Object,model:*,controller:*=null)
 		{
-			
+
 			super(ref,model,controller);
-			
+
 			configObj = model.getConfig();
-			
+
 			ref.stage.scaleMode = StageScaleMode.NO_SCALE;
 			ref.stage.align = StageAlign.TOP_LEFT;
 
 			ref.stage.addEventListener(Event.RESIZE, onResize,false,0,true);
 			ref.stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen,false,0,true);
 
-			
+
 
 		}
-		
+
 		override public function update(event:CustomEvent=null):void
 		{
 			//dish out to all children
 			super.update(event);
 			//handle local stuff
-			
+
 			if(event.props.action == 'init'){
 				init();
 			}
-			
+
 			if(event.props.action == 'viewSlide'){
 				viewSlide();
 			}
 		}
-		
+
 		private function keyListener(e:KeyboardEvent):void
 		{
-			controller.handleKey(e);	
+			controller.handleKey(e);
 		}
 
 		public function init():void
 		{
 			buildUI();
-			
+
 			//listen to the mouse event to hide or show ui
 			ref.stage.addEventListener(Event.MOUSE_LEAVE, mouseListener,false,0,true);
 			ref.stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseListener,false,0,true);
 			//track keyboard navigation
 			ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
-			
+
 			controller.advanceSlide(1);
 		}
 
@@ -117,7 +118,7 @@ package us.xdev.mediaplayer.views
 			clearTimeout(uiInterval);
 			uiInterval = setTimeout(hideUI,3000);
 			TweenLite.to(MovieClip(ref.getChildByName('ui')),0.3,{alpha:1.0});
-			
+
 			/*
 			if(MP != null){
 				var mc = Utils.$(MP._view.ref,'controls');
@@ -130,7 +131,7 @@ package us.xdev.mediaplayer.views
 		{
 			clearTimeout(uiInterval);
 			TweenLite.to(MovieClip(ref.getChildByName('ui')),0.5,{alpha:0.0});
-			
+
 			/*
 			if(MP != null){
 				var mc = Utils.$(MP._view.ref,'controls');
@@ -140,16 +141,18 @@ package us.xdev.mediaplayer.views
 		}
 
 		private function toggleThumbs(fade:Boolean=true):void
-		{
+		{	
+			return;
+			
 			flagThumbs = !flagThumbs;
 
 			//Debug.log('toggleThumbs - ' + flagThumbs.toString());
 
-			var ui:MovieClip = Utils.$(stage,'ui');
+			var ui:MovieClip = Utils.$(ref,'ui');
 			var mc:MovieClip = Utils.$(ui,'thumbnail');
 
-			var c:MovieClip = Utils.$(stage,'thumbs');
-			var slide:MovieClip = Utils.$(stage,'slide');
+			var c:MovieClip = Utils.$(ref,'thumbs');
+			var slide:MovieClip = Utils.$(ref,'slide');
 
 			if(flagThumbs){
 				//tell it to activate
@@ -202,7 +205,7 @@ package us.xdev.mediaplayer.views
 
 
 				//kill slideshow
-				flagPlaying = false;
+				model.setPlaying(false);
 				clearInterval(progressInterval);
 				clearTimeout(slideInterval);
 				updateSlideShowState();
@@ -256,13 +259,6 @@ package us.xdev.mediaplayer.views
 			}
 		}
 
-		private function initVideo(e:Event):void
-		{
-			//var mc = Utils.$(MP._view.ref,'controls');
-			//mc.alpha = 0.0;
-			//onResize();
-		}
-
 		private function handleIconsMouse(e:Event):void
 		{
 			//get the type, process the target
@@ -281,7 +277,7 @@ package us.xdev.mediaplayer.views
 			}
 			if(e.type == MouseEvent.CLICK){
 				if(mc.name == 'thumbnail'){
-					controller.toggleThumbs();
+					toggleThumbs();
 				}
 				if(mc.name == 'toggle'){
 					controller.toggleSlideShow();
@@ -309,14 +305,14 @@ package us.xdev.mediaplayer.views
 
 				i = new mediaplayer_icons();
 				i.gotoAndStop('fullscreen');
-				mc = MovieClip(ui.addChild(i));
-				mc.name = 'fullscreen';
-				mc.buttonMode = true;
+				mc = Utils.createmc(ui,'fullscreen');
+				mc.addChild(i);
 				mc.y = 14;
+				mc.buttonMode = true;
 				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
-				//mc.xPos = 14;
+				mc.xPos = 14;
 				xPos = 14;
 
 			}
@@ -324,17 +320,17 @@ package us.xdev.mediaplayer.views
 			if(configObj.thumbgrid == true){
 				i = new mediaplayer_icons();
 				i.gotoAndStop('thumbnail');
-				mc = MovieClip(ui.addChild(i));
-				mc.name = 'thumbnail';
+				mc = Utils.createmc(ui,'thumbnail');
+				mc.addChild(i);
 				mc.buttonMode = true;
 				mc.y = 14;
 				mc.addEventListener(MouseEvent.ROLL_OVER,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 				if(xPos == 14){
-					//mc.xPos = 38;
+					mc.xPos = 38;
 				}else{
-					//mc.xPos = 14;
+					mc.xPos = 14;
 				}
 			}
 
@@ -342,7 +338,7 @@ package us.xdev.mediaplayer.views
 
 			if(configObj.slideshow == true){
 				i = new icon_timer();
-				if(flagPlaying){
+				if(model.flagPlaying){
 					i.gotoAndStop('pause');
 				}else{
 					i.gotoAndStop('play');
@@ -399,9 +395,9 @@ package us.xdev.mediaplayer.views
 				//left, right
 				i = new mediaplayer_icons();
 				i.gotoAndStop('nav_arrow');
-				mc = MovieClip(ui.addChild(i));
-				//mc.dir = -1;
-				mc.name = 'nav_prev';
+				mc = Utils.createmc(ui,'nav_prev');
+				mc.addChild(i);
+				mc.dir = -1;
 				mc.x = 15;
 				mc.y = 100;
 				mc.alpha = 0.75;
@@ -412,9 +408,9 @@ package us.xdev.mediaplayer.views
 
 				i = new mediaplayer_icons();
 				i.gotoAndStop('nav_arrow');
-				mc = MovieClip(ui.addChild(i));
-				//mc.dir = 1;
-				mc.name = 'nav_next';
+				mc = Utils.createmc(ui,'nav_next');
+				mc.addChild(i);
+				mc.dir = 1;
 				mc.rotation = 180;
 				mc.x = 575;
 				mc.y = 100;
@@ -439,12 +435,12 @@ package us.xdev.mediaplayer.views
 
 			mc = Utils.$(ui,'fullscreen');
 			if(mc){
-				//mc.x = ref.stage.stageWidth - mc.xPos;
+				mc.x = ref.stage.stageWidth - mc.xPos;
 			}
 
 			mc = Utils.$(ui,'thumbnail');
 			if(mc){
-				//mc.x = ref.stage.stageWidth - mc.xPos;
+				mc.x = ref.stage.stageWidth - mc.xPos;
 			}
 
 			mc = Utils.$(ref,'preload');
@@ -462,8 +458,9 @@ package us.xdev.mediaplayer.views
 				mc.x = ref.stage.stageWidth - 15;
 			}
 
-			scaleSlide();
-
+			if(slideView != null){
+				slideView.scale();
+			}
 		}
 
 		private function onFullScreen(e:FullScreenEvent):void
@@ -483,7 +480,7 @@ package us.xdev.mediaplayer.views
 			if(l){
 				var mc:MovieClip = Utils.$(l,'circ')
 
-				if(flagPlaying){
+				if(model.flagPlaying){
 					l.gotoAndStop('pause');
 					TweenLite.to(mc,0.5,{alpha:1.0});
 				}else{
@@ -495,129 +492,39 @@ package us.xdev.mediaplayer.views
 
 		private function viewSlide():void
 		{
-			var s:MovieClip = Utils.$(ref,'slide');
-			if(s){
-				ref.removeChild(s);
-			}
-			var slide:MovieClip = Utils.createmc(ref,'slide',{alpha:0});
-			ref.setChildIndex(slide,0);
-			var holder:MovieClip = Utils.createmc(slide,'holder');
-
-			clearTimeout(preloadInterval);
+			//clean up
 			clearInterval(progressInterval);
-
-			//ExternalInterface.call('viewSlide',slideIndex);
-			controller.sendExternal('viewSlide',[model.slideIndex]);
+			if(slideView != null){
+				slideView.onKill();
+			}
+			slideView = null;
+			//remove from updates
 			
-			/*
-			if(MP){
-				MP._view.removeEventListener('updateSize', onResize, false);
-				MP.kill();
-				MP = null;
-			}
-			*/
-
-			if(model.slideA[model.slideIndex].mode == 'media'){
-				var obj:Object = {hasView:true,still:model.slideA[model.slideIndex].still};
-				if(obj.still){
-					//obj.paused = true;
-				}
-
-				//Consider overlay centered video controls while in fullscreen
-				//MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,slideA[slideIndex].file,obj);
-				//MP._view.addEventListener('updateSize', onResize, false, 0, true);
-				//MP._view.addEventListener('onStill', onResize, false, 0, true);
-				//_model.b
-				//MP._model.b.addEventListener('onTransportChange',handleTransport,false,0,true);
-
-				flagPlaying = false;
-				updateSlideShowState();
-				revealSlide();
-			}
-
-			//build preload clip
-			var mc:MovieClip = Utils.$(ref,'preload');
-			if(mc){
-				ref.removeChild(mc);
-			}
-			mc = Utils.createmc(ref,'preload',{alpha:0.0});
-			ref.setChildIndex(mc,0);
-
-			if(model.slideA[model.slideIndex].mode == 'image'){
-
-				var tf:TextFormat = new TextFormat();
-				tf.font = 'Akzidenz Grotesk';
-				tf.size = 10;
-				tf.color = 0xFFFFFF;
-				tf.align = 'center';
-
-				Utils.makeTextfield(mc,'',tf,{width:100});
-				mc.x = stage.stageWidth/2 - mc.width/2;
-				mc.y = stage.stageHeight/2 - 8;
-
-				//do the drop shadow son
-
-				mc.filters = [
-				new DropShadowFilter
-				(
-					1,
-	                45,
-	                0x000000,
-	                1.0,
-	                1,
-	                1,
-	                0.8,
-	                BitmapFilterQuality.HIGH,
-	                false,
-	                false)
-				];
-
-				var movie:LoadMovie = new LoadMovie(holder,model.slideA[model.slideIndex].file);
-				movie.addEventListener(Event.COMPLETE,revealSlide);
-				movie.loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,handlePreload,false,0,true);
-
-				clearTimeout(preloadInterval);
-				preloadInterval = setTimeout(renderPreload,500);
-
-
-
-
-			}
-
+			//create new
+			var slide:MovieClip = Utils.createmc(ref,'slide',{alpha:0});
+			ref.setChildIndex(slide,0);	
+			slideView = new Slide(slide,model,controller);
+			
+			//register for updates
+			add(slideView);	
+			
+			slideView.render(model.slideA[model.slideIndex]);
+			//controller.sendExternal('viewSlide',[model.slideIndex]);
+						
+			//should consolidate flow
+			updateSlideShowState();
+			
 			//update the text
 			var ui:MovieClip = Utils.$(ref,'ui');
 
 			if(model.slideMax > 1){
 				TextField(Utils.$(ui,'label.txt.displayText')).text = (model.slideIndex+1) + '/' + model.slideMax;
-
-				//var b = Utils.$(ui,'label.back');
-				//b.width = tf.textWidth + 5;
-			}
-			//kick back the listener
-
-
-
-		}
-
-		private function renderPreload():void
-		{
-			clearTimeout(preloadInterval);
-			//fade clip in
-			var mc:MovieClip = Utils.$(ref,'preload');
-			TweenLite.to(mc,0.5,{alpha:1.0});
-		}
-
-		private function handlePreload(e:ProgressEvent):void
-		{
-			var p:int = Math.ceil(100*(e.bytesLoaded / e.bytesTotal));
-			var mc:MovieClip = Utils.$(ref,'preload.displayText');
-			mc.text = p + '%';
-			if(p == 100){
-				TweenLite.to(mc,0.5,{alpha:0.0});
 			}
 
-			//update to clip
+
 		}
+
+		
 
 		private function slideProgressListener(e:ProgressEvent):void
 		{
@@ -653,137 +560,6 @@ package us.xdev.mediaplayer.views
 			mc.graphics.lineTo(x1,y1);
 			mc.graphics.lineTo(x2,y2);
 			mc.graphics.endFill();
-
-		}
-
-		private function revealSlide(e:Event=null):void
-		{
-			var slide:MovieClip = Utils.$(ref,'slide');
-			TweenLite.to(MovieClip(slide),1.0,{alpha:1.0});
-
-			clearTimeout(preloadInterval);
-
-			if(model.flagPlaying){
-
-
-
-				if(configObj.slideshow == true){
-
-					timestamp = getTimer();
-
-					clearTimeout(slideInterval);
-					slideInterval = setTimeout(controller.advanceSlide,configObj.duration,1);
-
-					//
-					var mc:MovieClip = Utils.$(stage,'ui.toggle.circ');
-					mc.graphics.clear();
-					mc.scaleY = -1.0;
-
-
-					progressOffset = 0;
-
-					if(flagPlaying){
-						progressInterval = setInterval(slideProgressSegment,configObj.duration/100);
-						slideProgressSegment();
-					}
-
-				}
-			}
-
-			slide._width = slide.width;
-			slide._height = slide.height;
-
-			//set the height and width properties yea?
-
-			scaleSlide();
-		}
-
-		private function scaleSlide():void
-		{
-			/*
-			var mc;
-			var slide = Utils.$(stage,'slide');
-			if(slide){
-				var imgX = slide._width;
-				var imgY = slide._height;
-				var m = 100;
-
-				if(MP != null)
-				{
-					var tA = MP.getDimensions();
-					imgX = tA.width;
-					imgY = tA.height;
-
-					if(configObj.scalevideo){
-						m = undefined;
-					}
-				}else{
-					if(configObj.scaleimage){
-						m = undefined;
-					}
-				}
-
-				var scale = Utils.getScale(imgX,imgY,stage.stageWidth-(configObj.marginX*2),stage.stageHeight-(configObj.marginY*2),'scale',m).x;
-
-				scale = scale/100;
-				//if we're a image
-				if(MP == null){
-					slide.scaleX = scale;
-					slide.scaleY = scale;
-					slide.x = stage.stageWidth/2 - slide.width/2;
-					slide.y = (stage.stageHeight)/2 - slide.height/2;
-				}
-
-				//if we're a video
-				if(MP != null){
-
-					MP.setScale(scale*100);
-					tA = MP.getDimensions();
-
-					slide.x = 0;
-					slide.y = 0;
-
-					mc = Utils.$(MP._view.ref,'myvideo');
-					if(mc != null){
-						mc.width = Math.ceil(tA.width*scale);
-						mc.height = Math.ceil(tA.height*scale);
-						mc.x = stage.stageWidth/2 - mc.width/2;
-						mc.y = (stage.stageHeight)/2 - mc.height/2;
-					}
-
-					mc = Utils.$(MP._view.ref,'still');
-					if(mc != null){
-						mc.width = Math.ceil(tA.width*scale);
-						mc.height = Math.ceil(tA.height*scale);
-						mc.x = stage.stageWidth/2 - mc.width/2;
-						mc.y = (stage.stageHeight)/2 - mc.height/2;
-					}
-
-
-					//do overlay icon
-					mc = Utils.$(MP._view.ref,'video_overlay_play');
-					if(mc != null){
-						mc.x = stage.stageWidth/2;
-						mc.y = stage.stageHeight/2;
-					}
-
-					mc = Utils.$(MP._view.ref,'cover');
-					if(mc != null){
-						mc.width = Math.ceil(tA.width*scale);
-						mc.height = Math.ceil(tA.height*scale);
-						mc.x = stage.stageWidth/2 - mc.width/2;
-						mc.y = (stage.stageHeight)/2 - mc.height/2;
-					}
-					MP.setWidth(stage.stageWidth);
-					if(MP._view._controls != null){
-						MP._view._controls.y = stage.stageHeight - 20;
-					}
-
-
-				}
-
-			}
-			*/
 
 		}
 

@@ -26,19 +26,22 @@ Tag names are case and name sensitive. For best results, always use absolute pat
 			<file>http://media.local/demo_img1.jpg</file>
 			<thumb>http://media.local/demo_thumb1.jpg</thumb>
 		</slide>
-		
+		<!--
 		<slide>
 			<file>http://media.local/demo_video.flv</file>
 			<thumb>http://media.local/demo_video.jpg</thumb>
 		</slide>
+	-->
 		<slide>
 			<file>http://media.local/demo_img2.jpg</file>
 			<thumb>http://media.local/demo_thumb2.jpg</thumb>
 		</slide>
+		<!--
 		<slide>
 			<file>http://media.local/demo_video.flv</file>
 			<thumb>http://media.local/demo_video.jpg</thumb>
 		</slide>
+	-->
 		<slide>
 			<file>http://media.local/demo_img3.jpg</file>
 			<thumb>http://media.local/demo_thumb3.jpg</thumb>
