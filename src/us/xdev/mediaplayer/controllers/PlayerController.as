@@ -67,6 +67,7 @@ package us.xdev.mediaplayer.controllers
 
 		public function toggleSlideShow():void
 		{
+			
 			/*
 			showUI();
 			flagPlaying = !flagPlaying;
@@ -122,9 +123,9 @@ package us.xdev.mediaplayer.controllers
 				break;
 
 				case Keyboard.SPACE:
-					//if(MP){
+					
 					//	MP.toggle();
-					//}
+					
 				break;
 				/*
 				case 70:

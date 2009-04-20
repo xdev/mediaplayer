@@ -26,8 +26,6 @@ package us.xdev.mediaplayer.views
 
 	import gs.TweenLite;
 
-	import us.xdev.mediaplayer.pattern.AbstractView;
-
 	public class Player extends AbstractView
 	{
 		[Embed(source='library.swf', symbol='mediaplayer_icons')]
@@ -35,22 +33,18 @@ package us.xdev.mediaplayer.views
 
 		[Embed(source='library.swf', symbol='icon_timer')]
 		private var icon_timer:Class;
+		
+		[Embed(source='library.swf', symbol='AkzidenzGrotesk')]
+		private var font1:Class;
 
 		private var slideInterval:Number;
 		private var uiInterval:Number;
-
 		private var progressOffset:Number;
 		private var progressInterval:Number;
-		
-
 		private var timestamp:Number;
-
 		private var configObj:Object;
-
 		private var flagThumbs:Boolean;
-		
 		private var slideView:Slide;
-
 
 		public function Player(ref:Object,model:*,controller:*=null)
 		{
@@ -141,7 +135,7 @@ package us.xdev.mediaplayer.views
 		}
 
 		private function toggleThumbs(fade:Boolean=true):void
-		{	
+		{
 			return;
 			
 			flagThumbs = !flagThumbs;
@@ -524,8 +518,6 @@ package us.xdev.mediaplayer.views
 
 		}
 
-		
-
 		private function slideProgressListener(e:ProgressEvent):void
 		{
 			//renderProgress(p);
@@ -561,24 +553,6 @@ package us.xdev.mediaplayer.views
 			mc.graphics.lineTo(x2,y2);
 			mc.graphics.endFill();
 
-		}
-
-		private function scaleStage():void
-		{
-			//Optionally use hardware acceleration
-			/*
-			if(MP){
-				var mc = Utils.$(MP._view.ref,'myvideo');
-				var screenRectangle:Rectangle = new Rectangle();
-				screenRectangle.x = 0;
-				screenRectangle.y = 0;
-				screenRectangle.width=mc.width;
-				screenRectangle.height=mc.height;
-				stage.fullScreenSourceRect = screenRectangle;
-			}else{
-				stage.fullScreenSourceRect = null;
-			}
-			*/
 		}
 
 	}

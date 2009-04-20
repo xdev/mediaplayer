@@ -1,4 +1,4 @@
-package us.xdev.mediaplayer.pattern
+package us.xdev.mediaplayer.views
 {
 	
 	import flash.display.Sprite;

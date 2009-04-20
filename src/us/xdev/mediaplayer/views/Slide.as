@@ -7,6 +7,8 @@ package us.xdev.mediaplayer.views
 	import flash.text.TextFormat;
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.DropShadowFilter;
+	import flash.media.Video;
+	import flash.net.NetStream;
 	
 	//should clean up
 	import flash.utils.clearInterval;
@@ -19,9 +21,14 @@ package us.xdev.mediaplayer.views
 	import com.a12.util.CustomEvent;
 	import com.a12.util.LoadMovie;
 	
+	
+	
 	import gs.TweenLite;
 		
-	import us.xdev.mediaplayer.pattern.AbstractView;
+	import us.xdev.mediaplayer.models.IMediaModel;
+	import us.xdev.mediaplayer.models.AudioModel;
+	import us.xdev.mediaplayer.models.VideoModel;
+	import us.xdev.mediaplayer.controllers.TransportController;
 	
 	public class Slide extends AbstractView
 	{
@@ -30,6 +37,11 @@ package us.xdev.mediaplayer.views
 		
 		private var _width:int;
 		private var _height:int;
+		
+		private var mediaModel:IMediaModel;
+		private var transportView:*;
+		private var transportController:TransportController;
+		private var mediaView:*;
 		
 		//this is the screen to display assets
 		public function Slide(ref:Object,model:*,controller:*=null)
@@ -41,6 +53,7 @@ package us.xdev.mediaplayer.views
 		public function onKill():void
 		{
 			clearInterval(preloadInterval);
+			killMedia();
 		}
 		
 		override public function update(event:CustomEvent=null):void
@@ -52,39 +65,90 @@ package us.xdev.mediaplayer.views
 			}
 		}
 		
+		private function killMedia():void
+		{
+			if(mediaModel){
+				mediaModel.kill();
+				mediaModel = null;
+				transportView.onKill();
+				transportView = null;
+				transportController = null;
+			}
+		}
+		
+		private function handleMediaUpdate(event:CustomEvent):void
+		{
+			if(event.props.action == 'playVideo'){
+				var video:Video = new Video();
+				video.attachNetStream(event.props._stream);
+				video.alpha = 1.0;
+				video.width = 320;
+				video.height = 240;		
+				video.name = 'myvideo';
+				Utils.$(ref,'holder').addChild(video);
+				reveal();
+				trace('ww');			
+			}
+			if(event.props.action == 'updateSize'){
+				/*
+				if(Utils.$(ref,'myvideo')){
+					var mc:* = Utils.$(ref,'myvideo');
+					mc.width = event.props.width;
+					mc.height = event.props.height;
+					mc.alpha = 1.0;
+				}
+				*/
+			}		
+		}
+		
 		public function render(data:Object):void
 		{
-			/*
-			if(MP){
-				MP._view.removeEventListener('updateSize', onResize, false);
-				MP.kill();
-				MP = null;
-			}
-			*/
+			killMedia();
+					
 			var holder:MovieClip = Utils.createmc(ref,'holder');
+			
+			//build preload clip
+			var preloadClip:MovieClip = Utils.createmc(ref,'preload',{alpha:0.0});
+			ref.setChildIndex(preloadClip,0);
 			
 			if(data.mode == 'media'){
 				var obj:Object = {hasView:true,still:data.still};
+				
+				Utils.drawRect(holder,100,10,0xFF0000,0.5);
+				
 				if(obj.still){
-					//obj.paused = true;
+					obj.paused = true;
 				}
+								
+				var options:Object = {};
+				var ext:String = data.file.substr(data.file.lastIndexOf('.')+1,data.file.length).toLowerCase();
 
+				if(ext == 'mp4' || ext == 'mov' || ext == 'm4v' || ext == 'flv'){
+					mediaModel = new VideoModel(data.file,options);
+				}
+				if(ext == 'mp3'){
+					mediaModel = new AudioModel(data.file,options);
+				}
+				
+				transportController = new TransportController(mediaModel);
+				transportView = new Transport(Utils.createmc(ref,'transport'),mediaModel,transportController);				
+				mediaModel.addEventListener('onUpdate',transportView.update);
+				mediaModel.addEventListener('onUpdate',handleMediaUpdate);
+				
+				mediaModel.load();
+				
 				//Consider overlay centered video controls while in fullscreen
-				//MP = new com.a12.modules.mediaplayback.MediaPlayback(holder,slideA[slideIndex].file,obj);
+				
 				//MP._view.addEventListener('updateSize', onResize, false, 0, true);
 				//MP._view.addEventListener('onStill', onResize, false, 0, true);
-				//_model.b
 				//MP._model.b.addEventListener('onTransportChange',handleTransport,false,0,true);
 
-				model.setPlaying(false);
+				//stop slideshow
+				//controller.setPlaying(false);
 				
-				reveal();
 			}
 
-			//build preload clip
-		
-			var preloadClip:MovieClip = Utils.createmc(ref,'preload',{alpha:0.0});
-			ref.setChildIndex(preloadClip,0);
+			
 
 			if(data.mode == 'image'){
 
@@ -115,15 +179,12 @@ package us.xdev.mediaplayer.views
 	                false)
 				];
 
-				var movie:LoadMovie = new LoadMovie(holder,model.slideA[model.slideIndex].file);
+				var movie:LoadMovie = new LoadMovie(holder,data.file);
 				movie.addEventListener(Event.COMPLETE,reveal);
 				movie.loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,handlePreload,false,0,true);
 
 				clearTimeout(preloadInterval);
 				preloadInterval = setTimeout(renderPreload,500);
-
-
-
 
 			}
 
@@ -166,12 +227,12 @@ package us.xdev.mediaplayer.views
 				*/
 			}
 			
-			_width = Utils.$(ref,'holder').width;
-			_height = Utils.$(ref,'holder').height;
+			//_width = Utils.$(ref,'holder').width;
+			//_height = Utils.$(ref,'holder').height;
 
 			//set the height and width properties yea?
 
-			scale();
+			//scale();
 		}
 		
 		private function renderPreload():void
@@ -297,6 +358,24 @@ package us.xdev.mediaplayer.views
 			}
 
 			
+		}
+		
+		private function scaleStage():void
+		{
+			//Optionally use hardware acceleration
+			/*
+			if(MP){
+				var mc = Utils.$(MP._view.ref,'myvideo');
+				var screenRectangle:Rectangle = new Rectangle();
+				screenRectangle.x = 0;
+				screenRectangle.y = 0;
+				screenRectangle.width=mc.width;
+				screenRectangle.height=mc.height;
+				stage.fullScreenSourceRect = screenRectangle;
+			}else{
+				stage.fullScreenSourceRect = null;
+			}
+			*/
 		}
 		
 	}
