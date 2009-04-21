@@ -14,6 +14,7 @@ package us.xdev.mediaplayer.models
 	
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
+	import flash.media.Video;
 	import flash.utils.Timer;
 
 	public class VideoModel extends EventDispatcher implements IMediaModel
@@ -136,7 +137,7 @@ package us.xdev.mediaplayer.models
 		
 		private function cuePointHandler(obj:Object):void
 		{
-			
+			//obj.name + obj.time
 		}
 		
 		private function dispatchPlaybackStatus(mode:Boolean):void
@@ -155,12 +156,7 @@ package us.xdev.mediaplayer.models
 				var tObj:Object = {};
 				tObj.action = 'updateSize';
 				tObj.width =  obj.width;
-				tObj.height = obj.height;
-					
-				//Utils.$(_ref,'myvideo').width = obj.width;
-				//Utils.$(_ref,'myvideo').height = obj.height;
-				//Utils.$(_ref,'myvideo').alpha = 1.0;
-				
+				tObj.height = obj.height;								
 				update(tObj);
 			}
 		
@@ -219,13 +215,17 @@ package us.xdev.mediaplayer.models
 			clientObj.onMetaData = onMetaData;
 			clientObj.onCuePoint = cuePointHandler;
 			_stream.client = clientObj;
-			_stream.play(_file);		
+			_stream.play(_file);
+			var video:Video = new Video();
+			video.attachNetStream(_stream);
+			video.name = 'myvideo';
 			
 			_playing = true;	
 					
 			var tObj:Object = {};
 			tObj.action = 'playVideo';
-			tObj.stream = _stream;			
+			tObj.stream = _stream;
+			tObj.video = video;		
 			tObj.playing = _playing;
 			update(tObj);
 			

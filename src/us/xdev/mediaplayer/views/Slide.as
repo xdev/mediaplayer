@@ -4,11 +4,11 @@ package us.xdev.mediaplayer.views
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.display.MovieClip;
+	import flash.geom.Rectangle;
 	import flash.text.TextFormat;
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.DropShadowFilter;
 	import flash.media.Video;
-	import flash.net.NetStream;
 	
 	//should clean up
 	import flash.utils.clearInterval;
@@ -20,9 +20,7 @@ package us.xdev.mediaplayer.views
 	import com.a12.util.Utils;
 	import com.a12.util.CustomEvent;
 	import com.a12.util.LoadMovie;
-	
-	
-	
+		
 	import gs.TweenLite;
 		
 	import us.xdev.mediaplayer.models.IMediaModel;
@@ -70,7 +68,7 @@ package us.xdev.mediaplayer.views
 			if(mediaModel){
 				mediaModel.kill();
 				mediaModel = null;
-				transportView.onKill();
+				//transportView.onKill();
 				transportView = null;
 				transportController = null;
 			}
@@ -79,25 +77,18 @@ package us.xdev.mediaplayer.views
 		private function handleMediaUpdate(event:CustomEvent):void
 		{
 			if(event.props.action == 'playVideo'){
-				var video:Video = new Video();
-				video.attachNetStream(event.props._stream);
-				video.alpha = 1.0;
-				video.width = 320;
-				video.height = 240;		
-				video.name = 'myvideo';
-				Utils.$(ref,'holder').addChild(video);
-				reveal();
-				trace('ww');			
+				ref.addChild(event.props.video);				
 			}
 			if(event.props.action == 'updateSize'){
-				/*
+				
 				if(Utils.$(ref,'myvideo')){
-					var mc:* = Utils.$(ref,'myvideo');
+					var mc:* = Utils.$(ref,'myvideo');					
 					mc.width = event.props.width;
 					mc.height = event.props.height;
 					mc.alpha = 1.0;
+					reveal();			
 				}
-				*/
+				
 			}		
 		}
 		
@@ -114,7 +105,7 @@ package us.xdev.mediaplayer.views
 			if(data.mode == 'media'){
 				var obj:Object = {hasView:true,still:data.still};
 				
-				Utils.drawRect(holder,100,10,0xFF0000,0.5);
+				//Utils.drawRect(holder,100,10,0xFF0000,0.5);
 				
 				if(obj.still){
 					obj.paused = true;
@@ -131,8 +122,8 @@ package us.xdev.mediaplayer.views
 				}
 				
 				transportController = new TransportController(mediaModel);
-				transportView = new Transport(Utils.createmc(ref,'transport'),mediaModel,transportController);				
-				mediaModel.addEventListener('onUpdate',transportView.update);
+				//transportView = new Transport(Utils.createmc(ref,'transport'),mediaModel,transportController);				
+				//mediaModel.addEventListener('onUpdate',transportView.update);
 				mediaModel.addEventListener('onUpdate',handleMediaUpdate);
 				
 				mediaModel.load();
@@ -194,7 +185,6 @@ package us.xdev.mediaplayer.views
 		
 		private function reveal(e:Event=null):void
 		{
-			
 			TweenLite.to(ref,1.0,{alpha:1.0});
 
 			//clearTimeout(preloadInterval);
@@ -227,12 +217,12 @@ package us.xdev.mediaplayer.views
 				*/
 			}
 			
-			//_width = Utils.$(ref,'holder').width;
-			//_height = Utils.$(ref,'holder').height;
+			_width = Utils.$(ref,'holder').width;
+			_height = Utils.$(ref,'holder').height;
 
 			//set the height and width properties yea?
 
-			//scale();
+			scale();
 		}
 		
 		private function renderPreload():void
@@ -363,9 +353,8 @@ package us.xdev.mediaplayer.views
 		private function scaleStage():void
 		{
 			//Optionally use hardware acceleration
-			/*
-			if(MP){
-				var mc = Utils.$(MP._view.ref,'myvideo');
+			if(mediaModel){
+				var mc:MovieClip = Utils.$(ref,'holder');
 				var screenRectangle:Rectangle = new Rectangle();
 				screenRectangle.x = 0;
 				screenRectangle.y = 0;
@@ -375,7 +364,6 @@ package us.xdev.mediaplayer.views
 			}else{
 				stage.fullScreenSourceRect = null;
 			}
-			*/
 		}
 		
 	}

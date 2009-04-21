@@ -495,7 +495,7 @@ package us.xdev.mediaplayer.views
 			//remove from updates
 			
 			//create new
-			var slide:MovieClip = Utils.createmc(ref,'slide',{alpha:0});
+			var slide:MovieClip = Utils.createmc(ref,'slide',{alpha:0.0});
 			ref.setChildIndex(slide,0);	
 			slideView = new Slide(slide,model,controller);
 			
