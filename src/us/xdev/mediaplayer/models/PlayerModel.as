@@ -6,6 +6,7 @@ package us.xdev.mediaplayer.models
 	
 	import flash.events.EventDispatcher;
 	import flash.system.Capabilities;
+	
 
 	public class PlayerModel extends EventDispatcher
 	{

@@ -40,6 +40,8 @@ package us.xdev.mediaplayer.views
 		private var transportView:*;
 		private var transportController:TransportController;
 		private var mediaView:*;
+		
+		private var data:Object;
 
 		//this is the screen to display assets
 		public function Slide(ref:Object,model:*,controller:*=null)
@@ -69,10 +71,20 @@ package us.xdev.mediaplayer.views
 				}
 			}
 			
+			if(event.props.action == 'pause'){
+				if(transportController){
+					transportController.pause();
+				}
+			}
+			
+			if(event.props.action == 'play'){
+				if(transportController){
+					transportController.play();
+				}
+			}
+			
 			if(event.props.action == 'render'){
-
 				//attach stuff yea
-
 			}
 		}
 
@@ -146,6 +158,8 @@ package us.xdev.mediaplayer.views
 
 		public function render(data:Object):void
 		{
+			this.data = data;
+			
 			killMedia();
 
 			//build preload clip
@@ -252,41 +266,10 @@ package us.xdev.mediaplayer.views
 		{
 			TweenLite.to(ref,1.0,{alpha:1.0});
 
-			//clearTimeout(preloadInterval);
-
-			if(model.flagPlaying){
-
-
-				/*
-				if(configObj.slideshow == true){
-
-					timestamp = getTimer();
-
-					clearTimeout(slideInterval);
-					slideInterval = setTimeout(controller.advanceSlide,configObj.duration,1);
-
-					//
-					var mc:MovieClip = Utils.$(ref,'ui.toggle.circ');
-					mc.graphics.clear();
-					mc.scaleY = -1.0;
-
-
-					progressOffset = 0;
-
-					if(flagPlaying){
-						progressInterval = setInterval(slideProgressSegment,configObj.duration/100);
-						slideProgressSegment();
-					}
-
-				}
-				*/
-			}
+			dispatchEvent(new CustomEvent('onReveal',false,false,{data:data}));
 
 			_width = Utils.$(ref,'asset').width;
 			_height = Utils.$(ref,'asset').height;
-			
-					
-			//set the height and width properties yea?
 
 			scale();
 		}

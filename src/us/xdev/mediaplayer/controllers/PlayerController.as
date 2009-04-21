@@ -4,17 +4,25 @@ package us.xdev.mediaplayer.controllers
 	import flash.events.KeyboardEvent;
 	import flash.external.ExternalInterface;
 	import flash.ui.Keyboard;
-
+	import flash.utils.clearTimeout;
+	
 	import com.a12.util.CustomEvent;
 
 	public class PlayerController
 	{
 
 		private var model:*;
+		private var view:*;
 
-		public function PlayerController(model:*)
+		public function PlayerController(model:*,view:*=null)
 		{
 			this.model = model;
+			this.view = view;
+		}
+		
+		public function setView(view:*):void
+		{
+			this.view = view;
 		}
 
 		private function handleTransport(e:CustomEvent):void
@@ -41,57 +49,16 @@ package us.xdev.mediaplayer.controllers
 			method.apply(ExternalInterface,_args);
 		}
 
-		public function toggleFullScreen():void
-		{
-			//Move to View, since this is purely visual..?
-			/*
-			switch(true){
-
-				case stage.displayState == "fullScreen":
-					stage.displayState = "normal";
-				break;
-
-				case stage.displayState == "normal":
-					stage.displayState = "fullScreen";
-				break;
-
-			}
-			*/
-
-		}
-
 		public function viewSlideByIndex(value:Number):void
 		{
 			model.setSlide(value);			
 		}
 
-		public function toggleSlideShow():void
-		{
-			
-			/*
-			showUI();
-			flagPlaying = !flagPlaying;
-			if(flagPlaying){
-				//
-				if(flagThumbs){
-					toggleThumbs();
-				}
-				advanceSlide(1);
-			}else{
-				clearInterval(progressInterval);
-			}
-			clearTimeout(slideInterval);
-			updateSlideShowState();
-			*/
-		}
-
+		
 		public function advanceSlide(dir:int):void
 		{
-			//clearTimeout(slideInterval);
-			model.advanceSlide(dir);			
-
-			//viewSlide();
-
+			clearTimeout(view.slideInterval);
+			model.advanceSlide(dir);
 		}
 
 		public function handleKey(e:KeyboardEvent):void
@@ -127,26 +94,21 @@ package us.xdev.mediaplayer.controllers
 					//	MP.toggle();
 					
 				break;
-				/*
+
 				case 70:
-					toggleFullScreen();
+					view.toggleFullScreen();
 				break;
 
 				case 83:
-					toggleSlideShow();
+					view.toggleSlideShow();
 				break;
 
 				case 84:
-					toggleThumbs();
+					view.toggleThumbs();
 				break;
-				*/
+				
 			}
-		}
-
-		private function handleThumb(e:CustomEvent):void
-		{
-			viewSlideByIndex(e.props.id);
-			//toggleThumbs(false);
+		
 		}
 
 	}

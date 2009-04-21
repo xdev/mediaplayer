@@ -25,6 +25,8 @@ package us.xdev.mediaplayer.views
 	import flash.utils.setTimeout;
 
 	import gs.TweenLite;
+	
+	import us.xdev.mediaplayer.controllers.ThumbController;
 
 	public class Player extends AbstractView
 	{
@@ -37,7 +39,7 @@ package us.xdev.mediaplayer.views
 		[Embed(source='library.swf', symbol='AkzidenzGrotesk')]
 		private var font1:Class;
 
-		private var slideInterval:Number;
+		public var slideInterval:Number;
 		private var uiInterval:Number;
 		private var progressOffset:Number;
 		private var progressInterval:Number;
@@ -45,6 +47,8 @@ package us.xdev.mediaplayer.views
 		private var configObj:Object;
 		private var flagThumbs:Boolean;
 		private var slideView:Slide;
+		private var thumbView:ThumbGrid;
+		private var thumbController:ThumbController;
 
 		public function Player(ref:Object,model:*,controller:*=null)
 		{
@@ -52,6 +56,9 @@ package us.xdev.mediaplayer.views
 			super(ref,model,controller);
 
 			configObj = model.getConfig();
+			
+			//build thumbnails????
+			
 
 			ref.stage.scaleMode = StageScaleMode.NO_SCALE;
 			ref.stage.align = StageAlign.TOP_LEFT;
@@ -62,18 +69,27 @@ package us.xdev.mediaplayer.views
 
 
 		}
+		
+		private function buildThumbs():void
+		{
+			thumbController = new ThumbController(model);
+			thumbView = new ThumbGrid(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:140,thumbHeight:140,padding:10,marginX:0,marginY:0});
+		}
 
 		override public function update(event:CustomEvent=null):void
 		{
 			//dish out to all children
 			super.update(event);
-			//handle local stuff
 
 			if(event.props.action == 'init'){
 				init();
 			}
 
 			if(event.props.action == 'viewSlide'){
+				//this is for incoming actions from ThumbController
+				flagThumbs = false;
+				showThumbs();
+				//
 				viewSlide();
 			}
 		}
@@ -85,15 +101,19 @@ package us.xdev.mediaplayer.views
 
 		public function init():void
 		{
+			model.setPlaying(true);
+			
+			buildThumbs();
 			buildUI();
+			
+			controller.advanceSlide(1);	
 
 			//listen to the mouse event to hide or show ui
 			ref.stage.addEventListener(Event.MOUSE_LEAVE, mouseListener,false,0,true);
 			ref.stage.addEventListener(MouseEvent.MOUSE_MOVE, mouseListener,false,0,true);
 			//track keyboard navigation
 			ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
-
-			controller.advanceSlide(1);
+			
 		}
 
 		private function mouseListener(e:Event):void
@@ -123,51 +143,28 @@ package us.xdev.mediaplayer.views
 			
 			slideView.update(new CustomEvent('onUpdate',false,false,{action:'hideUI'}));			
 		}
-
-		private function toggleThumbs(fade:Boolean=true):void
+		
+		private function showThumbs(fade:Boolean=true):void
 		{
-			return;
-			
-			flagThumbs = !flagThumbs;
-
-			//Debug.log('toggleThumbs - ' + flagThumbs.toString());
-
 			var ui:MovieClip = Utils.$(ref,'ui');
-			var mc:MovieClip = Utils.$(ui,'thumbnail');
+			var mc:MovieClip = Utils.$(ui,'thumbnail.icon');
 
 			var c:MovieClip = Utils.$(ref,'thumbs');
 			var slide:MovieClip = Utils.$(ref,'slide');
 
 			if(flagThumbs){
-				//tell it to activate
-
-				//Debug.log('in true section');
-
 				TweenLite.to(MovieClip(slide),0.05,{alpha:0.0});
-				//slide.alpha = 0.0;
 
 				ref.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener,false);
 
-
 				//swap depth with ui
 				ref.setChildIndex(c,ref.numChildren - 2);
-				/*
-				if(thumbClass == null){
-					c.alpha = 0.0;
-					thumbClass = new ThumbGrid(c,this,slideA,configObj);
-					thumbClass.addEventListener('onThumbClick',handleThumb,false,0,true);
-					thumbClass.setIndex(slideIndex);
-
-
-				}else{
-					thumbClass.setIndex(slideIndex);
-					c.alpha = 0.0;
-					c.visible = true;
-				}
-				*/
-
+				
+				
+				c.alpha = 0.0;
+				c.visible = true;
+								
 				TweenLite.to(c,0.5,{alpha:1.0});
-
 
 				//deactivate majority of ui controls
 				/*
@@ -187,31 +184,23 @@ package us.xdev.mediaplayer.views
 				//toggle icon
 				mc.gotoAndStop('thumbnail_off');
 
-
 				//kill slideshow
 				model.setPlaying(false);
 				clearInterval(progressInterval);
 				clearTimeout(slideInterval);
 				updateSlideShowState();
-
-
-				//pause video
-				//if(MP){
-				//	MP.stop();
-				//}
+				
+				//tell slide to pause
+				if(slideView){
+					slideView.update(new CustomEvent('onUpdate',false,false,{action:'pause'}));
+				}
 
 			}else{
-
-				//Debug.log('in false section');
-				//thumbClass.onKill();
-				//thumbClass = null;
 				if(fade == true){
 					TweenLite.to(MovieClip(slide),0.5,{alpha:1.0});
 				}
 
-				//if(thumbClass){
-				//	c.visible = false;
-				//}
+				c.visible = false;
 
 				if(model.slideMax > 1){
 					ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
@@ -220,29 +209,84 @@ package us.xdev.mediaplayer.views
 				//toggle icon
 				mc.gotoAndStop('thumbnail');
 
-
-
 				//reactivate stuffs
 
 				//c = Utils.$(ui,'toggle');
 				//c.mouseEnabled = true;
 				//c.alpha = 1.0;
 
-				//Debug.log('BREAK!');
-
 				c = Utils.$(ui,'nav_prev');
-
 				c.mouseEnabled = true;
 				c.alpha = 1.0;
-
-				//Debug.log(c.toString());
 
 				c = Utils.$(ui,'nav_next');
 				c.mouseEnabled = true;
 				c.alpha = 1.0;
+				
+				//tell slide to resume
+				if(slideView){
+					slideView.update(new CustomEvent('onUpdate',false,false,{action:'play'}));
+				}
 			}
 		}
+		
+		public function toggleThumbs(fade:Boolean=true):void
+		{
+			flagThumbs = !flagThumbs;
+			showThumbs(fade);			
+		}
+		
+		public function toggleSlideShow():void
+		{
+			showUI();
+			model.setPlaying(!model.flagPlaying);
+			if(model.flagPlaying){
+				if(flagThumbs){
+					toggleThumbs();
+				}
+				controller.advanceSlide(1);
+			}else{
+				clearInterval(progressInterval);
+			}
+			clearTimeout(slideInterval);
+			updateSlideShowState();
+		}
+		
+		public function startSlideShow():void
+		{
+			//be extra certain
+			clearTimeout(slideInterval);
+			clearInterval(progressInterval);
+			//
+			progressOffset = 0;
+			progressInterval = setInterval(slideProgressSegment,configObj.duration/100);
+			slideProgressSegment();
+			slideInterval = setTimeout(controller.advanceSlide,configObj.duration,1);
+		}
+		
+		public function stopSlideShow():void
+		{
+			model.setPlaying(false);
+			clearTimeout(slideInterval);
+			clearInterval(progressInterval);
+			updateSlideShowState();
+		}
+		
+		public function toggleFullScreen():void
+		{
+			switch(true){
 
+				case ref.stage.displayState == "fullScreen":
+					ref.stage.displayState = "normal";
+				break;
+
+				case ref.stage.displayState == "normal":
+					ref.stage.displayState = "fullScreen";
+				break;
+
+			}
+		}
+				
 		private function handleIconsMouse(e:Event):void
 		{
 			//get the type, process the target
@@ -264,10 +308,10 @@ package us.xdev.mediaplayer.views
 					toggleThumbs();
 				}
 				if(mc.name == 'toggle'){
-					controller.toggleSlideShow();
+					toggleSlideShow();
 				}
 				if(mc.name == 'fullscreen'){
-					controller.toggleFullScreen();
+					toggleFullScreen();
 				}
 			}
 		}
@@ -289,6 +333,7 @@ package us.xdev.mediaplayer.views
 
 				i = new mediaplayer_icons();
 				i.gotoAndStop('fullscreen');
+				i.name = 'icon';
 				mc = Utils.createmc(ui,'fullscreen');
 				mc.addChild(i);
 				mc.y = 14;
@@ -304,6 +349,7 @@ package us.xdev.mediaplayer.views
 			if(configObj.thumbgrid == true){
 				i = new mediaplayer_icons();
 				i.gotoAndStop('thumbnail');
+				i.name = 'icon';
 				mc = Utils.createmc(ui,'thumbnail');
 				mc.addChild(i);
 				mc.buttonMode = true;
@@ -322,13 +368,14 @@ package us.xdev.mediaplayer.views
 
 			if(configObj.slideshow == true){
 				i = new icon_timer();
+				i.name = 'icon';
 				if(model.flagPlaying){
 					i.gotoAndStop('pause');
 				}else{
 					i.gotoAndStop('play');
 				}
-				mc = MovieClip(ui.addChild(i));
-				mc.name = 'toggle';
+				mc = Utils.createmc(ui,'toggle');
+				mc.addChild(i);
 				mc.buttonMode = true;
 				mc.x = 14;
 				mc.y = 14;
@@ -449,7 +496,7 @@ package us.xdev.mediaplayer.views
 
 		private function onFullScreen(e:FullScreenEvent):void
 		{
-			var mc:MovieClip = Utils.$(ref,'ui.fullscreen');
+			var mc:MovieClip = Utils.$(ref,'ui.fullscreen.icon');
 			if(ref.stage.displayState == "fullScreen"){
 				mc.gotoAndStop('fullscreen_off');
 			}else{
@@ -460,7 +507,7 @@ package us.xdev.mediaplayer.views
 		private function updateSlideShowState():void
 		{
 			var ui:MovieClip = Utils.$(ref,'ui');
-			var l:MovieClip = Utils.$(ui,'toggle');
+			var l:MovieClip = Utils.$(ui,'toggle.icon');
 			if(l){
 				var mc:MovieClip = Utils.$(l,'circ')
 
@@ -473,7 +520,28 @@ package us.xdev.mediaplayer.views
 				}
 			}
 		}
-
+		
+		private function handleSlideLoad(e:CustomEvent):void
+		{
+					
+			if(configObj.slideshow == true){
+				timestamp = getTimer();
+				
+				var mc:MovieClip = Utils.$(ref,'ui.toggle.icon.circ');
+				mc.graphics.clear();
+				mc.scaleY = -1.0;
+				
+				if(e.props.data.mode == 'media'){
+					stopSlideShow();
+				}
+				
+				if(model.flagPlaying){
+					startSlideShow();
+				}
+			}				
+			
+		}
+		
 		private function viewSlide():void
 		{
 			//clean up
@@ -488,6 +556,7 @@ package us.xdev.mediaplayer.views
 			var slide:MovieClip = Utils.createmc(ref,'slide',{alpha:0.0});
 			ref.setChildIndex(slide,0);	
 			slideView = new Slide(slide,model,controller);
+			slideView.addEventListener('onReveal',handleSlideLoad,false,0,true);
 			
 			//register for updates
 			add(slideView);	
@@ -504,7 +573,9 @@ package us.xdev.mediaplayer.views
 			if(model.slideMax > 1){
 				TextField(Utils.$(ui,'label.txt.displayText')).text = (model.slideIndex+1) + '/' + model.slideMax;
 			}
-
+			
+			clearTimeout(slideInterval);
+			
 
 		}
 
@@ -535,7 +606,7 @@ package us.xdev.mediaplayer.views
 			var y2:Number = r*Math.cos((progressOffset+dO)*Math.PI/180);
 
 			//stage
-			var mc:MovieClip = Utils.$(ref,'ui.toggle.circ');
+			var mc:MovieClip = Utils.$(ref,'ui.toggle.icon.circ');
 
 			mc.graphics.moveTo(0,0);
 			mc.graphics.beginFill(0x222222,0.75);//404040
