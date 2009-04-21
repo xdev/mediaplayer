@@ -56,6 +56,19 @@ package us.xdev.mediaplayer.views
 
 		override public function update(event:CustomEvent=null):void
 		{
+			
+			if(event.props.action == 'showUI'){
+				if(transportView){
+					TweenLite.to(transportView.getRef(),0.3,{alpha:1.0});
+				}
+			}
+			
+			if(event.props.action == 'hideUI'){
+				if(transportView){
+					TweenLite.to(transportView.getRef(),0.5,{alpha:0.0});
+				}
+			}
+			
 			if(event.props.action == 'render'){
 
 				//attach stuff yea
@@ -80,7 +93,7 @@ package us.xdev.mediaplayer.views
 			if(event.props.action == 'playVideo'){
 				v = event.props.video;
 				v.name = 'asset';
-				ref.addChild(v);
+				ref.addChildAt(v,0);
 			}
 			if(event.props.action == 'updateSize'){
 
@@ -91,7 +104,39 @@ package us.xdev.mediaplayer.views
 					//v.alpha = 1.0;
 					//Utils.$(ref,'asset').width = event.props.width;
 					//Utils.$(ref,'asset').height = event.props.height;
+					//if we're a video drop in cover?clip???
 					
+					/*
+					if(event.props.action == 'updateSize'){
+
+						//
+						if(model as VideoModel){
+							//create cover to register clicks!
+
+							//optionally
+								mc = Utils.createmc(ref,'cover',{buttonMode:true,mouseEnabled:true});
+								Utils.drawRect(mc,infoObj._width,infoObj._height,0xFF0000,0.0);
+								mc.addEventListener(MouseEvent.CLICK,mouseHandler);
+
+							var i:MovieClip = new icons();
+							i.gotoAndStop('video_overlay_play');
+							mc = MovieClip(ref.addChild(i));					
+							mc.alpha = 0.0;
+							mc.name = 'video_overlay_play';
+							mc.buttonMode = true;
+							mc.x = infoObj._width/2;
+							mc.y = infoObj._height/2;
+							//mc.addEventListener(MouseEvent.ROLL_OVER,mouseHandler);
+							//mc.addEventListener(MouseEvent.ROLL_OUT,mouseHandler);
+
+						}
+
+						_originalSize = {};
+						_originalSize._width = infoObj._width;
+						_originalSize._height = infoObj._height;				
+						updateSize(infoObj);
+					}
+					*/
 					
 					reveal();
 				}
@@ -102,8 +147,6 @@ package us.xdev.mediaplayer.views
 		public function render(data:Object):void
 		{
 			killMedia();
-
-
 
 			//build preload clip
 			var preloadClip:MovieClip = Utils.createmc(ref,'preload',{alpha:0.0});
@@ -129,8 +172,8 @@ package us.xdev.mediaplayer.views
 				}
 
 				transportController = new TransportController(mediaModel);
-				//transportView = new Transport(Utils.createmc(ref,'transport'),mediaModel,transportController);
-				//mediaModel.addEventListener('onUpdate',transportView.update);
+				transportView = new Transport(Utils.createmc(ref,'transport'),mediaModel,transportController);
+				mediaModel.addEventListener('onUpdate',transportView.update);
 				mediaModel.addEventListener('onUpdate',handleMediaUpdate);
 
 				mediaModel.load();
@@ -143,6 +186,21 @@ package us.xdev.mediaplayer.views
 
 				//stop slideshow
 				//controller.setPlaying(false);
+				
+				/*
+				//create still frame
+				if(options.still != undefined){
+
+					mc = Utils.createmc(ref,'still',{alpha:0.0});
+					var movie:LoadMovie = new LoadMovie(mc,options.still);
+					movie.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,revealStill);
+
+					controller.stop();
+
+					//sort depth
+					ref.setChildIndex(mc,ref.numChildren-3);
+				}
+				*/
 
 			}
 
@@ -257,7 +315,16 @@ package us.xdev.mediaplayer.views
 		add play icon from paused state...
 		draw huge hit area for play/pause video, etc
 		*/
-
+		
+		private function getVideoDimensions(mode:Boolean=true):Object
+		{
+			if(mode == false){
+				return {height:Utils.$(ref,'asset').height,width:Utils.$(ref,'asset').width};
+			}else{
+				return {height:_height,width:_width};
+			}
+		}
+		
 		public function scale():void
 		{
 			
@@ -275,7 +342,7 @@ package us.xdev.mediaplayer.views
 				
 				if(mediaModel != null)
 				{
-					//var tA = MP.getDimensions();
+					//var tA:Object = getVideoDimensions();
 					//imgX = tA.width;
 					//imgY = tA.height;
 
@@ -305,14 +372,23 @@ package us.xdev.mediaplayer.views
 				if(mediaModel != null){
 
 					//MP.setScale(scale*100);
-					//tA = MP.getDimensions();
-
-					//mc = Utils.$(MP._view.ref,'myvideo');
+					//tA = getVideoDimensions();
 					
+					//lock it down to 100?
+					if(scale > 1){
+						scale = 1;
+					}
+
 					slide.width = Math.ceil(_width*scale);
 					slide.height = Math.ceil(_height*scale);
 					slide.x = stageW/2 - slide.width/2;
 					slide.y = (stageH)/2 - slide.height/2;
+					
+					//update view
+					mc = transportView.getRef();
+					mc.y = stageH-mc.height;
+					mc.x = 0;
+					transportView.setWidth(stageW);
 					
 					/*
 					mc = Utils.$(MP._view.ref,'still');
@@ -322,7 +398,6 @@ package us.xdev.mediaplayer.views
 						mc.x = stage.stageWidth/2 - mc.width/2;
 						mc.y = (stage.stageHeight)/2 - mc.height/2;
 					}
-
 
 					//do overlay icon
 					mc = Utils.$(MP._view.ref,'video_overlay_play');
@@ -355,15 +430,15 @@ package us.xdev.mediaplayer.views
 		{
 			//Optionally use hardware acceleration
 			if(mediaModel){
-				var mc:MovieClip = Utils.$(ref,'asset');
+				var mc:* = Utils.$(ref,'asset');
 				var screenRectangle:Rectangle = new Rectangle();
 				screenRectangle.x = 0;
 				screenRectangle.y = 0;
 				screenRectangle.width=mc.width;
 				screenRectangle.height=mc.height;
-				stage.fullScreenSourceRect = screenRectangle;
+				ref.stage.fullScreenSourceRect = screenRectangle;
 			}else{
-				stage.fullScreenSourceRect = null;
+				ref.stage.fullScreenSourceRect = null;
 			}
 		}
 

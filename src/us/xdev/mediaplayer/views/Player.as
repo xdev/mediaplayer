@@ -113,25 +113,15 @@ package us.xdev.mediaplayer.views
 			uiInterval = setTimeout(hideUI,3000);
 			TweenLite.to(MovieClip(ref.getChildByName('ui')),0.3,{alpha:1.0});
 
-			/*
-			if(MP != null){
-				var mc = Utils.$(MP._view.ref,'controls');
-				TweenLite.to(MovieClip(mc),0.3,{alpha:1.0});
-			}
-			*/
+			slideView.update(new CustomEvent('onUpdate',false,false,{action:'showUI'}));			
 		}
 
 		private function hideUI():void
 		{
 			clearTimeout(uiInterval);
 			TweenLite.to(MovieClip(ref.getChildByName('ui')),0.5,{alpha:0.0});
-
-			/*
-			if(MP != null){
-				var mc = Utils.$(MP._view.ref,'controls');
-				TweenLite.to(MovieClip(mc),0.5,{alpha:0.0});
-			}
-			*/
+			
+			slideView.update(new CustomEvent('onUpdate',false,false,{action:'hideUI'}));			
 		}
 
 		private function toggleThumbs(fade:Boolean=true):void

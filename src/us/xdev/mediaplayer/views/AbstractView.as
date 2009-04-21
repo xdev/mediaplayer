@@ -20,6 +20,11 @@ package us.xdev.mediaplayer.views
 			childA = new Array();
 		}
 		
+		public function getRef():Object
+		{
+			return ref;
+		}
+		
 		public function add(view:AbstractView):void
 		{
 			childA.push(view);
