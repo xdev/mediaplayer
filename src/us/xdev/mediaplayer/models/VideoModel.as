@@ -23,6 +23,7 @@ package us.xdev.mediaplayer.models
 		private var _file:String;
 		private var _stream:NetStream;
 		private var _connection:NetConnection;
+		private var _video:Video;
 		private var _timer:Timer;
 		private var _metaData:Object;		
 		private var _playing:Boolean;
@@ -155,6 +156,7 @@ package us.xdev.mediaplayer.models
 			if(obj.width && _metaData.width == undefined){
 				var tObj:Object = {};
 				tObj.action = 'updateSize';
+				tObj.video = _video;
 				tObj.width =  obj.width;
 				tObj.height = obj.height;								
 				update(tObj);
@@ -216,16 +218,15 @@ package us.xdev.mediaplayer.models
 			clientObj.onCuePoint = cuePointHandler;
 			_stream.client = clientObj;
 			_stream.play(_file);
-			var video:Video = new Video();
-			video.attachNetStream(_stream);
-			video.name = 'myvideo';
+			_video = new Video();
+			_video.attachNetStream(_stream);			
 			
 			_playing = true;	
 					
 			var tObj:Object = {};
 			tObj.action = 'playVideo';
 			tObj.stream = _stream;
-			tObj.video = video;		
+			tObj.video = _video;		
 			tObj.playing = _playing;
 			update(tObj);
 			
