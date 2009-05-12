@@ -58,14 +58,16 @@ package us.xdev.mediaplayer.views
 		private var configObj:Object;
 		private var flagThumbs:Boolean;
 		private var slideView:Slide;
-		private var thumbView:ThumbGrid;
+		private var thumbView:ThumbStrip;//ThumbGrid;
 		private var thumbController:ThumbController;
+		//explore variables
 		private var buttonSize:int = 54;
 		private var buttonPadding:int = 12;
 		private var button_tf:TextFormat;
 		private var columnData:Object;
 		private var screenView:AbstractView;
 		private var oldScreen:String;
+		private var thumbInterval:Number;
 
 		public function Player(ref:Object,model:*,controller:*=null)
 		{
@@ -90,7 +92,20 @@ package us.xdev.mediaplayer.views
 		private function buildThumbs():void
 		{
 			thumbController = new ThumbController(model);
-			thumbView = new ThumbGrid(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:140,thumbHeight:140,padding:10,marginX:0,marginY:0});
+			thumbView = new ThumbStrip(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:50,thumbHeight:50,padding:10,marginX:0,marginY:0});
+			clearInterval(thumbInterval);
+			//initial delay yo
+			//thumbInterval = setInterval(hideThumbs,3500);
+			flagThumbs = true;
+			showThumbs(false);
+			
+		}
+		
+		private function hideThumbs():void
+		{
+			clearInterval(thumbInterval);
+			flagThumbs = false;
+			showThumbs(true);
 		}
 
 		override public function update(event:CustomEvent=null):void
@@ -121,8 +136,8 @@ package us.xdev.mediaplayer.views
 		{
 			model.setPlaying(false);
 			
-			buildThumbs();
 			buildUI();
+			buildThumbs();
 			
 			controller.advanceSlide(1);	
 
@@ -164,9 +179,9 @@ package us.xdev.mediaplayer.views
 		
 		private function showThumbs(fade:Boolean=true):void
 		{
-			return;
+			//return;
 			var ui:MovieClip = Utils.$(ref,'ui');
-			var mc:MovieClip = Utils.$(ui,'thumbnail.icon');
+			//var mc:MovieClip = Utils.$(ui,'thumbnail.icon');
 
 			var c:MovieClip = Utils.$(ref,'thumbs');
 			var slide:MovieClip = Utils.$(ref,'slide');
@@ -177,13 +192,13 @@ package us.xdev.mediaplayer.views
 				ref.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener,false);
 
 				//swap depth with ui
-				ref.setChildIndex(c,ref.numChildren - 2);
+				//ref.setChildIndex(c,ref.numChildren - 2);
 				
 				
 				c.alpha = 0.0;
 				c.visible = true;
-								
-				TweenLite.to(c,0.5,{alpha:1.0});
+				//ref.stage.stageHeight - 80
+				TweenLite.to(c,0.3,{alpha:1.0,y:0});
 
 				//deactivate majority of ui controls
 				/*
@@ -201,7 +216,7 @@ package us.xdev.mediaplayer.views
 				c.alpha = 0.0;
 
 				//toggle icon
-				mc.gotoAndStop('thumbnail_off');
+				//mc.gotoAndStop('thumbnail_off');
 
 				//kill slideshow
 				model.setPlaying(false);
@@ -218,15 +233,16 @@ package us.xdev.mediaplayer.views
 				if(fade == true){
 					TweenLite.to(MovieClip(slide),0.5,{alpha:1.0});
 				}
-
-				c.visible = false;
+				
+				TweenLite.to(c,0.3,{alpha:0.0,y:ref.stage.stageHeight + 10});
+				//c.visible = false;
 
 				if(model.slideMax > 1){
 					ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener,false,0,true);
 				}
 
 				//toggle icon
-				mc.gotoAndStop('thumbnail');
+				//mc.gotoAndStop('thumbnail');
 
 				//reactivate stuffs
 
@@ -426,6 +442,9 @@ package us.xdev.mediaplayer.views
 					closeScreen();
 					toggleSlideShow();
 				}
+				if(mc.name == 'thumbs'){
+					toggleThumbs();
+				}
 			}
 		}
 		
@@ -531,7 +550,8 @@ package us.xdev.mediaplayer.views
 				{id:'description',label:'Description',icon:'icon_info'},
 				{id:'screen',label:'Full screen',icon:'icon_fullscreen_on'},
 				{id:'dim',label:'Dim Lights',icon:'icon_lights_off'},
-				{id:'slideshow',label:'Slideshow',icon:'icon_slideshow_on'}];
+				{id:'slideshow',label:'Slideshow',icon:'icon_slideshow_on'},
+				{id:'thumbs',label:'Thumbnails',icon:'icon_slideshow_off'}];
 			buildColumn(tA,'right');
 			
 			if(configObj.fullscreen == true){
@@ -691,6 +711,15 @@ package us.xdev.mediaplayer.views
 				mc.y = ref.stage.stageHeight/2 - 8;
 			}
 			*/
+			
+			mc = Utils.$(ref,'thumbs');
+			if(mc){
+				if(flagThumbs){
+					mc.y = 0;//ref.stage.stageHeight - 80;
+				}else{
+					mc.y = ref.stage.stageHeight + 10;
+				}
+			}
 			
 			//columnData
 			balanceColumn('left');
