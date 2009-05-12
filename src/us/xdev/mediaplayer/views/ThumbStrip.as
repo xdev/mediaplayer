@@ -67,11 +67,11 @@ package us.xdev.mediaplayer.views
 			//ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
 
 			//build back block
-			var mc:MovieClip = Utils.createmc(ref,'block',{alpha:1});
-			Utils.drawRect(mc,ref.stage.stageWidth,ref.stage.stageHeight,0x000000,0.0);
+			//var mc:MovieClip = Utils.createmc(ref,'block',{alpha:1});
+			//Utils.drawRect(mc,ref.stage.stageWidth,ref.stage.stageHeight,0x000000,0.0);
 
 			//
-			mc.mouseEnabled = true;
+			//mc.mouseEnabled = true;
 			//mc.addEventListener(MouseEvent.CLICK,handleMouse,false);
 
 			//center oneself
@@ -115,7 +115,7 @@ package us.xdev.mediaplayer.views
 			//remove listener
 			ref.stage.removeEventListener(Event.RESIZE,onResize,false);
 			//ref.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener);
-			Utils.$(ref,'block').removeEventListener(MouseEvent.CLICK,handleMouse,false);
+			//Utils.$(ref,'block').removeEventListener(MouseEvent.CLICK,handleMouse,false);
 		}
 
 		private function keyListener(e:KeyboardEvent):void
@@ -214,6 +214,7 @@ package us.xdev.mediaplayer.views
 			icon = new mediaplayer_icons();
 			icon.gotoAndStop('nav_arrow');
 			mc = Utils.createmc(ref,'nav_prev');
+			mc.visible = false;
 			mc.addChild(icon);
 			mc.dir = -1;
 			mc.rotation = 90;
@@ -227,6 +228,7 @@ package us.xdev.mediaplayer.views
 			icon = new mediaplayer_icons();
 			icon.gotoAndStop('nav_arrow');
 			mc = Utils.createmc(ref,'nav_next');
+			mc.visible = false;
 			mc.addChild(icon);
 			mc.dir = 1;
 			mc.rotation = 270;
@@ -336,9 +338,9 @@ package us.xdev.mediaplayer.views
 		private function onResize(e:Event=null):void
 		{
 			//redraw the base, or something
-			var mc:MovieClip = Utils.$(ref,'block');
-			mc.width = ref.stage.stageWidth;
-			mc.height = ref.stage.stageHeight;
+			//var mc:MovieClip = Utils.$(ref,'block');
+			//mc.width = ref.stage.stageWidth;
+			//mc.height = ref.stage.stageHeight;
 
 			layoutGrid();
 

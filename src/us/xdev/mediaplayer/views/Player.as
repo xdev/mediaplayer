@@ -187,9 +187,9 @@ package us.xdev.mediaplayer.views
 			var slide:MovieClip = Utils.$(ref,'slide');
 
 			if(flagThumbs){
-				TweenLite.to(MovieClip(slide),0.05,{alpha:0.0});
+				//TweenLite.to(MovieClip(slide),0.05,{alpha:0.0});
 
-				ref.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener,false);
+				//ref.stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyListener,false);
 
 				//swap depth with ui
 				//ref.setChildIndex(c,ref.numChildren - 2);
@@ -198,7 +198,7 @@ package us.xdev.mediaplayer.views
 				c.alpha = 0.0;
 				c.visible = true;
 				//ref.stage.stageHeight - 80
-				TweenLite.to(c,0.3,{alpha:1.0,y:0});
+				TweenLite.to(c,0.3,{alpha:1.0,y:(ref.stage.stageHeight/2) - 60});
 
 				//deactivate majority of ui controls
 				/*
@@ -208,12 +208,12 @@ package us.xdev.mediaplayer.views
 				*/
 
 				c = Utils.$(ui,'nav_prev');
-				c.mouseEnabled = false;
-				c.alpha = 0.0;
+				//c.mouseEnabled = false;
+				//c.alpha = 0.0;
 
 				c = Utils.$(ui,'nav_next');
-				c.mouseEnabled = false;
-				c.alpha = 0.0;
+				//c.mouseEnabled = false;
+				//c.alpha = 0.0;
 
 				//toggle icon
 				//mc.gotoAndStop('thumbnail_off');
@@ -231,7 +231,7 @@ package us.xdev.mediaplayer.views
 
 			}else{
 				if(fade == true){
-					TweenLite.to(MovieClip(slide),0.5,{alpha:1.0});
+					//TweenLite.to(MovieClip(slide),0.5,{alpha:1.0});
 				}
 				
 				TweenLite.to(c,0.3,{alpha:0.0,y:ref.stage.stageHeight + 10});
@@ -251,12 +251,12 @@ package us.xdev.mediaplayer.views
 				//c.alpha = 1.0;
 
 				c = Utils.$(ui,'nav_prev');
-				c.mouseEnabled = true;
-				c.alpha = 1.0;
+				//c.mouseEnabled = true;
+				//c.alpha = 1.0;
 
 				c = Utils.$(ui,'nav_next');
-				c.mouseEnabled = true;
-				c.alpha = 1.0;
+				//c.mouseEnabled = true;
+				//c.alpha = 1.0;
 				
 				//tell slide to resume
 				if(slideView){
@@ -372,7 +372,7 @@ package us.xdev.mediaplayer.views
 		private function buildButton(mc:MovieClip,label:String,icon:String):void
 		{
 			//frame
-			Utils.drawRoundRect(Utils.createmc(mc,'frame',{x:0.5,y:0.5,alpha:0.4}),buttonSize,buttonSize,0x000000,1.0,10,[1.0,0xFFFFFF,1.0]);
+			Utils.drawRoundRect(Utils.createmc(mc,'frame',{x:0.5,y:0.5,alpha:0.4}),buttonSize-0.5,buttonSize-0.5,0x000000,1.0,10,[1.0,0xFFFFFF,1.0]);
 			
 			//label
 			Utils.makeTextfield(Utils.createmc(mc,'label'),label,button_tf,{x:0,y:buttonSize-15,width:buttonSize});
@@ -715,7 +715,7 @@ package us.xdev.mediaplayer.views
 			mc = Utils.$(ref,'thumbs');
 			if(mc){
 				if(flagThumbs){
-					mc.y = 0;//ref.stage.stageHeight - 80;
+					mc.y = (ref.stage.stageHeight/2) - 60;
 				}else{
 					mc.y = ref.stage.stageHeight + 10;
 				}
