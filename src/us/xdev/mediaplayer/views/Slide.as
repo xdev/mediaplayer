@@ -371,6 +371,14 @@ package us.xdev.mediaplayer.views
 					mc = transportView.getRef();
 					mc.y = stageH-mc.height;
 					mc.x = stageW/2-320;//0;
+					//depending on view
+					if(ref.stage.displayState == "fullScreen"){
+						mc.y = stageH-(mc.height*3);
+					}else{
+						
+					}
+					
+				
 					
 					transportView.setWidth(640);//stageW);
 					

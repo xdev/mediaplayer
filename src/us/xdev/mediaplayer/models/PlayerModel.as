@@ -217,7 +217,7 @@ package us.xdev.mediaplayer.models
 			slideA = [];
 			for each(var node:XML in snip..slide){
 
-				var file:String = node.file.toString();
+				var file:String = String(node.file);
 				var ext:String = file.substring(file.lastIndexOf('.')+1,file.length).toLowerCase();
 
 				var tObj:Object = {};
@@ -225,20 +225,28 @@ package us.xdev.mediaplayer.models
 				tObj.id = i;
 
 				if(node.thumb != undefined){
-					tObj.thumb = node.thumb.toString();
+					tObj.thumb = String(node.thumb);
 				}
 
 				if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
 					tObj.mode = 'media';
 					if(node.still != undefined){
-						tObj.still = node.still.toString();
+						tObj.still = String(node.still);
 					}
 				}
 
 				if(ext == 'jpg' || ext == 'jpeg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
 					tObj.mode = 'image';
 				}
-
+				
+				if(node.title != undefined){
+					tObj.title = String(node.title);
+				}
+				
+				if(node.description != undefined){
+					tObj.description = String(node.description);
+				}								
+				
 				if(tObj.mode){
 					slideA.push(tObj);
 				}

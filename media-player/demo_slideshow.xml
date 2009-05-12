@@ -25,9 +25,11 @@ Tag names are case and name sensitive. For best results, always use absolute pat
 		<slide>
 			<file>http://media.local/demo_img1.jpg</file>
 			<thumb>http://media.local/demo_thumb1.jpg</thumb>
+			<title>Tibet (Spirituality)</title>
+			<description><![CDATA[Journey with the Explore team to the spiritual city of Lhasa, the capital of Tibet. See Potala Palace, the traditional winter home of the Dalai Lama and a pilgrimage destination for thousands of Buddhists. Listen to the sounds of monks practicing the art of debate at the Sera Monastery, and witness the many ways in which new technologies are changing the Tibetan cultural landscape.]]></description>
 		</slide>		
 		<slide>
-			<file>http://media.local/demo_video.flv</file>
+			<file>http://cornerstonepodcast.org/video_music/Christ is Risen.m4v</file>
 			<thumb>http://media.local/demo_video.jpg</thumb>
 		</slide>			
 		<slide>

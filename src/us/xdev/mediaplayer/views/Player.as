@@ -1,7 +1,5 @@
 package us.xdev.mediaplayer.views
 {
-
-	import com.a12.modules.mediaplayback.*;
 	import com.a12.util.LoadMovie;
 	import com.a12.util.Utils;
 	import com.a12.util.CustomEvent;
@@ -16,6 +14,7 @@ package us.xdev.mediaplayer.views
 	import flash.events.ProgressEvent;
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.DropShadowFilter;
+	import flash.filters.GlowFilter;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.utils.clearInterval;
@@ -27,6 +26,9 @@ package us.xdev.mediaplayer.views
 	import gs.TweenLite;
 	
 	import us.xdev.mediaplayer.controllers.ThumbController;
+	import us.xdev.mediaplayer.views.Related;
+	import us.xdev.mediaplayer.views.Share;
+	import us.xdev.mediaplayer.views.Description;
 
 	public class Player extends AbstractView
 	{
@@ -39,10 +41,10 @@ package us.xdev.mediaplayer.views
 		[Embed(source='library.swf', symbol='explore_icons')]
 		private var explore_icons:Class;
 		
-		[Embed(source='library.swf', symbol='AkzidenzGrotesk')]
+		[Embed(source='library.swf', symbol='AGSchoolbookRegularA')]
 		private var font1:Class;
 		
-		[Embed(source='library.swf', symbol='AGSchoolbookRegularA')]
+		[Embed(source='library.swf', symbol='AGSchoolbookMediumA')]
 		private var font2:Class;
 		
 		[Embed(source='library.swf', symbol='standard07_55')]
@@ -62,6 +64,8 @@ package us.xdev.mediaplayer.views
 		private var buttonPadding:int = 12;
 		private var button_tf:TextFormat;
 		private var columnData:Object;
+		private var screenView:AbstractView;
+		private var oldScreen:String;
 
 		public function Player(ref:Object,model:*,controller:*=null)
 		{
@@ -103,6 +107,7 @@ package us.xdev.mediaplayer.views
 				flagThumbs = false;
 				//showThumbs();
 				//
+				closeScreen();
 				viewSlide();
 			}
 		}
@@ -114,7 +119,7 @@ package us.xdev.mediaplayer.views
 
 		public function init():void
 		{
-			model.setPlaying(true);
+			model.setPlaying(false);
 			
 			buildThumbs();
 			buildUI();
@@ -159,6 +164,7 @@ package us.xdev.mediaplayer.views
 		
 		private function showThumbs(fade:Boolean=true):void
 		{
+			return;
 			var ui:MovieClip = Utils.$(ref,'ui');
 			var mc:MovieClip = Utils.$(ui,'thumbnail.icon');
 
@@ -253,13 +259,18 @@ package us.xdev.mediaplayer.views
 		{
 			showUI();
 			model.setPlaying(!model.flagPlaying);
+			var mc:MovieClip = Utils.$(ref,'ui.slideshow');
 			if(model.flagPlaying){
 				if(flagThumbs){
 					toggleThumbs();
 				}
 				controller.advanceSlide(1);
+				Utils.$(mc,'icon').gotoAndStop('icon_slideshow_off');
+				Utils.$(mc,'label.displayText').text = 'Stop';
 			}else{
 				clearInterval(progressInterval);
+				Utils.$(mc,'icon').gotoAndStop('icon_slideshow_on');
+				Utils.$(mc,'label.displayText').text = 'Slideshow';
 			}
 			clearTimeout(slideInterval);
 			updateSlideShowState();
@@ -306,10 +317,23 @@ package us.xdev.mediaplayer.views
 			var mc:MovieClip = MovieClip(e.currentTarget);
 			if(mc.name == 'nav_prev' || mc.name == 'nav_next'){
 				if(e.type == MouseEvent.MOUSE_OVER){
-					TweenLite.to(MovieClip(mc),0.2,{scaleX:1.2,scaleY:1.2});
+					TweenLite.to(MovieClip(mc),0.1,{alpha:1.0});
+					mc.filters = [
+					new GlowFilter
+					(
+						0xFFFFFF,
+						0.3,
+						4.0,
+						4.0,
+						2,
+						BitmapFilterQuality.HIGH,
+		                false,
+		                false)
+					];
 				}
 				if(e.type == MouseEvent.MOUSE_OUT){
-					TweenLite.to(MovieClip(mc),0.5,{scaleX:1.0,scaleY:1.0});
+					TweenLite.to(MovieClip(mc),0.3,{alpha:0.4});
+					mc.filters = [];
 				}
 				if(e.type == MouseEvent.CLICK){
 					controller.advanceSlide(mc.dir);
@@ -361,22 +385,91 @@ package us.xdev.mediaplayer.views
 			if(e.type == MouseEvent.MOUSE_OVER){
 				TweenLite.to(Utils.$(mc,'frame'),0.1,{alpha:0.9});
 				TweenLite.to(Utils.$(mc,'icon'),0.1,{alpha:1.0});
+				Utils.$(mc,'frame').filters = [
+				new GlowFilter
+				(
+					0xFFFFFF,
+					0.3,
+					4.0,
+					4.0,
+					2,
+					BitmapFilterQuality.HIGH,
+	                false,
+	                false)
+				];
+				
 			}
 			if(e.type == MouseEvent.MOUSE_OUT){
 				TweenLite.to(Utils.$(mc,'frame'),0.3,{alpha:0.4});
 				TweenLite.to(Utils.$(mc,'icon'),0.3,{alpha:0.4});
+				
+				Utils.$(mc,'frame').filters = [];
 			}
 			if(e.type == MouseEvent.CLICK){
 				//check into specific buttons
 				if(mc.name == 'screen'){
 					toggleFullScreen();
 				}
+				if(mc.name == 'share'){
+					viewScreen('share');
+				}
+				if(mc.name == 'playlist'){
+					viewScreen('playlist');
+				}
+				if(mc.name == 'related'){
+					viewScreen('related');
+				}
+				if(mc.name == 'description'){
+					viewScreen('description');
+				}
+				if(mc.name == 'slideshow'){
+					closeScreen();
+					toggleSlideShow();
+				}
+			}
+		}
+		
+		private function viewScreen(name:String=''):void
+		{
+			closeScreen(false);
+			
+			if(oldScreen && oldScreen == name){
+				oldScreen = '';
+				return;
+			}
+			
+			var mc:MovieClip = Utils.$(ref,'_screen');
+			if(name == 'playlist' || name == 'related'){
+				screenView = new Related(mc,model,controller);
+			}
+			if(name == 'share'){
+				screenView = new Share(mc,model,controller);
+			}
+			if(name == 'description'){
+				screenView = new Description(mc,model,controller,model.slideA[model.slideIndex].title,model.slideA[model.slideIndex].description);
+			}
+			oldScreen = name;
+		}
+		
+		public function closeScreen(reset:Boolean=true):void
+		{
+			if(screenView != null){
+				//screenView.onKill();
+				screenView = null;
+			}
+			var w:int = 640;
+			var h:int = 360;
+			var mc:MovieClip = Utils.createmc(ref,'_screen',{x:ref.stage.stageWidth/2 - w/2,y:ref.stage.stageHeight/2 - h/2});
+			
+			if(reset){
+				oldScreen = '';
 			}
 		}
 		
 		private function balanceColumn(side:String):void
 		{
 			var tA:Array = columnData[side];
+			if(tA == null){ return; };
 			var yPos:int = ref.stage.stageHeight/2 - ((tA.length * buttonSize) + ((tA.length-1)*buttonPadding))/2;
 			for each(var item:Object in tA){
 				var mc:MovieClip = Utils.$(ref,'ui.'+item.id);
@@ -437,7 +530,8 @@ package us.xdev.mediaplayer.views
 			tA = [
 				{id:'description',label:'Description',icon:'icon_info'},
 				{id:'screen',label:'Full screen',icon:'icon_fullscreen_on'},
-				{id:'dim',label:'Dim Lights',icon:'icon_lights_off'}];
+				{id:'dim',label:'Dim Lights',icon:'icon_lights_off'},
+				{id:'slideshow',label:'Slideshow',icon:'icon_slideshow_on'}];
 			buildColumn(tA,'right');
 			
 			if(configObj.fullscreen == true){
@@ -547,7 +641,7 @@ package us.xdev.mediaplayer.views
 				mc.dir = -1;
 				mc.x = 25;
 				mc.y = 100;
-				mc.alpha = 0.75;
+				mc.alpha = 0.4;
 				mc.buttonMode = true;
 				mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse,false,0,true);
@@ -561,7 +655,7 @@ package us.xdev.mediaplayer.views
 				mc.rotation = 180;
 				mc.x = 585;
 				mc.y = 100;
-				mc.alpha = 0.75;
+				mc.alpha = 0.4;
 				mc.buttonMode = true;
 				mc.addEventListener(MouseEvent.MOUSE_OVER,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse,false,0,true);
@@ -613,6 +707,14 @@ package us.xdev.mediaplayer.views
 
 			if(slideView != null){
 				slideView.scale();
+			}
+			
+			if(screenView != null){
+				var w:int = 640;
+				var h:int = 360;
+				mc = MovieClip(screenView.getRef());
+				mc.x = ref.stage.stageWidth/2 - w/2;
+				mc.y = ref.stage.stageHeight/2 - h/2;
 			}
 		}
 

@@ -49,8 +49,8 @@ package us.xdev.mediaplayer.views
 			
 			this.options = options;
 						
-			_timeMode = true;
-			_soundLevelA = [0.0,0.3,0.6,1.0];
+			_timeMode = false;
+			_soundLevelA = [0.0,0.2,0.6,1.0];
 			_soundLevel = 3;
 			_scrubberWidth = 8;
 			
@@ -161,7 +161,7 @@ package us.xdev.mediaplayer.views
 					TextField(Utils.$(ref,'label.displayText')).text = txt;
 				}
 					
-				var factor:Number = (_width-95) / 100;
+				var factor:Number = (_width-(50+64)) / 100;
 			
 				var mc:MovieClip;
 				
@@ -169,7 +169,7 @@ package us.xdev.mediaplayer.views
 				if(infoObj.time_percent != undefined){
 					mc = MovieClip(Utils.$(ref,'timeline.scrubber'));
 					if(mc.dragging == false){
-						mc.x = infoObj.time_percent * ((_width-95)-_scrubberWidth) / 100;
+						mc.x = infoObj.time_percent * ((_width-(100+64))-(_scrubberWidth/2)) / 100;
 					}
 				}
 				
@@ -205,7 +205,8 @@ package us.xdev.mediaplayer.views
 				if(infoObj.loaded_percent >= 0){
 					mc = MovieClip(Utils.$(ref,'timeline.strip_load'));
 					mc.graphics.clear();
-					//Utils.drawRoundRect(mc,infoObj.loaded_percent*_width-95,0x808080,1.0,5);
+					mc.percent = infoObj.loaded_percent;
+					Utils.drawRoundRect(mc,(infoObj.loaded_percent/100)*(_width-(95+64)),11,0x808080,1.0,10);
 					//mc.scaleX = infoObj.loaded_percent / 100;
 				}
 			
@@ -234,13 +235,14 @@ package us.xdev.mediaplayer.views
 		
 		private function trackScrubber(e:Event):void
 		{
-			controller.findSeek(Utils.$(ref,'timeline.scrubber').x / (_width-95));
+			controller.findSeek(Utils.$(ref,'timeline.scrubber').x / (_width-(100+64)-(_scrubberWidth/2)));
 		}
 		
 		// Consider moving this into the Controller
 		protected function mouseHandler(e:MouseEvent):void
 		{
 			var mc:* = e.currentTarget;
+			trace(mc.name);
 			
 			if(e.type == MouseEvent.ROLL_OVER){
 				
@@ -258,9 +260,10 @@ package us.xdev.mediaplayer.views
 				if(mc.name == 'label'){
 					toggleTime();
 				}
-				if(mc.name == 'strip_back'){
+				if(mc.name == 'strip_hit'){
+					
 					var playing:Boolean = model.getPlaying();					
-					controller.findSeek(mc.mouseX / (_width-95));
+					controller.findSeek(mc.mouseX / (_width-(100+64)));
 					if(!playing){
 						controller.pause();
 					}
@@ -279,8 +282,8 @@ package us.xdev.mediaplayer.views
 				var rect:Rectangle = new Rectangle();
 				rect.top = 5.5;
 				rect.bottom = 5.5;
-				rect.left = 0;
-				rect.right = _width-(50+64)-_scrubberWidth;
+				rect.left = _scrubberWidth/2 + 1.5;
+				rect.right = _width-(100+64)-(_scrubberWidth/2);
 				mc.startDrag(false,rect);
 				mc.dragging = true;
 				
@@ -299,7 +302,7 @@ package us.xdev.mediaplayer.views
 				
 				mc.dragging = false;
 				mc.stopDrag();
-				controller.findSeek(mc.x / (_width-95));
+				controller.findSeek(mc.x / (_width-(100+64)-(_scrubberWidth/2)));
 				
 				if(mc.playing == true){			
 					controller.play();
@@ -342,10 +345,11 @@ package us.xdev.mediaplayer.views
 			
 				mc = MovieClip(Utils.$(t,"strip_hit"));
 				mc.graphics.clear();
-				Utils.drawRect(mc,_width-164,12,0xFF0000,0.0);
+				Utils.drawRect(mc,_width-(50+64),12,0xFF0000,0.0);
 			
 				mc = MovieClip(Utils.$(t,"strip_load"));
 				mc.graphics.clear();
+				Utils.drawRoundRect(mc,(mc.percent/100)*(_width-(95+64)),11,0x808080,1.0,10);
 				//Utils.drawRect(mc,_width-164,8,0xFFFFFF,1.0);
 			
 				mc = MovieClip(Utils.$(t,"strip_progress"));
@@ -401,7 +405,7 @@ package us.xdev.mediaplayer.views
 			var t:MovieClip = Utils.createmc(ref,"timeline",{x:50,y:14});
 			mc = Utils.createmc(t,"strip_back",{x:0.5,y:0.5,mouseEnabled:true});
 			mc.buttonMode = true;
-			Utils.drawRect(mc,_width-100,10,0x000000,0.0,[1.0,0xFFFFFF,1.0]);
+			//Utils.drawRect(mc,_width-100,10,0x000000,0.0,[1.0,0xFFFFFF,1.0]);
 			
 			i = new explore_icons();
 			i.gotoAndStop('timeback');
@@ -410,13 +414,12 @@ package us.xdev.mediaplayer.views
 			mc.x = _width - (64+50) + 0.5;
 			mc.y = 14.5;
 			
-			var h:MovieClip = Utils.createmc(t,"strip_hit");
-			Utils.drawRect(h,_width-164,12,0xFF0000,0.0);
+			var h:MovieClip = Utils.createmc(t,"strip_hit",{mouseEnabled:true});
+			Utils.drawRect(h,_width-(50+64),12,0xFF0000,0.0);
+			h.addEventListener(MouseEvent.CLICK,mouseHandler);
 			
-			mc.hitArea = h;
-			mc.addEventListener(MouseEvent.CLICK,mouseHandler);
-			
-			h = Utils.createmc(t,"strip_load",{y:0});
+			h = Utils.createmc(t,"strip_load",{x:0.5,y:0.5});
+			t.setChildIndex(h,0);
 			//Utils.drawRect(h,_width-95,8,0xFFFFFF,1.0);
 			
 			//not used in this design
@@ -424,12 +427,12 @@ package us.xdev.mediaplayer.views
 			Utils.drawRect(h,_width-95,8,0x808080,1.0);		
 			
 			//scrubber
-			i = Utils.createmc(t,"scrubber",{y:5.5,dragging:false});
-			Utils.drawCircle(i, 0xFFFFFF, 1.0, _scrubberWidth/2);
-			//Utils.drawRect(i,_scrubberWidth,_scrubberWidth,0x000000,1.0);
+			i = Utils.createmc(t,"scrubber",{y:5.5,dragging:false,mouseEnabled:true});
 			i.buttonMode = true;
-			i.mouseEnabled = true;
 			i.addEventListener(MouseEvent.MOUSE_DOWN,mouseHandler);
+			Utils.drawCircle(Utils.createmc(i,'icon'), 0xFFFFFF, 1.0, _scrubberWidth/2);
+			Utils.drawCircle(Utils.createmc(i,'hit',{}), 0xFFFFFF, 0.0, _scrubberWidth);
+			
 			
 			//_timer = new Timer(20);
 			//_timer.addEventListener(TimerEvent.TIMER, trackScrubber);			
@@ -445,7 +448,7 @@ package us.xdev.mediaplayer.views
 			//	tf = options.tf;
 			//}
 		
-			var l:MovieClip = Utils.createmc(ref,"label",{x:_width-100,y:14,mouseEnabled:true});
+			var l:MovieClip = Utils.createmc(ref,"label",{x:_width-100,y:12,mouseEnabled:true});
 			Utils.makeTextfield(l,"00:00:00",tf,{width:50});//autoSize:TextFieldAutoSize.RIGHT
 			l.addEventListener(MouseEvent.CLICK,mouseHandler);
 			l.buttonMode = true;

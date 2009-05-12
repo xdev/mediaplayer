@@ -87,12 +87,14 @@ package us.xdev.mediaplayer.models
 			
 		public function seekStream(time:Number):void
 		{
+			//trace('seekStream -time= ' + time);
 			_stream.seek(time);
 			_playing = true;
 		}
 	
 		public function seekStreamPercent(percent:Number):void
 		{
+			//trace('seek' + percent + '--' + _metaData.duration);
 			seekStream(percent * _metaData.duration);
 		}
 		

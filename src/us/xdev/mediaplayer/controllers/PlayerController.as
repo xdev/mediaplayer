@@ -33,6 +33,11 @@ package us.xdev.mediaplayer.controllers
 				sendExternal('stopMedia');
 			}
 		}
+		
+		public function closeScreen():void
+		{
+			view.closeScreen();
+		}
 
 		public function sendExternal(e:String,args:Array=null):void
 		{

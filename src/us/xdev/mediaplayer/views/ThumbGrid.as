@@ -1,7 +1,6 @@
 package us.xdev.mediaplayer.views
 {
 	//Flash Classes
-	import com.a12.modules.mediaplayback.*;
 	import com.a12.util.CustomEvent;
 	import com.a12.util.LoadMovie;
 	import com.a12.util.Utils;
