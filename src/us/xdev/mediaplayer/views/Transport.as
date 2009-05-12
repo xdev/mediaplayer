@@ -349,7 +349,9 @@ package us.xdev.mediaplayer.views
 			
 				mc = MovieClip(Utils.$(t,"strip_load"));
 				mc.graphics.clear();
-				Utils.drawRoundRect(mc,(mc.percent/100)*(_width-(95+64)),11,0x808080,1.0,10);
+				if(mc.percent){
+					Utils.drawRoundRect(mc,(mc.percent/100)*(_width-(95+64)),11,0x808080,1.0,10);
+				}
 				//Utils.drawRect(mc,_width-164,8,0xFFFFFF,1.0);
 			
 				mc = MovieClip(Utils.$(t,"strip_progress"));

@@ -323,25 +323,42 @@ package us.xdev.mediaplayer.views
 				var m:int = 100;
 				
 				
+				
+				//m = undefined;
+
 				if(mediaModel != null)
 				{
-					//var tA:Object = getVideoDimensions();
-					//imgX = tA.width;
-					//imgY = tA.height;
+					//if(ref.stage.displayState == "fullScreen"){
+						var tA:Object = getVideoDimensions(true);
+						imgX = tA.width;
+						imgY = tA.height;
+					//}	
+					
 
 					if(configObj.scalevideo){
 						m = undefined;
 					}
+				}else{
+					if(ref.stage.displayState == "fullScreen"){
+						imgX = stageW;
+						imgY = stageH;
+						m = undefined;
+					}
 				}
-								
+				
+				
+				
+				/*			
 				if(configObj.scaleimage){
 					m = undefined;
 				}
-				
+				*/
 				//m = undefined;
 
 				var scale:Number = Utils.getScale(imgX,imgY,stageW-(configObj.marginX*2),stageH-(configObj.marginY*2),'scale',m).x;
 				scale = scale/100;
+				
+				
 				
 				//if we're a image
 				if(mediaModel == null){
@@ -358,8 +375,10 @@ package us.xdev.mediaplayer.views
 					//tA = getVideoDimensions();
 					
 					//lock it down to 100?
-					if(scale > 1){
-						scale = 1;
+					if(ref.stage.displayState != "fullScreen"){
+						//if(scale > 1){
+						//	scale = 1;
+						//}
 					}
 					
 					//

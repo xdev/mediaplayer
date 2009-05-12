@@ -93,11 +93,10 @@ package us.xdev.mediaplayer.views
 		{
 			thumbController = new ThumbController(model);
 			thumbView = new ThumbStrip(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:50,thumbHeight:50,padding:10,marginX:0,marginY:0});
-			clearInterval(thumbInterval);
+			//clearInterval(thumbInterval);
 			//initial delay yo
-			//thumbInterval = setInterval(hideThumbs,3500);
-			flagThumbs = true;
-			showThumbs(false);
+			//thumbInterval = setInterval(hideThumbs,2000);
+			
 			
 		}
 		
@@ -166,19 +165,33 @@ package us.xdev.mediaplayer.views
 			uiInterval = setTimeout(hideUI,3000);
 			TweenLite.to(MovieClip(ref.getChildByName('ui')),0.3,{alpha:1.0});
 
-			slideView.update(new CustomEvent('onUpdate',false,false,{action:'showUI'}));			
+			slideView.update(new CustomEvent('onUpdate',false,false,{action:'showUI'}));
+			
+			if(ref.stage.displayState == "fullScreen" && model.slideMax > 1){
+				if(flagThumbs == false){
+					flagThumbs = true;
+					showThumbs(true);
+				}
+			}
 		}
 
 		private function hideUI():void
 		{
+			
 			clearTimeout(uiInterval);
 			TweenLite.to(MovieClip(ref.getChildByName('ui')),0.5,{alpha:0.0});
 			
-			slideView.update(new CustomEvent('onUpdate',false,false,{action:'hideUI'}));			
+			slideView.update(new CustomEvent('onUpdate',false,false,{action:'hideUI'}));
+			
+			flagThumbs = false;
+			showThumbs(false);		
 		}
 		
 		private function showThumbs(fade:Boolean=true):void
 		{
+			if(thumbView == null){
+				return;
+			}
 			//return;
 			var ui:MovieClip = Utils.$(ref,'ui');
 			//var mc:MovieClip = Utils.$(ui,'thumbnail.icon');
@@ -226,7 +239,7 @@ package us.xdev.mediaplayer.views
 				
 				//tell slide to pause
 				if(slideView){
-					slideView.update(new CustomEvent('onUpdate',false,false,{action:'pause'}));
+					//slideView.update(new CustomEvent('onUpdate',false,false,{action:'pause'}));
 				}
 
 			}else{
@@ -260,7 +273,7 @@ package us.xdev.mediaplayer.views
 				
 				//tell slide to resume
 				if(slideView){
-					slideView.update(new CustomEvent('onUpdate',false,false,{action:'play'}));
+					//slideView.update(new CustomEvent('onUpdate',false,false,{action:'play'}));
 				}
 			}
 		}
@@ -549,9 +562,14 @@ package us.xdev.mediaplayer.views
 			tA = [
 				{id:'description',label:'Description',icon:'icon_info'},
 				{id:'screen',label:'Full screen',icon:'icon_fullscreen_on'},
-				{id:'dim',label:'Dim Lights',icon:'icon_lights_off'},
-				{id:'slideshow',label:'Slideshow',icon:'icon_slideshow_on'},
-				{id:'thumbs',label:'Thumbnails',icon:'icon_slideshow_off'}];
+				{id:'dim',label:'Dim Lights',icon:'icon_lights_off'}
+				
+				];//{id:'thumbs',label:'Thumbnails',icon:'icon_slideshow_off'}
+				
+			if(model.slideMax > 1 && configObj.slideshow == true){
+				tA.push({id:'slideshow',label:'Slideshow',icon:'icon_slideshow_on'});
+			}
+				
 			buildColumn(tA,'right');
 			
 			if(configObj.fullscreen == true){
@@ -691,6 +709,7 @@ package us.xdev.mediaplayer.views
 
 		private function onResize(e:Event = null):void
 		{
+			trace('onResize');
 			var ui:MovieClip = Utils.$(ref,'ui');
 			var mc:MovieClip;
 			

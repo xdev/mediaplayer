@@ -32,12 +32,12 @@ package us.xdev.mediaplayer.models
 			var xml:String;
 
 			if(Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone"){
-				xml = 'demo_slideshow.xml';
+				//xml = 'demo_slideshow.xml';
 			}
 
 			//params.still = 'demo_video.jpg';
 			//params.src = 'demo_video.flv';
-			params.xml = 'http://media.local/demo_slideshow.xml';
+			//params.xml = 'http://media.local/explore_film.xml';
 
 			if(params['src']){
 
