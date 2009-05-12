@@ -361,7 +361,9 @@ package us.xdev.mediaplayer.views
 					if(scale > 1){
 						scale = 1;
 					}
-
+					
+					//
+					
 					slide.width = Math.ceil(_width*scale);
 					slide.height = Math.ceil(_height*scale);
 					slide.x = stageW/2 - slide.width/2;

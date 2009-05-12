@@ -67,8 +67,8 @@ package us.xdev.mediaplayer.views
 			//ref.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyListener);
 
 			//build back block
-			//var mc:MovieClip = Utils.createmc(ref,'block',{alpha:1});
-			//Utils.drawRect(mc,ref.stage.stageWidth,ref.stage.stageHeight,0x000000,0.0);
+			var mc:MovieClip = Utils.createmc(ref,'block',{alpha:0.8});
+			Utils.drawRect(mc,ref.stage.stageWidth,70,0x000000,1.0);
 
 			//
 			//mc.mouseEnabled = true;
@@ -142,7 +142,7 @@ package us.xdev.mediaplayer.views
 
 		private function buildGrid():void
 		{
-			var cont:MovieClip = Utils.createmc(ref,'cont');
+			var cont:MovieClip = Utils.createmc(ref,'cont',{y:padding});
 
 			//grid
 			var g:MovieClip = Utils.createmc(cont,'grid');
@@ -338,8 +338,8 @@ package us.xdev.mediaplayer.views
 		private function onResize(e:Event=null):void
 		{
 			//redraw the base, or something
-			//var mc:MovieClip = Utils.$(ref,'block');
-			//mc.width = ref.stage.stageWidth;
+			var mc:MovieClip = Utils.$(ref,'block');
+			mc.width = ref.stage.stageWidth;
 			//mc.height = ref.stage.stageHeight;
 
 			layoutGrid();
@@ -450,7 +450,7 @@ package us.xdev.mediaplayer.views
 
 			//center container
 			cont.x = (ref.stage.stageWidth/2) - ((((thumbWidth+padding) * colM)-padding)/2);
-			cont.y = (ref.stage.stageHeight/2) - marginY - (((thumbWidth+padding) * rowM)/2);
+			//cont.y = (ref.stage.stageHeight/2) - marginY - (((thumbWidth+padding) * rowM)/2);
 
 			var mc:MovieClip = Utils.$(ref,'nav_prev');
 			mc.x = ref.stage.stageWidth/2;

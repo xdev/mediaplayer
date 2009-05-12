@@ -198,7 +198,7 @@ package us.xdev.mediaplayer.views
 				c.alpha = 0.0;
 				c.visible = true;
 				//ref.stage.stageHeight - 80
-				TweenLite.to(c,0.3,{alpha:1.0,y:(ref.stage.stageHeight/2) - 60});
+				TweenLite.to(c,0.3,{alpha:1.0,y:ref.stage.stageHeight - 70});
 
 				//deactivate majority of ui controls
 				/*
@@ -715,7 +715,7 @@ package us.xdev.mediaplayer.views
 			mc = Utils.$(ref,'thumbs');
 			if(mc){
 				if(flagThumbs){
-					mc.y = (ref.stage.stageHeight/2) - 60;
+					mc.y = ref.stage.stageHeight - 70;
 				}else{
 					mc.y = ref.stage.stageHeight + 10;
 				}
