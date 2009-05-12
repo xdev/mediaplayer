@@ -370,8 +370,9 @@ package us.xdev.mediaplayer.views
 					//update view
 					mc = transportView.getRef();
 					mc.y = stageH-mc.height;
-					mc.x = 0;
-					transportView.setWidth(stageW);
+					mc.x = stageW/2-320;//0;
+					
+					transportView.setWidth(640);//stageW);
 					
 					/*
 					mc = Utils.$(MP._view.ref,'still');

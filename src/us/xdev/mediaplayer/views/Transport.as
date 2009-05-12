@@ -22,8 +22,14 @@ package us.xdev.mediaplayer.views
 		[Embed(source='library.swf', symbol='mediaplayback_icons')]
 		private var icons:Class;
 		
+		[Embed(source='library.swf', symbol='explore_icons')]
+		private var explore_icons:Class;
+		
 		[Embed(source='library.swf', symbol='AkzidenzGrotesk')]
 		private var font1:Class;
+		
+		[Embed(source='library.swf', symbol='standard07_55')]
+		private var font2:Class;
 				
 		protected var _timer:Timer;
 		protected var _timeMode:Boolean;
@@ -133,13 +139,13 @@ package us.xdev.mediaplayer.views
 			{
 				case true:
 					if(infoObj.time_remaining){
-						txt = '-' + Utils.padZero(infoObj.time_remaining.minutes) + ':' + Utils.padZero(Math.ceil(infoObj.time_remaining.seconds));
+						txt = '-' + '00:' + Utils.padZero(infoObj.time_remaining.minutes) + ':' + Utils.padZero(Math.ceil(infoObj.time_remaining.seconds));
 					}
 				break;
 				
 				case false:
 					if(infoObj.time_current){
-						txt = Utils.padZero(infoObj.time_current.minutes) + ':' + Utils.padZero(infoObj.time_current.seconds);
+						txt = '00:' + Utils.padZero(infoObj.time_current.minutes) + ':' + Utils.padZero(infoObj.time_current.seconds);
 					}
 				break;
 				/*
@@ -198,7 +204,9 @@ package us.xdev.mediaplayer.views
 			
 				if(infoObj.loaded_percent >= 0){
 					mc = MovieClip(Utils.$(ref,'timeline.strip_load'));
-					mc.scaleX = infoObj.loaded_percent / 100;
+					mc.graphics.clear();
+					//Utils.drawRoundRect(mc,infoObj.loaded_percent*_width-95,0x808080,1.0,5);
+					//mc.scaleX = infoObj.loaded_percent / 100;
 				}
 			
 				if(infoObj.time_percent >= 0){
@@ -269,10 +277,10 @@ package us.xdev.mediaplayer.views
 			}
 			if(e.type == MouseEvent.MOUSE_DOWN){
 				var rect:Rectangle = new Rectangle();
-				rect.top = -4;
-				rect.bottom = -4;
+				rect.top = 5.5;
+				rect.bottom = 5.5;
 				rect.left = 0;
-				rect.right = (_width-95)-_scrubberWidth;
+				rect.right = _width-(50+64)-_scrubberWidth;
 				mc.startDrag(false,rect);
 				mc.dragging = true;
 				
@@ -321,45 +329,50 @@ package us.xdev.mediaplayer.views
 				var mc:MovieClip;
 				mc = MovieClip(Utils.$(ref,"back"));
 				mc.graphics.clear();
-				Utils.drawRect(mc,_width,20,0x404040,1.0);
+				Utils.drawRect(mc,_width,40,0x000000,1.0);
 			
 				var t:MovieClip = MovieClip(Utils.$(ref,"timeline"));
 				mc = MovieClip(Utils.$(t,"strip_back"));
 				mc.graphics.clear();
-				Utils.drawRect(mc,_width-95,8,0xCCCCCC,1.0);
+				//mc:MovieClip, w:Number, h:Number, rgb:Number, alpha:Number = 1.0, radius:Number = 10, lineStyle:Array = null
+				Utils.drawRoundRect(mc,_width-100,10,0xCCCCCC,0.0,10,[1.0,0xFFFFFF,1.0]);
+				
+				mc = Utils.$(ref,'timeback');
+				mc.x = _width-(64+50)+0.5;
 			
 				mc = MovieClip(Utils.$(t,"strip_hit"));
 				mc.graphics.clear();
-				Utils.drawRect(mc,_width-95,12,0xFF0000,0.0);
+				Utils.drawRect(mc,_width-164,12,0xFF0000,0.0);
 			
 				mc = MovieClip(Utils.$(t,"strip_load"));
 				mc.graphics.clear();
-				Utils.drawRect(mc,_width-95,8,0xFFFFFF,1.0);
+				//Utils.drawRect(mc,_width-164,8,0xFFFFFF,1.0);
 			
 				mc = MovieClip(Utils.$(t,"strip_progress"));
 				mc.graphics.clear();
-				Utils.drawRect(mc,_width-95,8,0x808080,1.0);
+				//Utils.drawRect(mc,_width-95,8,0x808080,1.0);
 			
 				//move the label
 				mc = MovieClip(Utils.$(ref,"label"));
-				mc.x = _width - 50;
+				mc.x = _width - 100;
 			
 				//move the audio
 				mc = MovieClip(Utils.$(ref,"audio"));
-				mc.x = _width - 10;
+				mc.x = _width - 25;
 			}
 		}
 	
 		protected function renderUI():void
 		{
 					
-			var b:MovieClip = Utils.createmc(ref,"back",{alpha:0.75,mouseEnabled:true});
-			Utils.drawRect(b,_width,20,0x404040,1.0);
+			var b:MovieClip = Utils.createmc(ref,"back",{alpha:0.68,mouseEnabled:true});
+			Utils.drawRect(b,_width,40,0x000000,1.0);
 			b.addEventListener(MouseEvent.CLICK,mouseHandler);
 			
 			var i:MovieClip,mc:MovieClip;
 			
 			//VCR stop (back to beginning)
+			/*
 			i = new icons();
 			i.gotoAndStop('video_start');
 			mc = MovieClip(ref.addChild(i));
@@ -370,41 +383,52 @@ package us.xdev.mediaplayer.views
 			mc.addEventListener(MouseEvent.ROLL_OVER,mouseHandler);
 			mc.addEventListener(MouseEvent.ROLL_OUT,mouseHandler);
 			mc.addEventListener(MouseEvent.CLICK,mouseHandler);
+			*/
 			
 			//play/pause
-			i = new icons();
+			i = new explore_icons();
 			i.gotoAndStop('video_play');
 			mc = MovieClip(ref.addChild(i));
 			mc.name = 'video_play';
 			mc.buttonMode = true;
-			mc.x = 30;
-			mc.y = 10;
+			mc.x = 25;
+			mc.y = 20;
 			mc.addEventListener(MouseEvent.ROLL_OVER,mouseHandler);
 			mc.addEventListener(MouseEvent.ROLL_OUT,mouseHandler);
 			mc.addEventListener(MouseEvent.CLICK,mouseHandler);
 			
 			//timeline
-			var t:MovieClip = Utils.createmc(ref,"timeline",{x:40,y:10});
-			mc = Utils.createmc(t,"strip_back",{y:-4,_scope:this,mouseEnabled:true});
+			var t:MovieClip = Utils.createmc(ref,"timeline",{x:50,y:14});
+			mc = Utils.createmc(t,"strip_back",{x:0.5,y:0.5,mouseEnabled:true});
 			mc.buttonMode = true;
-			Utils.drawRect(mc,_width-95,8,0xCCCCCC,1.0);
-		
-			var h:MovieClip = Utils.createmc(t,"strip_hit",{y:-6});
-			Utils.drawRect(h,_width-95,12,0xFF0000,0.0);
+			Utils.drawRect(mc,_width-100,10,0x000000,0.0,[1.0,0xFFFFFF,1.0]);
+			
+			i = new explore_icons();
+			i.gotoAndStop('timeback');
+			mc = MovieClip(ref.addChild(i));
+			mc.name = 'timeback';
+			mc.x = _width - (64+50) + 0.5;
+			mc.y = 14.5;
+			
+			var h:MovieClip = Utils.createmc(t,"strip_hit");
+			Utils.drawRect(h,_width-164,12,0xFF0000,0.0);
 			
 			mc.hitArea = h;
 			mc.addEventListener(MouseEvent.CLICK,mouseHandler);
 			
-			h = Utils.createmc(t,"strip_load",{y:-4,scaleX:0.0});
-			Utils.drawRect(h,_width-95,8,0xFFFFFF,1.0);
+			h = Utils.createmc(t,"strip_load",{y:0});
+			//Utils.drawRect(h,_width-95,8,0xFFFFFF,1.0);
 			
-			h = Utils.createmc(t,"strip_progress",{y:-4,scaleX:0.0});
+			//not used in this design
+			h = Utils.createmc(t,"strip_progress",{y:0,scaleX:0.0,alpha:0.0});
 			Utils.drawRect(h,_width-95,8,0x808080,1.0);		
 			
 			//scrubber
-			i = Utils.createmc(t,"scrubber",{y:-4,dragging:false,mouseEnabled:true});
-			Utils.drawRect(i,_scrubberWidth,_scrubberWidth,0x000000,1.0);
+			i = Utils.createmc(t,"scrubber",{y:5.5,dragging:false});
+			Utils.drawCircle(i, 0xFFFFFF, 1.0, _scrubberWidth/2);
+			//Utils.drawRect(i,_scrubberWidth,_scrubberWidth,0x000000,1.0);
 			i.buttonMode = true;
+			i.mouseEnabled = true;
 			i.addEventListener(MouseEvent.MOUSE_DOWN,mouseHandler);
 			
 			//_timer = new Timer(20);
@@ -413,16 +437,16 @@ package us.xdev.mediaplayer.views
 			
 			//progress label
 			var tf:TextFormat = new TextFormat();
-			tf.font = "Akzidenz Grotesk";
-			tf.size = 10;
-			tf.color = 0xFFFFFF;
+			tf.font = "standard 07_55";
+			tf.size = 8;
+			//tf.color = 0xFFFFFF;
 			
 			//if(options.tf != undefined){
 			//	tf = options.tf;
 			//}
 		
-			var l:MovieClip = Utils.createmc(ref,"label",{x:_width-50,y:2.5,mouseEnabled:true});
-			Utils.makeTextfield(l,"00:00",tf,{width:35});//autoSize:TextFieldAutoSize.RIGHT
+			var l:MovieClip = Utils.createmc(ref,"label",{x:_width-100,y:14,mouseEnabled:true});
+			Utils.makeTextfield(l,"00:00:00",tf,{width:50});//autoSize:TextFieldAutoSize.RIGHT
 			l.addEventListener(MouseEvent.CLICK,mouseHandler);
 			l.buttonMode = true;
 			
@@ -432,8 +456,10 @@ package us.xdev.mediaplayer.views
 			mc = MovieClip(ref.addChild(i));
 			mc.name = 'audio';
 			mc.buttonMode = true;
-			mc.x = _width-10;
-			mc.y = 10;
+			mc.x = _width-25;
+			mc.scaleX = 1.5;
+			mc.scaleY = 1.5;
+			mc.y = 20;
 			mc.addEventListener(MouseEvent.ROLL_OVER,mouseHandler);
 			mc.addEventListener(MouseEvent.ROLL_OUT,mouseHandler);
 			mc.addEventListener(MouseEvent.CLICK,mouseHandler);

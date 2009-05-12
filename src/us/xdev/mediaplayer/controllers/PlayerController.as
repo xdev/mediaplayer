@@ -53,7 +53,6 @@ package us.xdev.mediaplayer.controllers
 		{
 			model.setSlide(value);			
 		}
-
 		
 		public function advanceSlide(dir:int):void
 		{
