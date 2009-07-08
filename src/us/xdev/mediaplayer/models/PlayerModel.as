@@ -23,12 +23,13 @@ package us.xdev.mediaplayer.models
 
 		public function PlayerModel(p:Object)
 		{
-
 			params = p;
 			setConfig();
-			
 			setPlaying(false);
-
+		}
+		
+		public function init():void
+		{
 			var xml:String;
 
 			if(Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone"){
@@ -38,6 +39,7 @@ package us.xdev.mediaplayer.models
 			//params.still = 'demo_video.jpg';
 			//params.src = 'demo_video.flv';
 			//params.xml = 'http://media.local/explore_film.xml';
+			//params['src'] = 'http://0C21.edgecastcdn.net/000C21/videos/Adrenaline-Junkie_Avalanche-Rescue-Explore_1500k-16x9.mov';
 
 			if(params['src']){
 
@@ -100,22 +102,22 @@ package us.xdev.mediaplayer.models
 			//update for a viewSlide	
 		}
 
-		private function init():void
+		private function _init():void
 		{
 			//flagThumbs = false;
-
+			slideIndex = -1;
+			
 			if(slideMax > 1){
 				flagPlaying = true;
-				slideIndex = -1;
 			}else{
 				flagPlaying = false;
 				configObj.slideshow = false;
 				configObj.thumbgrid = false;
-				slideIndex = -1;
 			}
 
 			//broadcast out a ready signal for view
 			update({action:'init'});
+			
 		}
 
 		private function setConfig():void
@@ -255,7 +257,7 @@ package us.xdev.mediaplayer.models
 			}
 			slideMax = i;
 
-			init();
+			_init();
 
 		}
 

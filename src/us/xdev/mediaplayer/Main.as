@@ -17,6 +17,7 @@ package us.xdev.mediaplayer
 			var view:Player = new Player(this,model,controller);
 			controller.setView(view);
 			model.addEventListener('onUpdate',view.update);
+			model.init();
 		}
 	
 	}
