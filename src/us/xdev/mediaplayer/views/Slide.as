@@ -58,7 +58,7 @@ package us.xdev.mediaplayer.views
 
 		override public function update(event:CustomEvent=null):void
 		{
-			
+			//trace('slide.update = ' + event.props.action);
 			if(event.props.action == 'showUI'){
 				if(transportView){
 					TweenLite.to(transportView.getRef(),0.3,{alpha:1.0});
@@ -100,7 +100,8 @@ package us.xdev.mediaplayer.views
 		}
 
 		private function handleMediaUpdate(event:CustomEvent):void
-		{
+		{	
+			//trace('handleMediaUpdate = ' + event.props.action);
 			var v:Video;
 			if(event.props.action == 'playVideo'){
 				v = event.props.video;
@@ -175,7 +176,7 @@ package us.xdev.mediaplayer.views
 					obj.paused = true;
 				}
 
-				var options:Object = {};
+				var options:Object = data;
 				var ext:String = data.file.substr(data.file.lastIndexOf('.')+1,data.file.length).toLowerCase();
 
 				if(ext == 'mp4' || ext == 'mov' || ext == 'm4v' || ext == 'flv'){

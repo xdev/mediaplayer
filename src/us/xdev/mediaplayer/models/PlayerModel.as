@@ -3,10 +3,10 @@ package us.xdev.mediaplayer.models
 
 	import com.a12.util.CustomEvent;
 	import com.a12.util.XMLLoader;
-	
+
 	import flash.events.EventDispatcher;
 	import flash.system.Capabilities;
-	
+
 
 	public class PlayerModel extends EventDispatcher
 	{
@@ -14,12 +14,12 @@ package us.xdev.mediaplayer.models
 		public var slideIndex:int;
 		public var slideMax:int;
 		public var slideA:Array;
-		
-		public var flagPlaying:Boolean;	
-		
+
+		public var flagPlaying:Boolean;
+
 		public var configObj:Object;
 		private var params:Object;
-		
+
 
 		public function PlayerModel(p:Object)
 		{
@@ -27,7 +27,7 @@ package us.xdev.mediaplayer.models
 			setConfig();
 			setPlaying(false);
 		}
-		
+
 		public function init():void
 		{
 			var xml:String;
@@ -39,7 +39,8 @@ package us.xdev.mediaplayer.models
 			//params.still = 'demo_video.jpg';
 			//params.src = 'demo_video.flv';
 			//params.xml = 'http://media.local/explore_film.xml';
-			//params['src'] = 'http://0C21.edgecastcdn.net/000C21/videos/Adrenaline-Junkie_Avalanche-Rescue-Explore_1500k-16x9.mov';
+			params['src'] = 'Adrenaline-Junkie_Avalanche-Rescue-Explore_1500k-16x9.mov';
+			//params['src'] = 'Sample_720p.mp4';
 
 			if(params['src']){
 
@@ -47,6 +48,9 @@ package us.xdev.mediaplayer.models
 				if(params['still']){
 					still = '<still>'+params['still']+'</still>';
 				}
+				//fms.0C21.edgecastcdn.net/000C21
+				still += '<server>rtmp://beta.fms.edgecastcdn.net/000C21/videos/</server>';
+
 				parseXML('<xml><slides><slide><file>'+params['src']+'</file>' + still + '</slide></slides></xml>');
 
 			}else{
@@ -57,30 +61,30 @@ package us.xdev.mediaplayer.models
 				new XMLLoader(xml,parseXML,this);
 			}
 		}
-		
+
 		public function setPlaying(val:Boolean):void
 		{
 			flagPlaying = val;
 		}
-		
+
 		private function update(obj:Object):void
 		{
 			dispatchEvent(new CustomEvent('onUpdate',true,true,obj));
 		}
-		
+
 		public function getConfig():Object
 		{
-			return configObj;	
+			return configObj;
 		}
-		
+
 		public function setSlide(ind:int):void
 		{
 			slideIndex = ind;
-			
+
 			update({action:'viewSlide'});
-			//update	
+			//update
 		}
-		
+
 		public function advanceSlide(dir:int):void
 		{
 			switch(true)
@@ -97,16 +101,16 @@ package us.xdev.mediaplayer.models
 					slideIndex += dir;
 				break;
 			}
-			
+
 			update({action:'viewSlide'});
-			//update for a viewSlide	
+			//update for a viewSlide
 		}
 
 		private function _init():void
 		{
 			//flagThumbs = false;
 			slideIndex = -1;
-			
+
 			if(slideMax > 1){
 				flagPlaying = true;
 			}else{
@@ -117,7 +121,7 @@ package us.xdev.mediaplayer.models
 
 			//broadcast out a ready signal for view
 			update({action:'init'});
-			
+
 		}
 
 		private function setConfig():void
@@ -240,15 +244,21 @@ package us.xdev.mediaplayer.models
 				if(ext == 'jpg' || ext == 'jpeg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
 					tObj.mode = 'image';
 				}
-				
+
+				if(node.server != undefined){
+					tObj.server = String(node.server);
+				}else{
+					tObj.server = null;
+				}
+
 				if(node.title != undefined){
 					tObj.title = String(node.title);
 				}
-				
+
 				if(node.description != undefined){
 					tObj.description = String(node.description);
-				}								
-				
+				}
+
 				if(tObj.mode){
 					slideA.push(tObj);
 				}

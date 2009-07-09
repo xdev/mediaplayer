@@ -14,6 +14,7 @@ package us.xdev.mediaplayer.models
 	
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
+	import flash.net.Responder;
 	import flash.media.Video;
 	import flash.utils.Timer;
 
@@ -47,10 +48,14 @@ package us.xdev.mediaplayer.models
 		{
 			_connection = new NetConnection();
 			_connection.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
-            _connection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-			_connection.connect(null);
+			_connection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
+			var clientObj:Object = {};
+			clientObj.onBWDone = onBWDone;
+			_connection.client = clientObj;
+			trace('connecting to ' + _options.server);
+			_connection.connect(_options.server);
 		}
-		
+						
 		public function stopStream():void
 		{
 			pauseStream();
@@ -152,6 +157,11 @@ package us.xdev.mediaplayer.models
 			update(tObj);
 		}
 		
+		private function onBWDone():void
+		{
+			
+		}
+		
 		private function onMetaData(obj:Object):void
 		{
 			//should run only once!
@@ -174,16 +184,30 @@ package us.xdev.mediaplayer.models
 		
 		private function netStatusHandler(event:NetStatusEvent):void
 		{
+			trace(event.info.code);
 			switch (event.info.code) {
-				case "NetConnection.Connect.Success":
+				case 'NetConnection.Connect.Success':
 					playMedia();
 				break;
 				
-				case "NetStream.Play.StreamNotFound":
+				case 'NetStream.Play.StreamNotFound':
+				case 'NetConnection.Connect.Failed':
 					//trace("Unable to locate video: " + videoURL);
 				break;
 				
-				case "NetStream.Play.Stop":
+				case 'NetConnection.Connect.Rejected':
+				
+				break;
+				
+				case  'NetStream.Seek.Notify':
+				
+				break;
+				
+				case  'NetStream.Seek.Failed':
+				
+				break;
+				
+				case 'NetStream.Play.Stop':
 					onComplete();
 				break;
 			}
@@ -203,14 +227,32 @@ package us.xdev.mediaplayer.models
 		{
 			
 		}
-	
+		
+		private function streamLengthHandler(len:Number):void {
+			//onData({type:'streamlength',duration:len});
+		}
+		
+		private function formatFile(file:String):String {
+			var ext:String = file.substr(file.lastIndexOf('.')+1,file.length).toLowerCase();
+			var basename:String = file.substr(0,file.lastIndexOf('.'));
+			if(ext == 'mp4' || ext == 'mov' || ext == 'aac' || ext == 'm4a') {
+				return 'mp4:'+ file;
+			} else if (ext == 'flv') {
+				return basename;
+			} else {
+				return file;
+			}
+		}
+		
 		private function playMedia():void
 		{
 			_stream = new NetStream(_connection);
 			_stream.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
             _stream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, asyncErrorHandler);
 			
-			//check buffer time son
+			//_stream.receiveVideo(true);
+			//_stream.receiveAudio(true);
+			
 			if(_options.buffer != undefined){
 				setBuffer(_options.buffer);
 			}
@@ -219,10 +261,15 @@ package us.xdev.mediaplayer.models
 			clientObj.onMetaData = onMetaData;
 			clientObj.onCuePoint = cuePointHandler;
 			_stream.client = clientObj;
-			_stream.play(_file);
-			_video = new Video();
-			_video.attachNetStream(_stream);			
+			_stream.play(formatFile(_file),0);
+			trace('playing = '+formatFile(_file));
 			
+			var res:Responder = new Responder(streamLengthHandler);
+			_connection.call("getStreamLength",res,_file);
+			_connection.call("checkBandwidth",null);
+			
+			_video = new Video();
+			_video.attachNetStream(_stream);
 			_playing = true;	
 					
 			var tObj:Object = {};
