@@ -26,7 +26,7 @@ package us.xdev.mediaplayer.views
 	import gs.TweenLite;
 	
 	import us.xdev.mediaplayer.controllers.ThumbController;
-	import us.xdev.mediaplayer.views.ThumbGrid;
+	import us.xdev.mediaplayer.views.*;
 
 	public class Player extends AbstractView
 	{
@@ -47,7 +47,7 @@ package us.xdev.mediaplayer.views
 		private var configObj:Object;
 		private var flagThumbs:Boolean;
 		private var slideView:Slide;
-		private var thumbView:ThumbGrid;//ThumbGrid;
+		private var thumbView:ThumbStrip;//ThumbGrid;
 		private var thumbController:ThumbController;
 		
 		public function Player(ref:Object,model:*,controller:*=null)
@@ -73,7 +73,7 @@ package us.xdev.mediaplayer.views
 		private function buildThumbs():void
 		{
 			thumbController = new ThumbController(model);
-			thumbView = new ThumbGrid(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:50,thumbHeight:50,padding:10,marginX:0,marginY:0});
+			thumbView = new ThumbStrip(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:50,thumbHeight:50,padding:10,marginX:0,marginY:0});
 		}
 		
 		private function hideThumbs():void
@@ -321,6 +321,7 @@ package us.xdev.mediaplayer.views
 			if(mc.name == 'nav_prev' || mc.name == 'nav_next'){
 				if(e.type == MouseEvent.MOUSE_OVER){
 					TweenLite.to(MovieClip(mc),0.1,{alpha:1.0});
+					/*
 					mc.filters = [
 					new GlowFilter
 					(
@@ -333,10 +334,11 @@ package us.xdev.mediaplayer.views
 		                false,
 		                false)
 					];
+					*/
 				}
 				if(e.type == MouseEvent.MOUSE_OUT){
 					TweenLite.to(MovieClip(mc),0.3,{alpha:0.4});
-					mc.filters = [];
+					//mc.filters = [];
 				}
 				if(e.type == MouseEvent.CLICK){
 					controller.advanceSlide(mc.dir);
@@ -355,47 +357,7 @@ package us.xdev.mediaplayer.views
 				}
 			}
 		}
-		
-		private function handleButton(e:MouseEvent):void
-		{
-			var mc:MovieClip = MovieClip(e.currentTarget);
-			if(e.type == MouseEvent.MOUSE_OVER){
-				TweenLite.to(Utils.$(mc,'frame'),0.1,{alpha:0.9});
-				TweenLite.to(Utils.$(mc,'icon'),0.1,{alpha:1.0});
-				Utils.$(mc,'frame').filters = [
-				new GlowFilter
-				(
-					0xFFFFFF,
-					0.3,
-					4.0,
-					4.0,
-					2,
-					BitmapFilterQuality.HIGH,
-	                false,
-	                false)
-				];
-				
-			}
-			if(e.type == MouseEvent.MOUSE_OUT){
-				TweenLite.to(Utils.$(mc,'frame'),0.3,{alpha:0.4});
-				TweenLite.to(Utils.$(mc,'icon'),0.3,{alpha:0.4});
-				
-				Utils.$(mc,'frame').filters = [];
-			}
-			if(e.type == MouseEvent.CLICK){
-				//check into specific buttons
-				if(mc.name == 'screen'){
-					toggleFullScreen();
-				}
-				if(mc.name == 'slideshow'){
-					toggleSlideShow();
-				}
-				if(mc.name == 'thumbs'){
-					toggleThumbs();
-				}
-			}
-		}
-		
+						
 		private function buildUI():void
 		{
 						
@@ -489,7 +451,7 @@ package us.xdev.mediaplayer.views
 				mc.y = 7;
 
 				//do the drop shadow son
-
+				
 				mc.filters = [
 				new DropShadowFilter
 				(
@@ -593,14 +555,13 @@ package us.xdev.mediaplayer.views
 
 		private function onFullScreen(e:FullScreenEvent):void
 		{
-			var mc:MovieClip = Utils.$(ref,'ui.screen.icon');
-			trace(Utils.$(ref,'ui.screen.label'));
+			var mc:MovieClip = Utils.$(ref,'ui.fullscreen.icon');//.icon, .label
 			if(ref.stage.displayState == "fullScreen"){
-				mc.gotoAndStop('icon_fullscreen_off');
-				Utils.$(ref,'ui.screen.label.displayText').text = 'Exit';
+				mc.gotoAndStop('fullscreen_off');
+				//Utils.$(ref,'ui.fullscreen.label.displayText').text = 'Exit';
 			}else{
-				mc.gotoAndStop('icon_fullscreen_on');
-				Utils.$(ref,'ui.screen.label.displayText').text = 'Full screen';
+				mc.gotoAndStop('fullscreen');
+				//Utils.$(ref,'ui.fullscreen.label.displayText').text = 'Full screen';
 			}
 		}
 

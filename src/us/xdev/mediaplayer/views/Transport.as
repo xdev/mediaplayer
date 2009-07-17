@@ -47,12 +47,7 @@ package us.xdev.mediaplayer.views
 			_soundLevelA = [0.0,0.2,0.6,1.0];
 			_soundLevel = 3;
 			_scrubberWidth = 8;
-			
-			/*
-			if(model as AudioModel){
-				renderUI();
-			}
-			*/
+						
 			renderUI();			
 					
 		}
@@ -326,7 +321,7 @@ package us.xdev.mediaplayer.views
 				var mc:MovieClip;
 				mc = MovieClip(Utils.$(ref,"back"));
 				mc.graphics.clear();
-				Utils.drawRect(mc,_width,40,0x000000,1.0);
+				Utils.drawRoundRect(mc,_width,40,0x000000,1.0,8.0);
 			
 				var t:MovieClip = MovieClip(Utils.$(ref,"timeline"));
 				mc = MovieClip(Utils.$(t,"strip_back"));
@@ -366,7 +361,7 @@ package us.xdev.mediaplayer.views
 		{
 					
 			var b:MovieClip = Utils.createmc(ref,"back",{alpha:0.68,mouseEnabled:true});
-			Utils.drawRect(b,_width,40,0x000000,1.0);
+			Utils.drawRoundRect(b,_width,40,0x000000,1.0,8.0);
 			b.addEventListener(MouseEvent.CLICK,mouseHandler);
 			
 			var i:MovieClip,mc:MovieClip;
@@ -378,8 +373,8 @@ package us.xdev.mediaplayer.views
 			mc = MovieClip(ref.addChild(i));
 			mc.name = 'video_start';
 			mc.buttonMode = true;
-			mc.x = 10;
-			mc.y = 10;
+			mc.x = 15;
+			mc.y = 20;
 			mc.addEventListener(MouseEvent.ROLL_OVER,mouseHandler);
 			mc.addEventListener(MouseEvent.ROLL_OUT,mouseHandler);
 			mc.addEventListener(MouseEvent.CLICK,mouseHandler);
@@ -391,7 +386,7 @@ package us.xdev.mediaplayer.views
 			mc = MovieClip(ref.addChild(i));
 			mc.name = 'video_play';
 			mc.buttonMode = true;
-			mc.x = 25;
+			mc.x = 35;
 			mc.y = 20;
 			mc.addEventListener(MouseEvent.ROLL_OVER,mouseHandler);
 			mc.addEventListener(MouseEvent.ROLL_OUT,mouseHandler);
@@ -438,13 +433,15 @@ package us.xdev.mediaplayer.views
 			var tf:TextFormat = new TextFormat();
 			tf.font = "Arial";
 			tf.size = 8;
-			//tf.color = 0xFFFFFF;
+			tf.color = 0x000000;
 			
-			//if(options.tf != undefined){
-			//	tf = options.tf;
-			//}
+			/*
+			if(options.tf != undefined){
+				tf = options.tf;
+			}
+			*/
 		
-			var l:MovieClip = Utils.createmc(ref,"label",{x:_width-100,y:12,mouseEnabled:true});
+			var l:MovieClip = Utils.createmc(ref,"label",{x:_width-100,y:13,mouseEnabled:true});
 			Utils.makeTextfield(l,"00:00:00",tf,{width:50});//autoSize:TextFieldAutoSize.RIGHT
 			l.addEventListener(MouseEvent.CLICK,mouseHandler);
 			l.buttonMode = true;
