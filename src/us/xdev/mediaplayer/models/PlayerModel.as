@@ -7,19 +7,15 @@ package us.xdev.mediaplayer.models
 	import flash.events.EventDispatcher;
 	import flash.system.Capabilities;
 
-
 	public class PlayerModel extends EventDispatcher
 	{
 
 		public var slideIndex:int;
 		public var slideMax:int;
 		public var slideA:Array;
-
 		public var flagPlaying:Boolean;
-
 		public var configObj:Object;
 		private var params:Object;
-
 
 		public function PlayerModel(p:Object)
 		{
@@ -33,13 +29,8 @@ package us.xdev.mediaplayer.models
 			var xml:String;
 
 			if(Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone"){
-				xml = 'demo_slideshow.xml';
+				xml = 'http://mediaplayer.local/demo_slideshow.xml';
 			}
-
-			//params.still = 'demo_video.jpg';
-			//params.src = 'demo_video.flv';
-			//params.xml = 'http://media.local/explore_film.xml';
-			//params['src'] = 'Adrenaline-Junkie_Avalanche-Rescue-Explore_1500k-16x9.mov';
 
 			if(params['src']){
 
@@ -47,8 +38,8 @@ package us.xdev.mediaplayer.models
 				if(params['still']){
 					still = '<still>'+params['still']+'</still>';
 				}
-				//still += '<server>rtmp://beta.fms.edgecastcdn.net/000C21/videos/</server>';
-
+								
+				//still += '<server>rtmp://url/vod/</server>';
 				parseXML('<xml><slides><slide><file>'+params['src']+'</file>' + still + '</slide></slides></xml>');
 
 			}else{

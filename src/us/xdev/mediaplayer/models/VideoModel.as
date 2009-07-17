@@ -237,7 +237,7 @@ package us.xdev.mediaplayer.models
 			var basename:String = file.substr(0,file.lastIndexOf('.'));
 			if(ext == 'mp4' || ext == 'mov' || ext == 'aac' || ext == 'm4a') {
 				return 'mp4:'+ file;
-			} else if (ext == 'flv') {
+			} else if (ext == 'flv' && _options.server != null) {
 				return basename;
 			} else {
 				return file;

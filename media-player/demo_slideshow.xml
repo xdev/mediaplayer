@@ -5,13 +5,13 @@
 Tag names are case and name sensitive. For best results, always use absolute paths.
 
 <slide>
-	<file> - required
+	<file>http://mediaplayer.local/ - required
 	location of media to be loaded
 		jpg, jpeg, gif, swf, png for images
 		flv, mov, mp4, m4v for videos (file has to be flv or encoded with h.264 in container formats)
 		mp3 for audio
 	
-	<thumb> - optional
+	<thumb>http://mediaplayer.local/ - optional
 	should be sized within the constraint of the thumbWidth/thumbHeight, but will be scaled as necessary to fit
 	
 	<still> - optional
@@ -23,84 +23,84 @@ Tag names are case and name sensitive. For best results, always use absolute pat
 <root>
 	<slides>
 		<slide>
-			<file>demo_img1.jpg</file>
-			<thumb>demo_thumb1.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img1.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb1.jpg</thumb>
 			<title>Tibet (Spirituality)</title>
 			<description><![CDATA[Journey with the Explore team to the spiritual city of Lhasa, the capital of Tibet. See Potala Palace, the traditional winter home of the Dalai Lama and a pilgrimage destination for thousands of Buddhists. Listen to the sounds of monks practicing the art of debate at the Sera Monastery, and witness the many ways in which new technologies are changing the Tibetan cultural landscape.]]></description>
 		</slide>		
 		<slide>
-			<file>demo_video.flv</file>
+			<file>http://mediaplayer.local/demo_video.flv</file>
 			<!--http://cornerstonepodcast.org/video_music/Christ is Risen.m4v-->
-			<thumb>demo_video.jpg</thumb>
+			<thumb>http://mediaplayer.local/demo_video.jpg</thumb>
 		</slide>			
 		<slide>
-			<file>demo_img2.jpg</file>
-			<thumb>demo_thumb2.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img2.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb2.jpg</thumb>
 		</slide>
 		<slide>
-			<file>demo_img3.jpg</file>
-			<thumb>demo_thumb3.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img3.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb3.jpg</thumb>
 		</slide>
 		<slide>
-			<file>demo_img4.jpg</file>
-			<thumb>demo_thumb4.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img4.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb4.jpg</thumb>
 		</slide>
 		<slide>
-			<file>demo_img5.jpg</file>
-			<thumb>demo_thumb5.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img5.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb5.jpg</thumb>
 		</slide>
 		<!-- duplications -->
 		<slide>
-			<file>demo_img3.jpg</file>
-			<thumb>demo_thumb3.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img3.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb3.jpg</thumb>
 		</slide>
 		<slide>
-			<file>demo_img4.jpg</file>
-			<thumb>demo_thumb4.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img4.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb4.jpg</thumb>
 		</slide>
 				
 		<slide>
-			<file>demo_img2.jpg</file>
-			<thumb>demo_thumb2.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img2.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb2.jpg</thumb>
 		</slide>
 		<slide>
-			<file>demo_img1.jpg</file>
-			<thumb>demo_thumb1.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img1.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb1.jpg</thumb>
 		</slide>		
 		<slide>
-			<file>demo_video.flv</file>
-			<thumb>demo_video.jpg</thumb>
+			<file>http://mediaplayer.local/demo_video.flv</file>
+			<thumb>http://mediaplayer.local/demo_video.jpg</thumb>
 		</slide>
 		<slide>
-			<file>demo_img5.jpg</file>
-			<thumb>demo_thumb5.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img5.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb5.jpg</thumb>
 		</slide>
 		<!-- dups -->
 		<slide>
-			<file>demo_img4.jpg</file>
-			<thumb>demo_thumb4.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img4.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb4.jpg</thumb>
 		</slide>
 				
 		<slide>
-			<file>demo_img2.jpg</file>
-			<thumb>demo_thumb2.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img2.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb2.jpg</thumb>
 		</slide>
 		<slide>
-			<file>demo_img3.jpg</file>
-			<thumb>demo_thumb3.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img3.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb3.jpg</thumb>
 		</slide>
 		<slide>
-			<file>demo_video.flv</file>
-			<thumb>demo_video.jpg</thumb>
+			<file>http://mediaplayer.local/demo_video.flv</file>
+			<thumb>http://mediaplayer.local/demo_video.jpg</thumb>
 		</slide>
 		<slide>
-			<file>demo_img5.jpg</file>
-			<thumb>demo_thumb5.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img5.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb5.jpg</thumb>
 		</slide>
 		
 		<slide>
-			<file>demo_img1.jpg</file>
-			<thumb>demo_thumb1.jpg</thumb>
+			<file>http://mediaplayer.local/demo_img1.jpg</file>
+			<thumb>http://mediaplayer.local/demo_thumb1.jpg</thumb>
 		</slide>		
 		
 	</slides>	
