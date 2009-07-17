@@ -1,4 +1,4 @@
-package us.xdev.mediaplayer
+package
 {
 	import us.xdev.mediaplayer.controllers.PlayerController;
 	import us.xdev.mediaplayer.models.PlayerModel;

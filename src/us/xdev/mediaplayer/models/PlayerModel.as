@@ -33,14 +33,13 @@ package us.xdev.mediaplayer.models
 			var xml:String;
 
 			if(Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone"){
-				//xml = 'demo_slideshow.xml';
+				xml = 'demo_slideshow.xml';
 			}
 
 			//params.still = 'demo_video.jpg';
 			//params.src = 'demo_video.flv';
 			//params.xml = 'http://media.local/explore_film.xml';
-			params['src'] = 'Adrenaline-Junkie_Avalanche-Rescue-Explore_1500k-16x9.mov';
-			//params['src'] = 'Sample_720p.mp4';
+			//params['src'] = 'Adrenaline-Junkie_Avalanche-Rescue-Explore_1500k-16x9.mov';
 
 			if(params['src']){
 
@@ -48,8 +47,7 @@ package us.xdev.mediaplayer.models
 				if(params['still']){
 					still = '<still>'+params['still']+'</still>';
 				}
-				//fms.0C21.edgecastcdn.net/000C21
-				still += '<server>rtmp://beta.fms.edgecastcdn.net/000C21/videos/</server>';
+				//still += '<server>rtmp://beta.fms.edgecastcdn.net/000C21/videos/</server>';
 
 				parseXML('<xml><slides><slide><file>'+params['src']+'</file>' + still + '</slide></slides></xml>');
 

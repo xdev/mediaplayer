@@ -224,7 +224,7 @@ package us.xdev.mediaplayer.views
 			if(data.mode == 'image'){
 
 				var tf:TextFormat = new TextFormat();
-				tf.font = 'Akzidenz Grotesk';
+				tf.font = 'Arial';
 				tf.size = 10;
 				tf.color = 0xFFFFFF;
 				tf.align = 'center';

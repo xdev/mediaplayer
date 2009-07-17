@@ -21,15 +21,9 @@ package us.xdev.mediaplayer.views
 	{
 		[Embed(source='library.swf', symbol='mediaplayback_icons')]
 		private var icons:Class;
-		
-		[Embed(source='library.swf', symbol='explore_icons')]
-		private var explore_icons:Class;
-		
-		[Embed(source='library.swf', symbol='AkzidenzGrotesk')]
+				
+		[Embed(source='library.swf', symbol='Arial')]
 		private var font1:Class;
-		
-		[Embed(source='library.swf', symbol='standard07_55')]
-		private var font2:Class;
 				
 		protected var _timer:Timer;
 		protected var _timeMode:Boolean;
@@ -378,7 +372,7 @@ package us.xdev.mediaplayer.views
 			var i:MovieClip,mc:MovieClip;
 			
 			//VCR stop (back to beginning)
-			/*
+			
 			i = new icons();
 			i.gotoAndStop('video_start');
 			mc = MovieClip(ref.addChild(i));
@@ -389,10 +383,10 @@ package us.xdev.mediaplayer.views
 			mc.addEventListener(MouseEvent.ROLL_OVER,mouseHandler);
 			mc.addEventListener(MouseEvent.ROLL_OUT,mouseHandler);
 			mc.addEventListener(MouseEvent.CLICK,mouseHandler);
-			*/
+			
 			
 			//play/pause
-			i = new explore_icons();
+			i = new icons();
 			i.gotoAndStop('video_play');
 			mc = MovieClip(ref.addChild(i));
 			mc.name = 'video_play';
@@ -409,7 +403,7 @@ package us.xdev.mediaplayer.views
 			mc.buttonMode = true;
 			//Utils.drawRect(mc,_width-100,10,0x000000,0.0,[1.0,0xFFFFFF,1.0]);
 			
-			i = new explore_icons();
+			i = new icons();
 			i.gotoAndStop('timeback');
 			mc = MovieClip(ref.addChild(i));
 			mc.name = 'timeback';
@@ -442,7 +436,7 @@ package us.xdev.mediaplayer.views
 			
 			//progress label
 			var tf:TextFormat = new TextFormat();
-			tf.font = "standard 07_55";
+			tf.font = "Arial";
 			tf.size = 8;
 			//tf.color = 0xFFFFFF;
 			

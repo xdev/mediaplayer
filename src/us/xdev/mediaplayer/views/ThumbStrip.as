@@ -42,9 +42,6 @@ package us.xdev.mediaplayer.views
     	[Embed(source='library.swf', symbol='mediaplayer_icons')]
     	private var mediaplayer_icons:Class;
 
-		[Embed(source='library.swf', symbol='explore_icons')]
-		private var explore_icons:Class;
-
 		public function ThumbStrip(ref:Object,model:*,controller:*,obj:Object=null)
 		{
 			super(ref,model,controller);
@@ -150,7 +147,7 @@ package us.xdev.mediaplayer.views
 			g.mask = Utils.createmc(cont,'mask');
 
 			var tf:TextFormat = new TextFormat();
-			tf.font = 'Akzidenz Grotesk';
+			tf.font = 'Arial';
 			tf.size = 10;
 			tf.color = 0xFFFFFF;
 

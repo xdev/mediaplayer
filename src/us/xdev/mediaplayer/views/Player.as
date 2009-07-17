@@ -26,9 +26,7 @@ package us.xdev.mediaplayer.views
 	import gs.TweenLite;
 	
 	import us.xdev.mediaplayer.controllers.ThumbController;
-	import us.xdev.mediaplayer.views.Related;
-	import us.xdev.mediaplayer.views.Share;
-	import us.xdev.mediaplayer.views.Description;
+	import us.xdev.mediaplayer.views.ThumbGrid;
 
 	public class Player extends AbstractView
 	{
@@ -37,19 +35,10 @@ package us.xdev.mediaplayer.views
 
 		[Embed(source='library.swf', symbol='icon_timer')]
 		private var icon_timer:Class;
-		
-		[Embed(source='library.swf', symbol='explore_icons')]
-		private var explore_icons:Class;
-		
-		[Embed(source='library.swf', symbol='AGSchoolbookRegularA')]
+						
+		[Embed(source='library.swf', symbol='Arial')]
 		private var font1:Class;
 		
-		[Embed(source='library.swf', symbol='AGSchoolbookMediumA')]
-		private var font2:Class;
-		
-		[Embed(source='library.swf', symbol='standard07_55')]
-		private var font3:Class;
-
 		public var slideInterval:Number;
 		private var uiInterval:Number;
 		private var progressOffset:Number;
@@ -58,17 +47,9 @@ package us.xdev.mediaplayer.views
 		private var configObj:Object;
 		private var flagThumbs:Boolean;
 		private var slideView:Slide;
-		private var thumbView:ThumbStrip;//ThumbGrid;
+		private var thumbView:ThumbGrid;//ThumbGrid;
 		private var thumbController:ThumbController;
-		//explore variables
-		private var buttonSize:int = 54;
-		private var buttonPadding:int = 12;
-		private var button_tf:TextFormat;
-		private var columnData:Object;
-		private var screenView:AbstractView;
-		private var oldScreen:String;
-		private var thumbInterval:Number;
-
+		
 		public function Player(ref:Object,model:*,controller:*=null)
 		{
 
@@ -92,17 +73,11 @@ package us.xdev.mediaplayer.views
 		private function buildThumbs():void
 		{
 			thumbController = new ThumbController(model);
-			thumbView = new ThumbStrip(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:50,thumbHeight:50,padding:10,marginX:0,marginY:0});
-			//clearInterval(thumbInterval);
-			//initial delay yo
-			//thumbInterval = setInterval(hideThumbs,2000);
-			
-			
+			thumbView = new ThumbGrid(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:50,thumbHeight:50,padding:10,marginX:0,marginY:0});
 		}
 		
 		private function hideThumbs():void
 		{
-			clearInterval(thumbInterval);
 			flagThumbs = false;
 			showThumbs(true);
 		}
@@ -121,7 +96,6 @@ package us.xdev.mediaplayer.views
 				flagThumbs = false;
 				//showThumbs();
 				//
-				closeScreen();
 				viewSlide();
 			}
 		}
@@ -382,32 +356,6 @@ package us.xdev.mediaplayer.views
 			}
 		}
 		
-		private function buildButton(mc:MovieClip,label:String,icon:String):void
-		{
-			//frame
-			Utils.drawRoundRect(Utils.createmc(mc,'frame',{x:0.5,y:0.5,alpha:0.4}),buttonSize-0.5,buttonSize-0.5,0x000000,1.0,10,[1.0,0xFFFFFF,1.0]);
-			
-			//label
-			Utils.makeTextfield(Utils.createmc(mc,'label'),label,button_tf,{x:0,y:buttonSize-15,width:buttonSize});
-			
-			//icon
-			var i:* = new explore_icons();
-			i.gotoAndStop(icon);
-			i.x = buttonSize/2;
-			i.y = buttonSize/2 - 5;
-			i.name = 'icon';
-			i.mouseChildren = false;
-			i.alpha = 0.6;
-			mc.addChild(i);
-			
-			mc.mouseEnabled = true;
-			mc.buttonMode = true;
-			//mc.mouseChildren = false;
-			mc.addEventListener(MouseEvent.MOUSE_OVER,handleButton,false,0,true);
-			mc.addEventListener(MouseEvent.MOUSE_OUT,handleButton,false,0,true);
-			mc.addEventListener(MouseEvent.CLICK,handleButton,false,0,true);
-		}
-		
 		private function handleButton(e:MouseEvent):void
 		{
 			var mc:MovieClip = MovieClip(e.currentTarget);
@@ -439,20 +387,7 @@ package us.xdev.mediaplayer.views
 				if(mc.name == 'screen'){
 					toggleFullScreen();
 				}
-				if(mc.name == 'share'){
-					viewScreen('share');
-				}
-				if(mc.name == 'playlist'){
-					viewScreen('playlist');
-				}
-				if(mc.name == 'related'){
-					viewScreen('related');
-				}
-				if(mc.name == 'description'){
-					viewScreen('description');
-				}
 				if(mc.name == 'slideshow'){
-					closeScreen();
 					toggleSlideShow();
 				}
 				if(mc.name == 'thumbs'){
@@ -461,120 +396,21 @@ package us.xdev.mediaplayer.views
 			}
 		}
 		
-		private function viewScreen(name:String=''):void
-		{
-			closeScreen(false);
-			
-			if(oldScreen && oldScreen == name){
-				oldScreen = '';
-				return;
-			}
-			
-			var mc:MovieClip = Utils.$(ref,'_screen');
-			if(name == 'playlist' || name == 'related'){
-				screenView = new Related(mc,model,controller);
-			}
-			if(name == 'share'){
-				screenView = new Share(mc,model,controller);
-			}
-			if(name == 'description'){
-				screenView = new Description(mc,model,controller,model.slideA[model.slideIndex].title,model.slideA[model.slideIndex].description);
-			}
-			oldScreen = name;
-		}
-		
-		public function closeScreen(reset:Boolean=true):void
-		{
-			if(screenView != null){
-				//screenView.onKill();
-				screenView = null;
-			}
-			var w:int = 640;
-			var h:int = 360;
-			var mc:MovieClip = Utils.createmc(ref,'_screen',{x:ref.stage.stageWidth/2 - w/2,y:ref.stage.stageHeight/2 - h/2});
-			
-			if(reset){
-				oldScreen = '';
-			}
-		}
-		
-		private function balanceColumn(side:String):void
-		{
-			var tA:Array = columnData[side];
-			if(tA == null){ return; };
-			var yPos:int = ref.stage.stageHeight/2 - ((tA.length * buttonSize) + ((tA.length-1)*buttonPadding))/2;
-			for each(var item:Object in tA){
-				var mc:MovieClip = Utils.$(ref,'ui.'+item.id);
-				mc.y = yPos;
-				yPos += buttonPadding + buttonSize;
-				if(side == 'left'){
-					mc.x = buttonSize;
-				}
-				if(side == 'right'){
-					mc.x = ref.stage.stageWidth - (buttonSize + buttonSize);
-				}
-			}
-		}
-		
-		private function buildColumn(items:Array,side:String):void
-		{
-			var item:Object;
-			var yPos:int = 0;
-			var mc:MovieClip;
-			for each(item in items){
-				mc = Utils.createmc(Utils.$(ref,'ui'),item.id,{y:yPos});
-				buildButton(mc,item.label,item.icon);
-				yPos += buttonSize + buttonPadding;
-				
-								
-			}
-			columnData[side] = items;
-		}
-		
 		private function buildUI():void
 		{
-			button_tf = new TextFormat();
-			button_tf.font = 'AG Schoolbook RegularA';
-			button_tf.size = 9;
-			button_tf.color = 0xFFFFFF;
-			button_tf.align = 'center';
-			
+						
 			var ui:MovieClip = Utils.createmc(ref,'ui',{alpha:0});
 			//this.stage.setChildIndex(ui,1);
 			//top bar
 			//full screen, thumbnail, timer/toggle, status
+			var i:*;
+			var mc:MovieClip;
+			var xPos:int = 0;
 
-
-			var i:MovieClip,mc:MovieClip,xPos:int;
-			var j:int = 0;
-			var tA:Array;
-			
-			columnData = {};
-			
-			//left column
-			tA = [
-				{id:'favorite',label:'+Favorites',icon:'icon_add_favorite'},
-				{id:'playlist',label:'+Playlist',icon:'icon_add_playlist'},
-				{id:'share',label:'Share',icon:'icon_share'}];
-			buildColumn(tA,'left');
-						
-			//right column
-			tA = [
-				{id:'description',label:'Description',icon:'icon_info'},
-				{id:'screen',label:'Full screen',icon:'icon_fullscreen_on'},
-				{id:'dim',label:'Dim Lights',icon:'icon_lights_off'}
-				
-				];//{id:'thumbs',label:'Thumbnails',icon:'icon_slideshow_off'}
-				
-			if(model.slideMax > 1 && configObj.slideshow == true){
-				tA.push({id:'slideshow',label:'Slideshow',icon:'icon_slideshow_on'});
-			}
-				
-			buildColumn(tA,'right');
 			
 			if(configObj.fullscreen == true){
 				
-				/*
+				
 				i = new mediaplayer_icons();
 				i.gotoAndStop('fullscreen');
 				i.name = 'icon';
@@ -587,11 +423,11 @@ package us.xdev.mediaplayer.views
 				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 				mc.xPos = 14;
 				xPos = 14;
-				*/
+				
 			}
 
 			if(configObj.thumbgrid == true){
-				/*
+				
 				i = new mediaplayer_icons();
 				i.gotoAndStop('thumbnail');
 				i.name = 'icon';
@@ -607,13 +443,13 @@ package us.xdev.mediaplayer.views
 				}else{
 					mc.xPos = 14;
 				}
-				*/
+				
 			}
 
 			xPos = 6;
 
 			if(configObj.slideshow == true){
-				/*
+				
 				i = new icon_timer();
 				i.name = 'icon';
 				if(model.flagPlaying){
@@ -630,7 +466,7 @@ package us.xdev.mediaplayer.views
 				mc.addEventListener(MouseEvent.ROLL_OUT,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 				xPos = 28;
-				*/
+				
 			}
 
 
@@ -638,7 +474,7 @@ package us.xdev.mediaplayer.views
 			if(model.slideMax > 1){
 
 				var tf:TextFormat = new TextFormat();
-				tf.font = 'AG Schoolbook RegularA';
+				tf.font = 'Arial';
 				tf.size = 11;
 				tf.color = 0xFFFFFF;
 
@@ -672,7 +508,7 @@ package us.xdev.mediaplayer.views
 
 				//nav
 				//left, right
-				i = new explore_icons();
+				i = new mediaplayer_icons();
 				i.gotoAndStop('nav_arrow');
 				mc = Utils.createmc(ui,'nav_prev');
 				mc.addChild(i);
@@ -685,7 +521,7 @@ package us.xdev.mediaplayer.views
 				mc.addEventListener(MouseEvent.MOUSE_OUT,handleIconsMouse,false,0,true);
 				mc.addEventListener(MouseEvent.CLICK,handleIconsMouse,false,0,true);
 
-				i = new explore_icons();
+				i = new mediaplayer_icons();
 				i.gotoAndStop('nav_arrow');
 				mc = Utils.createmc(ui,'nav_next');
 				mc.addChild(i);
@@ -713,7 +549,7 @@ package us.xdev.mediaplayer.views
 			var ui:MovieClip = Utils.$(ref,'ui');
 			var mc:MovieClip;
 			
-			/*
+			
 			mc = Utils.$(ui,'fullscreen');
 			if(mc){
 				mc.x = ref.stage.stageWidth - mc.xPos;
@@ -729,7 +565,7 @@ package us.xdev.mediaplayer.views
 				mc.x = ref.stage.stageWidth/2 - mc.width/2;
 				mc.y = ref.stage.stageHeight/2 - 8;
 			}
-			*/
+			
 			
 			mc = Utils.$(ref,'thumbs');
 			if(mc){
@@ -739,10 +575,6 @@ package us.xdev.mediaplayer.views
 					mc.y = ref.stage.stageHeight + 10;
 				}
 			}
-			
-			//columnData
-			balanceColumn('left');
-			balanceColumn('right');
 
 			if(model.slideMax > 1){
 				mc = Utils.$(ui,'nav_prev');
@@ -755,15 +587,8 @@ package us.xdev.mediaplayer.views
 
 			if(slideView != null){
 				slideView.scale();
-			}
+			}			
 			
-			if(screenView != null){
-				var w:int = 640;
-				var h:int = 360;
-				mc = MovieClip(screenView.getRef());
-				mc.x = ref.stage.stageWidth/2 - w/2;
-				mc.y = ref.stage.stageHeight/2 - h/2;
-			}
 		}
 
 		private function onFullScreen(e:FullScreenEvent):void
