@@ -40,7 +40,7 @@ package us.xdev.mediaplayer.views
 		private var transportView:*;
 		private var transportController:TransportController;
 		private var mediaView:*;
-		
+
 		private var data:Object;
 
 		//this is the screen to display assets
@@ -64,25 +64,25 @@ package us.xdev.mediaplayer.views
 					TweenLite.to(transportView.getRef(),0.3,{alpha:1.0});
 				}
 			}
-			
+
 			if(event.props.action == 'hideUI'){
 				if(transportView){
 					TweenLite.to(transportView.getRef(),0.5,{alpha:0.0});
 				}
 			}
-			
+
 			if(event.props.action == 'pause'){
 				if(transportController){
 					transportController.pause();
 				}
 			}
-			
+
 			if(event.props.action == 'play'){
 				if(transportController){
 					transportController.play();
 				}
 			}
-			
+
 			if(event.props.action == 'render'){
 				//attach stuff yea
 			}
@@ -100,7 +100,7 @@ package us.xdev.mediaplayer.views
 		}
 
 		private function handleMediaUpdate(event:CustomEvent):void
-		{	
+		{
 			//trace('handleMediaUpdate = ' + event.props.action);
 			var v:Video;
 			if(event.props.action == 'playVideo'){
@@ -118,7 +118,7 @@ package us.xdev.mediaplayer.views
 					//Utils.$(ref,'asset').width = event.props.width;
 					//Utils.$(ref,'asset').height = event.props.height;
 					//if we're a video drop in cover?clip???
-					
+
 					/*
 					if(event.props.action == 'updateSize'){
 
@@ -133,7 +133,7 @@ package us.xdev.mediaplayer.views
 
 							var i:MovieClip = new icons();
 							i.gotoAndStop('video_overlay_play');
-							mc = MovieClip(ref.addChild(i));					
+							mc = MovieClip(ref.addChild(i));
 							mc.alpha = 0.0;
 							mc.name = 'video_overlay_play';
 							mc.buttonMode = true;
@@ -146,11 +146,11 @@ package us.xdev.mediaplayer.views
 
 						_originalSize = {};
 						_originalSize._width = infoObj._width;
-						_originalSize._height = infoObj._height;				
+						_originalSize._height = infoObj._height;
 						updateSize(infoObj);
 					}
 					*/
-					
+
 					reveal();
 				}
 
@@ -160,7 +160,7 @@ package us.xdev.mediaplayer.views
 		public function render(data:Object):void
 		{
 			this.data = data;
-			
+
 			killMedia();
 
 			//build preload clip
@@ -201,7 +201,7 @@ package us.xdev.mediaplayer.views
 
 				//stop slideshow
 				//controller.setPlaying(false);
-				
+
 				/*
 				//create still frame
 				if(options.still != undefined){
@@ -299,7 +299,7 @@ package us.xdev.mediaplayer.views
 		add play icon from paused state...
 		draw huge hit area for play/pause video, etc
 		*/
-		
+
 		private function getVideoDimensions(mode:Boolean=true):Object
 		{
 			if(mode == false){
@@ -308,10 +308,10 @@ package us.xdev.mediaplayer.views
 				return {height:_height,width:_width};
 			}
 		}
-		
+
 		public function scale():void
 		{
-			
+
 			var mc:MovieClip;
 			var slide:* = Utils.$(ref,'asset');
 
@@ -322,9 +322,9 @@ package us.xdev.mediaplayer.views
 				var imgX:int = _width;
 				var imgY:int = _height;
 				var m:int = 100;
-				
-				
-				
+
+
+
 				//m = undefined;
 
 				if(mediaModel != null)
@@ -333,8 +333,8 @@ package us.xdev.mediaplayer.views
 						var tA:Object = getVideoDimensions(true);
 						imgX = tA.width;
 						imgY = tA.height;
-					//}	
-					
+					//}
+
 
 					if(configObj.scalevideo){
 						m = undefined;
@@ -346,10 +346,10 @@ package us.xdev.mediaplayer.views
 						m = undefined;
 					}
 				}
-				
-				
-				
-				/*			
+
+
+
+				/*
 				if(configObj.scaleimage){
 					m = undefined;
 				}
@@ -358,9 +358,9 @@ package us.xdev.mediaplayer.views
 
 				var scale:Number = Utils.getScale(imgX,imgY,stageW-(configObj.marginX*2),stageH-(configObj.marginY*2),'scale',m).x;
 				scale = scale/100;
-				
-				
-				
+
+
+
 				//if we're a image
 				if(mediaModel == null){
 					slide.scaleX = scale;
@@ -374,21 +374,21 @@ package us.xdev.mediaplayer.views
 
 					//MP.setScale(scale*100);
 					//tA = getVideoDimensions();
-					
+
 					//lock it down to 100?
 					if(ref.stage.displayState != "fullScreen"){
 						//if(scale > 1){
 						//	scale = 1;
 						//}
 					}
-					
+
 					//
-					
+
 					slide.width = Math.ceil(_width*scale);
 					slide.height = Math.ceil(_height*scale);
 					slide.x = stageW/2 - slide.width/2;
 					slide.y = (stageH)/2 - slide.height/2;
-					
+
 					//update view
 					mc = transportView.getRef();
 					mc.y = stageH-mc.height;
@@ -397,13 +397,13 @@ package us.xdev.mediaplayer.views
 					if(ref.stage.displayState == "fullScreen"){
 						mc.y = stageH-(mc.height*3);
 					}else{
-						
+
 					}
-					
-				
-					
+
+
+
 					transportView.setWidth(640);//stageW);
-					
+
 					/*
 					mc = Utils.$(MP._view.ref,'still');
 					if(mc != null){
@@ -433,7 +433,7 @@ package us.xdev.mediaplayer.views
 					}
 					*/
 				}
-				
+
 
 			}
 

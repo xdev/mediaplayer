@@ -44,7 +44,7 @@ package us.xdev.mediaplayer.views
 		private var progressOffset:Number;
 		private var progressInterval:Number;
 		private var timestamp:Number;
-		private var configObj:Object;
+		protected var configObj:Object;
 		private var flagThumbs:Boolean;
 		private var slideView:Slide;
 		private var thumbView:ThumbStrip;//ThumbGrid;
@@ -109,7 +109,7 @@ package us.xdev.mediaplayer.views
 		{
 			model.setPlaying(false);
 			
-			buildUI();
+			renderUI();
 			buildThumbs();
 			
 			controller.advanceSlide(1);	
@@ -358,7 +358,7 @@ package us.xdev.mediaplayer.views
 			}
 		}
 						
-		private function buildUI():void
+		protected function renderUI():void
 		{
 						
 			var ui:MovieClip = Utils.createmc(ref,'ui',{alpha:0});
@@ -635,7 +635,9 @@ package us.xdev.mediaplayer.views
 			var ui:MovieClip = Utils.$(ref,'ui');
 
 			if(model.slideMax > 1){
-				TextField(Utils.$(ui,'label.txt.displayText')).text = (model.slideIndex+1) + '/' + model.slideMax;
+				if(Utils.$(ui,'label')){
+					TextField(Utils.$(ui,'label.txt.displayText')).text = (model.slideIndex+1) + '/' + model.slideMax;
+				}
 			}
 			
 			clearTimeout(slideInterval);

@@ -315,7 +315,7 @@ package us.xdev.mediaplayer.views
 			*/
 		}
 		
-		private function layoutUI():void
+		protected function layoutUI():void
 		{
 			if(ref != null){
 				var mc:MovieClip;
