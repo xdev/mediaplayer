@@ -46,19 +46,29 @@ package us.xdev.mediaplayer.views
 		private var timestamp:Number;
 		protected var configObj:Object;
 		private var flagThumbs:Boolean;
-		private var slideView:Slide;
+		protected var slideView:Slide;
 		private var thumbView:ThumbStrip;//ThumbGrid;
 		private var thumbController:ThumbController;
 		
+		//set these up for customizations		
+		protected var slideViewClass:*;
+		protected var thumbViewClass:*;
+		protected var thumbControllerClass:*;
+		
+		
+		
 		public function Player(ref:Object,model:*,controller:*=null)
 		{
-
 			super(ref,model,controller);
+			
+			//declare classes for slide and thumb views/controllers
+			slideViewClass = us.xdev.mediaplayer.views.Slide;
+			thumbViewClass = us.xdev.mediaplayer.views.ThumbStrip;
+			thumbControllerClass = us.xdev.mediaplayer.controllers.ThumbController;		
 
 			configObj = model.getConfig();
 			
 			//build thumbnails????
-			
 
 			ref.stage.scaleMode = StageScaleMode.NO_SCALE;
 			ref.stage.align = StageAlign.TOP_LEFT;
@@ -72,8 +82,8 @@ package us.xdev.mediaplayer.views
 		
 		private function buildThumbs():void
 		{
-			thumbController = new ThumbController(model);
-			thumbView = new ThumbStrip(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:50,thumbHeight:50,padding:10,marginX:0,marginY:0});
+			thumbController = new thumbControllerClass(model);
+			thumbView = new thumbViewClass(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:50,thumbHeight:50,padding:10,marginX:0,marginY:0});
 		}
 		
 		private function hideThumbs():void
@@ -505,9 +515,8 @@ package us.xdev.mediaplayer.views
 
 		}
 
-		private function onResize(e:Event = null):void
+		protected function onResize(e:Event = null):void
 		{
-			trace('onResize');
 			var ui:MovieClip = Utils.$(ref,'ui');
 			var mc:MovieClip;
 			
@@ -540,11 +549,15 @@ package us.xdev.mediaplayer.views
 
 			if(model.slideMax > 1){
 				mc = Utils.$(ui,'nav_prev');
-				mc.y = Math.floor(ref.stage.stageHeight/2);
+				if(mc){
+					mc.y = Math.floor(ref.stage.stageHeight/2);
+				}
 
 				mc = Utils.$(ui,'nav_next');
-				mc.y = Math.floor(ref.stage.stageHeight/2);
-				mc.x = ref.stage.stageWidth - 25;
+				if(mc){
+					mc.y = Math.floor(ref.stage.stageHeight/2);
+					mc.x = ref.stage.stageWidth - 25;
+				}
 			}
 
 			if(slideView != null){
@@ -619,7 +632,7 @@ package us.xdev.mediaplayer.views
 			//create new
 			var slide:MovieClip = Utils.createmc(ref,'slide',{alpha:0.0});
 			ref.setChildIndex(slide,0);	
-			slideView = new Slide(slide,model,controller);
+			slideView = new slideViewClass(slide,model,controller);
 			slideView.addEventListener('onReveal',handleSlideLoad,false,0,true);
 			
 			//register for updates

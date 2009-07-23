@@ -36,17 +36,22 @@ package us.xdev.mediaplayer.views
 		private var _width:int;
 		private var _height:int;
 
-		private var mediaModel:IMediaModel;
-		private var transportView:*;
-		private var transportController:TransportController;
+		protected var mediaModel:IMediaModel;
+		protected var transportView:*;
+		protected var transportController:TransportController;
 		private var mediaView:*;
 
+		protected var transportViewClass:*;
+		protected var transportControllerClass:*;
+		
 		private var data:Object;
 
 		//this is the screen to display assets
 		public function Slide(ref:Object,model:*,controller:*=null)
 		{
 			super(ref,model,controller);
+			transportViewClass = us.xdev.mediaplayer.views.Transport;
+			transportControllerClass = us.xdev.mediaplayer.controllers.TransportController;
 			configObj = model.getConfig();
 		}
 
@@ -186,8 +191,8 @@ package us.xdev.mediaplayer.views
 					mediaModel = new AudioModel(data.file,options);
 				}
 
-				transportController = new TransportController(mediaModel);
-				transportView = new Transport(Utils.createmc(ref,'transport'),mediaModel,transportController);
+				transportController = new transportControllerClass(mediaModel);
+				transportView = new transportViewClass(Utils.createmc(ref,'transport'),mediaModel,transportController);
 				mediaModel.addEventListener('onUpdate',transportView.update);
 				mediaModel.addEventListener('onUpdate',handleMediaUpdate);
 
@@ -390,6 +395,8 @@ package us.xdev.mediaplayer.views
 					slide.y = (stageH)/2 - slide.height/2;
 
 					//update view
+					//WHAT IS THIS?
+					
 					mc = transportView.getRef();
 					mc.y = stageH-mc.height;
 					mc.x = stageW/2-320;//0;
