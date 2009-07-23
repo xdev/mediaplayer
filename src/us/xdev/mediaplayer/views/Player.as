@@ -40,15 +40,15 @@ package us.xdev.mediaplayer.views
 		private var font1:Class;
 		
 		public var slideInterval:Number;
-		private var uiInterval:Number;
-		private var progressOffset:Number;
-		private var progressInterval:Number;
-		private var timestamp:Number;
+		protected var uiInterval:Number;
+		protected var progressOffset:Number;
+		protected var progressInterval:Number;
+		protected var timestamp:Number;
 		protected var configObj:Object;
-		private var flagThumbs:Boolean;
+		protected var flagThumbs:Boolean;
 		protected var slideView:Slide;
-		private var thumbView:ThumbStrip;//ThumbGrid;
-		private var thumbController:ThumbController;
+		protected var thumbView:ThumbStrip;//ThumbGrid;
+		protected var thumbController:ThumbController;
 		
 		//set these up for customizations		
 		protected var slideViewClass:*;
@@ -80,13 +80,13 @@ package us.xdev.mediaplayer.views
 
 		}
 		
-		private function buildThumbs():void
+		protected function buildThumbs():void
 		{
 			thumbController = new thumbControllerClass(model);
 			thumbView = new thumbViewClass(Utils.createmc(ref,'thumbs',{visible:false}),model,thumbController,{thumbWidth:50,thumbHeight:50,padding:10,marginX:0,marginY:0});
 		}
 		
-		private function hideThumbs():void
+		protected function hideThumbs():void
 		{
 			flagThumbs = false;
 			showThumbs(true);
@@ -110,7 +110,7 @@ package us.xdev.mediaplayer.views
 			}
 		}
 
-		private function keyListener(e:KeyboardEvent):void
+		protected function keyListener(e:KeyboardEvent):void
 		{
 			controller.handleKey(e);
 		}
@@ -132,7 +132,7 @@ package us.xdev.mediaplayer.views
 			
 		}
 
-		private function mouseListener(e:Event):void
+		protected function mouseListener(e:Event):void
 		{
 			if(e.type == MouseEvent.MOUSE_MOVE){
 				showUI();
@@ -142,7 +142,7 @@ package us.xdev.mediaplayer.views
 			}
 		}
 
-		private function showUI():void
+		protected function showUI():void
 		{
 			//start timer to hideUI
 			clearTimeout(uiInterval);
@@ -159,7 +159,7 @@ package us.xdev.mediaplayer.views
 			}
 		}
 
-		private function hideUI():void
+		protected function hideUI():void
 		{
 			
 			clearTimeout(uiInterval);
@@ -171,7 +171,7 @@ package us.xdev.mediaplayer.views
 			showThumbs(false);		
 		}
 		
-		private function showThumbs(fade:Boolean=true):void
+		protected function showThumbs(fade:Boolean=true):void
 		{
 			if(thumbView == null){
 				return;
@@ -324,7 +324,7 @@ package us.xdev.mediaplayer.views
 			}
 		}
 				
-		private function handleIconsMouse(e:Event):void
+		protected function handleIconsMouse(e:Event):void
 		{
 			//get the type, process the target
 			var mc:MovieClip = MovieClip(e.currentTarget);
@@ -566,7 +566,7 @@ package us.xdev.mediaplayer.views
 			
 		}
 
-		private function onFullScreen(e:FullScreenEvent):void
+		protected function onFullScreen(e:FullScreenEvent):void
 		{
 			var mc:MovieClip = Utils.$(ref,'ui.fullscreen.icon');//.icon, .label
 			if(ref.stage.displayState == "fullScreen"){
@@ -578,7 +578,7 @@ package us.xdev.mediaplayer.views
 			}
 		}
 
-		private function updateSlideShowState():void
+		protected function updateSlideShowState():void
 		{
 			/*
 			var ui:MovieClip = Utils.$(ref,'ui');
@@ -597,7 +597,7 @@ package us.xdev.mediaplayer.views
 			*/
 		}
 		
-		private function handleSlideLoad(e:CustomEvent):void
+		protected function handleSlideLoad(e:CustomEvent):void
 		{
 					
 			if(configObj.slideshow == true){
@@ -619,7 +619,7 @@ package us.xdev.mediaplayer.views
 			
 		}
 		
-		private function viewSlide():void
+		protected function viewSlide():void
 		{
 			//clean up
 			clearInterval(progressInterval);
@@ -658,17 +658,17 @@ package us.xdev.mediaplayer.views
 
 		}
 
-		private function slideProgressListener(e:ProgressEvent):void
+		protected function slideProgressListener(e:ProgressEvent):void
 		{
 			//renderProgress(p);
 		}
 
-		private function slideProgressSegment():void
+		protected function slideProgressSegment():void
 		{
 			//renderProgress((timestamp - getTimer())/configObj.duration);
 		}
 
-		private function renderProgress(p:Number):void
+		protected function renderProgress(p:Number):void
 		{
 			var dO:Number = 3.6;
 			var r:int = 20;
