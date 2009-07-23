@@ -99,12 +99,12 @@ package us.xdev.mediaplayer.views
 			renderUI();
 		}	
 		
-		private function toggleTime():void
+		protected function toggleTime():void
 		{
 			_timeMode = !_timeMode;
 		}
 		
-		private function toggleAudio():void
+		protected function toggleAudio():void
 		{
 			if(_soundLevel < _soundLevelA.length){
 				_soundLevel++;
@@ -222,7 +222,7 @@ package us.xdev.mediaplayer.views
 			
 		}
 		
-		private function trackScrubber(e:Event):void
+		protected function trackScrubber(e:Event):void
 		{
 			controller.findSeek(Utils.$(ref,'timeline.scrubber').x / (_width-(100+64)-(_scrubberWidth/2)));
 		}

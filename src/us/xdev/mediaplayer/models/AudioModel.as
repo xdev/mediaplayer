@@ -120,6 +120,7 @@ package us.xdev.mediaplayer.models
 		{
 			_volume = value;
 			_setVolume();
+			update({action:'onVolumeChange',volume:value});
 		}
 		
 		public function setBuffer(value:Number):void
@@ -159,7 +160,7 @@ package us.xdev.mediaplayer.models
 		
 		private function streamStatus(obj:Object):void
 		{
-			trace(obj.code);
+			//trace(obj.code);
 		}
 			
 		private function playMedia():void

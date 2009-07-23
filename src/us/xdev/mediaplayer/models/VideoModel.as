@@ -113,6 +113,7 @@ package us.xdev.mediaplayer.models
 			var transform:SoundTransform = new SoundTransform();
 			transform.volume = value;
 			_stream.soundTransform = transform;
+			update({action:'onVolumeChange',volume:value});
 		}
 		
 		public function setBuffer(value:Number):void
@@ -184,7 +185,7 @@ package us.xdev.mediaplayer.models
 		
 		private function netStatusHandler(event:NetStatusEvent):void
 		{
-			trace(event.info.code);
+			//trace(event.info.code);
 			switch (event.info.code) {
 				case 'NetConnection.Connect.Success':
 					playMedia();
