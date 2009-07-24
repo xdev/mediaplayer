@@ -29,18 +29,26 @@ package us.xdev.mediaplayer.models
 			var xml:String;
 
 			if(Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone"){
-				xml = 'http://mediaplayer.local/demo_slideshow.xml';
+				//xml = 'http://mediaplayer.local/demo_slideshow.xml';
+				params = {};
+				params.still = 'http://explore.local/assets/img/sample/video_still.jpg';
+				params.server = 'rtmp://beta.fms.edgecastcdn.net/000C21/videos/';
+				params.src = 'Adrenaline-Junkie_Avalanche-Rescue-Explore_1500k-16x9.mov';
 			}
 
 			if(params['src']){
 
-				var still:String = '';
+				var _xml:String = '<xml><slides><slide>';
+				_xml += '<file>'+params['src']+'</file>';
 				if(params['still']){
-					still = '<still>'+params['still']+'</still>';
+					_xml += '<still>'+params['still']+'</still>';
 				}
-								
-				//still += '<server>rtmp://url/vod/</server>';
-				parseXML('<xml><slides><slide><file>'+params['src']+'</file>' + still + '</slide></slides></xml>');
+				if(params['server']){
+					//_xml += '<server>rtmp://url/vod/</server>';
+					_xml += '<server>'+params['server']+'</server>';
+				}
+				_xml += '</slide></slides></xml>';					
+				parseXML(_xml);
 
 			}else{
 
@@ -122,7 +130,7 @@ package us.xdev.mediaplayer.models
 				duration:5000,
 				slideshow:true,
 				scalevideo:true,
-				scaleimage:false,
+				scaleimage:true,
 				marginX:0,
 				marginY:0,
 				thumbWidth:140,

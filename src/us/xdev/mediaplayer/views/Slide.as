@@ -31,7 +31,6 @@ package us.xdev.mediaplayer.views
 	public class Slide extends AbstractView
 	{
 		private var preloadInterval:Number;
-		private var configObj:Object;
 
 		private var _width:int;
 		private var _height:int;
@@ -52,7 +51,6 @@ package us.xdev.mediaplayer.views
 			super(ref,model,controller);
 			transportViewClass = us.xdev.mediaplayer.views.Transport;
 			transportControllerClass = us.xdev.mediaplayer.controllers.TransportController;
-			configObj = model.getConfig();
 		}
 
 		public function onKill():void
@@ -313,7 +311,12 @@ package us.xdev.mediaplayer.views
 				return {height:_height,width:_width};
 			}
 		}
-
+		
+		protected function getScale(objWidth:Number,objHeight:Number,max:Number):Number
+		{
+			return Utils.getScale(objWidth,objHeight,ref.stage.stageWidth - (model.getConfig().marginX*2),ref.stage.stageHeight - (model.getConfig().marginY*2),'scale',max).x;
+		}
+		
 		public function scale():void
 		{
 
@@ -341,7 +344,7 @@ package us.xdev.mediaplayer.views
 					//}
 
 
-					if(configObj.scalevideo){
+					if(model.getConfig().scalevideo){
 						m = undefined;
 					}
 				}else{
@@ -355,13 +358,13 @@ package us.xdev.mediaplayer.views
 
 
 				/*
-				if(configObj.scaleimage){
+				if(model.getConfig().scaleimage){
 					m = undefined;
 				}
 				*/
 				//m = undefined;
 
-				var scale:Number = Utils.getScale(imgX,imgY,stageW-(configObj.marginX*2),stageH-(configObj.marginY*2),'scale',m).x;
+				var scale:Number = getScale(imgX,imgY,m);
 				scale = scale/100;
 
 
@@ -387,15 +390,12 @@ package us.xdev.mediaplayer.views
 						//}
 					}
 
-					//
-
 					slide.width = Math.ceil(_width*scale);
 					slide.height = Math.ceil(_height*scale);
 					slide.x = stageW/2 - slide.width/2;
 					slide.y = (stageH)/2 - slide.height/2;
 
 					//update view
-					//WHAT IS THIS?
 					
 					mc = transportView.getRef();
 					mc.y = stageH-mc.height;
@@ -407,43 +407,11 @@ package us.xdev.mediaplayer.views
 
 					}
 
-
-
 					transportView.setWidth(640);//stageW);
-
-					/*
-					mc = Utils.$(MP._view.ref,'still');
-					if(mc != null){
-						mc.width = Math.ceil(tA.width*scale);
-						mc.height = Math.ceil(tA.height*scale);
-						mc.x = stage.stageWidth/2 - mc.width/2;
-						mc.y = (stage.stageHeight)/2 - mc.height/2;
-					}
-
-					//do overlay icon
-					mc = Utils.$(MP._view.ref,'video_overlay_play');
-					if(mc != null){
-						mc.x = stage.stageWidth/2;
-						mc.y = stage.stageHeight/2;
-					}
-
-					mc = Utils.$(MP._view.ref,'cover');
-					if(mc != null){
-						mc.width = Math.ceil(tA.width*scale);
-						mc.height = Math.ceil(tA.height*scale);
-						mc.x = stage.stageWidth/2 - mc.width/2;
-						mc.y = (stage.stageHeight)/2 - mc.height/2;
-					}
-					MP.setWidth(stage.stageWidth);
-					if(MP._view._controls != null){
-						MP._view._controls.y = stage.stageHeight - 20;
-					}
-					*/
+					
 				}
 
-
 			}
-
 
 		}
 
