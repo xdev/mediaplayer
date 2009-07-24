@@ -33,7 +33,7 @@ package us.xdev.mediaplayer.models
 				params = {};
 				params.still = 'http://explore.local/assets/img/sample/video_still.jpg';
 				params.server = 'rtmp://beta.fms.edgecastcdn.net/000C21/videos/';
-				params.src = 'Adrenaline-Junkie_Avalanche-Rescue-Explore_1500k-16x9.mov';
+				params.src = 'Adrenaline_Junkie-Explore_700kbit_16x9.mov';
 			}
 
 			if(params['src']){

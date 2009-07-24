@@ -23,12 +23,15 @@ package us.xdev.mediaplayer.models
 	
 		private var _file:String;
 		private var _stream:NetStream;
+		//private var _dynamicStream:DynamicStream;
 		private var _connection:NetConnection;
 		private var _video:Video;
 		private var _timer:Timer;
 		private var _metaData:Object;		
 		private var _playing:Boolean;
 		private var _options:Object;
+		private var _flashVersion:Number;
+		private var _serverVersion:String;
 		
 		public var b:EventDispatcher = new EventDispatcher();
 	
@@ -38,6 +41,7 @@ package us.xdev.mediaplayer.models
 			this._options = _options;
 			_metaData = {};
 			_playing = false;
+			//_flashVersion = Utils.getFlashPlayerMajorVersion();
 		}
 		
 		// --------------------------------------------------------------------
@@ -52,30 +56,29 @@ package us.xdev.mediaplayer.models
 			var clientObj:Object = {};
 			clientObj.onBWDone = onBWDone;
 			_connection.client = clientObj;
-			trace('connecting to ' + _options.server);
 			_connection.connect(_options.server);
 		}
 						
 		public function stopStream():void
 		{
-			pauseStream();
 			seekStream(0);
+			pauseStream();			
 			_playing = false;
-			dispatchPlaybackStatus(false);
+			dispatchPlaybackStatus(false,'stop');
 		}
 		
 		public function playStream():void
 		{
 			_stream.resume();
 			_playing = true;
-			dispatchPlaybackStatus(true);
+			dispatchPlaybackStatus(true,'play');
 		}		
 	
 		public function pauseStream():void
 		{
 			_stream.pause();
 			_playing = false;
-			dispatchPlaybackStatus(false);
+			dispatchPlaybackStatus(false,'pause');
 		}
 		
 		public function toggleStream():void
@@ -84,22 +87,21 @@ package us.xdev.mediaplayer.models
 			_stream.togglePause();
 			//is there an event listener to for this
 			if(_playing){
-				dispatchPlaybackStatus(true);
+				dispatchPlaybackStatus(true,'toggle');
 			}else{
-				dispatchPlaybackStatus(false);
+				dispatchPlaybackStatus(false,'toggle');
 			}
 		}	
 			
 		public function seekStream(time:Number):void
 		{
-			//trace('seekStream -time= ' + time);
 			_stream.seek(time);
 			_playing = true;
 		}
 	
 		public function seekStreamPercent(percent:Number):void
 		{
-			//trace('seek' + percent + '--' + _metaData.duration);
+			//mediaplayer.('seek' + percent + '--' + _metaData.duration);
 			seekStream(percent * _metaData.duration);
 		}
 		
@@ -149,15 +151,17 @@ package us.xdev.mediaplayer.models
 			//obj.name + obj.time
 		}
 		
-		private function dispatchPlaybackStatus(mode:Boolean):void
+		//Hack, this is for the external interface, example sound board
+		private function dispatchPlaybackStatus(mode:Boolean,action:String):void
 		{
 			var tObj:Object = {};
 			tObj.action = 'onTransportChange';
+			tObj._action = action;
 			tObj.mode = mode;
 			tObj.file = _file;
 			update(tObj);
 		}
-		
+				
 		private function onBWDone():void
 		{
 			
@@ -173,6 +177,10 @@ package us.xdev.mediaplayer.models
 				tObj.width =  obj.width;
 				tObj.height = obj.height;								
 				update(tObj);
+				
+				if(_options.paused == true){					
+					stopStream();
+				}
 			}
 		
 			for(var i:Object in obj){
@@ -185,7 +193,7 @@ package us.xdev.mediaplayer.models
 		
 		private function netStatusHandler(event:NetStatusEvent):void
 		{
-			//trace(event.info.code);
+			//mediaplayer.(event.info.code);
 			switch (event.info.code) {
 				case 'NetConnection.Connect.Success':
 					playMedia();
@@ -193,7 +201,7 @@ package us.xdev.mediaplayer.models
 				
 				case 'NetStream.Play.StreamNotFound':
 				case 'NetConnection.Connect.Failed':
-					//trace("Unable to locate video: " + videoURL);
+					
 				break;
 				
 				case 'NetConnection.Connect.Rejected':
@@ -216,7 +224,7 @@ package us.xdev.mediaplayer.models
 		
 		private function securityErrorHandler(event:SecurityErrorEvent):void
 		{
-            trace("securityErrorHandler: " + event);
+            
         }
 
         private function asyncErrorHandler(event:AsyncErrorEvent):void
@@ -263,8 +271,6 @@ package us.xdev.mediaplayer.models
 			clientObj.onCuePoint = cuePointHandler;
 			_stream.client = clientObj;
 			_stream.play(formatFile(_file),0);
-			trace('playing = '+formatFile(_file));
-			
 			var res:Responder = new Responder(streamLengthHandler);
 			_connection.call("getStreamLength",res,_file);
 			_connection.call("checkBandwidth",null);
@@ -280,15 +286,11 @@ package us.xdev.mediaplayer.models
 			tObj.playing = _playing;
 			update(tObj);
 			
-			dispatchPlaybackStatus(true);
+			//dispatchPlaybackStatus(true);
 			
 			_timer = new Timer(100);
 			_timer.addEventListener(TimerEvent.TIMER, updateView);
-			_timer.start();
-			
-			if(_options.paused == true){
-				stopStream();
-			}			
+			_timer.start();					
 			
 		}
 	
@@ -322,7 +324,10 @@ package us.xdev.mediaplayer.models
 		{
 			update({action:'mediaComplete'});
 		}
-	
+		
+		
+		
+		
 	}
 
 }

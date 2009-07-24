@@ -231,8 +231,7 @@ package us.xdev.mediaplayer.views
 		protected function mouseHandler(e:MouseEvent):void
 		{
 			var mc:* = e.currentTarget;
-			trace(mc.name);
-			
+						
 			if(e.type == MouseEvent.ROLL_OVER){
 				
 			}

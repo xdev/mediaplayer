@@ -89,6 +89,7 @@ package us.xdev.mediaplayer.views
 			if(event.props.action == 'render'){
 				//attach stuff yea
 			}
+			
 		}
 
 		private function killMedia():void
@@ -105,11 +106,14 @@ package us.xdev.mediaplayer.views
 		private function handleMediaUpdate(event:CustomEvent):void
 		{
 			//trace('handleMediaUpdate = ' + event.props.action);
+			//MP._view.addEventListener('updateSize', onResize, false, 0, true);
+			
 			var v:Video;
 			if(event.props.action == 'playVideo'){
 				v = event.props.video;
 				v.name = 'asset';
 				ref.addChildAt(v,0);
+				transportController.setVolume(0.75);
 			}
 			if(event.props.action == 'updateSize'){
 
@@ -158,6 +162,11 @@ package us.xdev.mediaplayer.views
 				}
 
 			}
+			if(event.props.action == 'onTransportChange'){
+				if(event.props.mode){
+					hideStill();
+				}
+			}
 		}
 
 		public function render(data:Object):void
@@ -171,15 +180,11 @@ package us.xdev.mediaplayer.views
 			ref.setChildIndex(preloadClip,0);
 
 			if(data.mode == 'media'){
-				var obj:Object = {hasView:true,still:data.still};
-
-				//Utils.drawRect(asset,100,10,0xFF0000,0.5);
-
-				if(obj.still){
-					obj.paused = true;
-				}
-
+				
 				var options:Object = data;
+				if(options.still){
+					options.paused = true;
+				}
 				var ext:String = data.file.substr(data.file.lastIndexOf('.')+1,data.file.length).toLowerCase();
 
 				if(ext == 'mp4' || ext == 'mov' || ext == 'm4v' || ext == 'flv'){
@@ -196,29 +201,13 @@ package us.xdev.mediaplayer.views
 
 				mediaModel.load();
 
-				//Consider overlay centered video controls while in fullscreen
-
-				//MP._view.addEventListener('updateSize', onResize, false, 0, true);
-				//MP._view.addEventListener('onStill', onResize, false, 0, true);
-				//MP._model.b.addEventListener('onTransportChange',handleTransport,false,0,true);
-
 				//stop slideshow
 				//controller.setPlaying(false);
-
-				/*
+				
 				//create still frame
 				if(options.still != undefined){
-
-					mc = Utils.createmc(ref,'still',{alpha:0.0});
-					var movie:LoadMovie = new LoadMovie(mc,options.still);
-					movie.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,revealStill);
-
-					controller.stop();
-
-					//sort depth
-					ref.setChildIndex(mc,ref.numChildren-3);
+					addStill();					
 				}
-				*/
 
 			}
 
@@ -264,6 +253,51 @@ package us.xdev.mediaplayer.views
 
 
 			//kick back the listener
+		}
+		
+		protected function addStill():void
+		{
+			var mc:MovieClip = Utils.createmc(ref,'still',{alpha:0.0});
+			//add img holder
+			
+			//add icons, etc
+			var movie:LoadMovie = new LoadMovie(mc,data.still);
+			movie.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,revealStill);
+			//transportController.stop();
+			
+			//sort depth
+			//ref.setChildIndex(mc,ref.numChildren-3);
+		}
+		
+		//be ready to call this if user scrubs past the start, or better yet
+		//don't show the scrub yet
+		protected function hideStill():void
+		{
+			var mc:MovieClip = Utils.$(ref,'still');
+			TweenLite.to(mc,0.3,{alpha:0.0});
+			//disable the mouse, yo
+			mc.mouseEnabled = false;
+			mc.buttonMode = false;
+		}
+		
+		protected function revealStill(e:Event):void
+		{
+			var mc:MovieClip = Utils.$(ref,'still');
+			TweenLite.to(mc,0.5,{alpha:1.0});
+			
+			//add mouse events
+			mc.mouseEnabled = true;
+			mc.buttonMode = true;
+			mc.addEventListener(MouseEvent.CLICK,handleMouse,false,0,true);
+		}
+		
+		protected function handleMouse(e:MouseEvent):void
+		{
+			var mc:* = e.currentTarget;
+			if(mc.name == 'still'){
+				hideStill();
+				transportController.play();
+			}
 		}
 
 		private function reveal(e:Event=null):void
@@ -330,8 +364,6 @@ package us.xdev.mediaplayer.views
 				var imgX:int = _width;
 				var imgY:int = _height;
 				var m:int = 100;
-
-
 
 				//m = undefined;
 
@@ -412,7 +444,17 @@ package us.xdev.mediaplayer.views
 				}
 
 			}
-
+			
+			var still:MovieClip = Utils.$(ref,'still');
+			
+			if(still){
+				//scale her up, same style as other, this is where we can override again, scale the image, not the artwork, etc
+				still.width = Math.ceil(_width*scale);
+				still.height = Math.ceil(_height*scale);
+				still.x = stageW/2 - still.width/2;
+				still.y = (stageH)/2 - still.height/2;
+			}
+			
 		}
 
 		private function scaleStage():void
