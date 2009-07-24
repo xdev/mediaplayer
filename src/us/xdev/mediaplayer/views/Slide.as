@@ -43,7 +43,7 @@ package us.xdev.mediaplayer.views
 		protected var transportViewClass:*;
 		protected var transportControllerClass:*;
 		
-		private var data:Object;
+		protected var data:Object;
 
 		//this is the screen to display assets
 		public function Slide(ref:Object,model:*,controller:*=null)
@@ -289,14 +289,18 @@ package us.xdev.mediaplayer.views
 			mc.mouseEnabled = true;
 			mc.buttonMode = true;
 			mc.addEventListener(MouseEvent.CLICK,handleMouse,false,0,true);
+			mc.addEventListener(MouseEvent.MOUSE_OVER,handleMouse,false,0,true);
+			mc.addEventListener(MouseEvent.MOUSE_OUT,handleMouse,false,0,true);
 		}
 		
 		protected function handleMouse(e:MouseEvent):void
 		{
 			var mc:* = e.currentTarget;
-			if(mc.name == 'still'){
-				hideStill();
-				transportController.play();
+			if(e.type == MouseEvent.CLICK){
+				if(mc.name == 'still'){
+					hideStill();
+					transportController.play();
+				}
 			}
 		}
 
