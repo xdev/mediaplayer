@@ -5,7 +5,6 @@ package us.xdev.mediaplayer.models
 	import com.a12.util.XMLLoader;
 
 	import flash.events.EventDispatcher;
-	import flash.system.Capabilities;
 
 	public class PlayerModel extends EventDispatcher
 	{
@@ -28,30 +27,18 @@ package us.xdev.mediaplayer.models
 		{
 			var xml:String;
 
-			if(Capabilities.playerType == "External" || Capabilities.playerType == "StandAlone"){
-				//xml = 'http://mediaplayer.local/demo_slideshow.xml';
-				params = {};
-				params.still = 'http://explore.local/assets/img/sample/video_still.jpg';
-				params.server = 'rtmp://beta.fms.edgecastcdn.net/000C21/videos/';
-				params.src = 'Adrenaline_Junkie-Explore_700kbit_16x9.mov';
-			}
-
 			if(params['src']){
-
 				var _xml:String = '<xml><slides><slide>';
 				_xml += '<file>'+params['src']+'</file>';
 				if(params['still']){
 					_xml += '<still>'+params['still']+'</still>';
 				}
 				if(params['server']){
-					//_xml += '<server>rtmp://url/vod/</server>';
 					_xml += '<server>'+params['server']+'</server>';
 				}
-				_xml += '</slide></slides></xml>';					
+				_xml += '</slide></slides></xml>';
 				parseXML(_xml);
-
 			}else{
-
 				if(params['xml']){
 					xml = params['xml'];
 				}
@@ -125,6 +112,7 @@ package us.xdev.mediaplayer.models
 		{
 			configObj =
 			{
+				checkPolicy:false,
 				thumbgrid:true,
 				fullscreen:true,
 				duration:5000,

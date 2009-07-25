@@ -4,6 +4,7 @@ package us.xdev.mediaplayer.views
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
 	import flash.display.MovieClip;
+	import flash.system.LoaderContext;
 	import flash.geom.Rectangle;
 	import flash.text.TextFormat;
 	import flash.filters.BitmapFilterQuality;
@@ -42,7 +43,7 @@ package us.xdev.mediaplayer.views
 
 		protected var transportViewClass:*;
 		protected var transportControllerClass:*;
-		
+				
 		protected var data:Object;
 
 		//this is the screen to display assets
@@ -241,8 +242,13 @@ package us.xdev.mediaplayer.views
 	                false,
 	                false)
 				];
-
-				var movie:LoadMovie = new LoadMovie(Utils.createmc(ref,'asset'),data.file);
+				
+				var context:LoaderContext = null;
+				if(model.getConfig().checkPolicy){
+					context = new LoaderContext(true);
+				}
+				
+				var movie:LoadMovie = new LoadMovie(Utils.createmc(ref,'asset'),data.file,context);
 				movie.addEventListener(Event.COMPLETE,reveal);
 				movie.loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,handlePreload,false,0,true);
 
