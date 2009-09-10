@@ -267,7 +267,12 @@ package us.xdev.mediaplayer.views
 			//add img holder
 			
 			//add icons, etc
-			var movie:LoadMovie = new LoadMovie(mc,data.still);
+			var context:LoaderContext = null;
+			if(model.getConfig().checkPolicy){
+				context = new LoaderContext(true);
+			}
+			
+			var movie:LoadMovie = new LoadMovie(mc,data.still,context);
 			movie.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,revealStill);
 			//transportController.stop();
 			
