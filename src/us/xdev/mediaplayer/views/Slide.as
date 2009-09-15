@@ -1,33 +1,31 @@
 package us.xdev.mediaplayer.views
 {
+	import com.a12.util.CustomEvent;
+	import com.a12.util.LoadMovie;
+	import com.a12.util.Utils;
+	
+	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
-	import flash.display.MovieClip;
-	import flash.system.LoaderContext;
-	import flash.geom.Rectangle;
-	import flash.text.TextFormat;
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.DropShadowFilter;
+	import flash.geom.Rectangle;
 	import flash.media.Video;
-
-	//should clean up
+	import flash.system.LoaderContext;
+	import flash.text.TextFormat;
 	import flash.utils.clearInterval;
 	import flash.utils.clearTimeout;
 	import flash.utils.getTimer;
 	import flash.utils.setInterval;
 	import flash.utils.setTimeout;
-
-	import com.a12.util.Utils;
-	import com.a12.util.CustomEvent;
-	import com.a12.util.LoadMovie;
-
+	
 	import gs.TweenLite;
-
-	import us.xdev.mediaplayer.models.IMediaModel;
-	import us.xdev.mediaplayer.models.AudioModel;
-	import us.xdev.mediaplayer.models.VideoModel;
+	
 	import us.xdev.mediaplayer.controllers.TransportController;
+	import us.xdev.mediaplayer.models.AudioModel;
+	import us.xdev.mediaplayer.models.IMediaModel;
+	import us.xdev.mediaplayer.models.VideoModel;
 
 	public class Slide extends AbstractView
 	{
@@ -248,7 +246,15 @@ package us.xdev.mediaplayer.views
 					context = new LoaderContext(true);
 				}
 				
-				var movie:LoadMovie = new LoadMovie(Utils.createmc(ref,'asset'),data.file,context);
+				//
+				var resource:String = data.file;
+				if(ref.stage.displayState == "fullScreen"){
+					if(data.fullsize){
+						resource = data.fullsize;	
+					}
+				}
+				
+				var movie:LoadMovie = new LoadMovie(Utils.createmc(ref,'asset'),resource,context);
 				movie.addEventListener(Event.COMPLETE,reveal);
 				movie.loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,handlePreload,false,0,true);
 

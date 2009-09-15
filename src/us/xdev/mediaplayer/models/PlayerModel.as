@@ -218,6 +218,10 @@ package us.xdev.mediaplayer.models
 				if(node.thumb != undefined){
 					tObj.thumb = String(node.thumb);
 				}
+				
+				if(node.fullsize != undefined){
+					tObj.fullsize = String(node.fullsize);
+				}
 
 				if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
 					tObj.mode = 'media';
