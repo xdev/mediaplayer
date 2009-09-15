@@ -14,7 +14,7 @@ package us.xdev.mediaplayer.models
 		public var slideA:Array;
 		public var flagPlaying:Boolean;
 		public var configObj:Object;
-		private var params:Object;
+		public var params:Object;
 
 		public function PlayerModel(p:Object)
 		{
