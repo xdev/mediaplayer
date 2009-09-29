@@ -11,8 +11,8 @@ package us.xdev.mediaplayer.controllers
 	public class PlayerController
 	{
 
-		private var model:*;
-		private var view:*;
+		protected var model:*;
+		protected var view:*;
 
 		public function PlayerController(model:*,view:*=null)
 		{
@@ -39,24 +39,27 @@ package us.xdev.mediaplayer.controllers
 			view.closeScreen();
 		}
 
-		public function sendExternal(e:String,args:Array=null):void
+		public function sendExternal(e:String,args:Array=null):Boolean
 		{
-			return;
-			
-			var _args:Array = [];
-			_args.push(e);
-			if(args){
-				for(var i:int=0;i<args.length;i++){
-					_args.push(args[i]);
+			if(ExternalInterface.available){
+				var _args:Array = [];
+				_args.push(e);
+				if(args){
+					for(var i:int=0;i<args.length;i++){
+						_args.push(args[i]);
+					}
 				}
+				var method:Function = ExternalInterface.call;
+				method.apply(ExternalInterface,_args);
+				return true;
+			}else{
+				return false;
 			}
-			var method:Function = ExternalInterface.call;
-			method.apply(ExternalInterface,_args);
 		}
 
 		public function viewSlideByIndex(value:Number):void
 		{
-			model.setSlide(value);			
+			model.setSlide(value);
 		}
 		
 		public function advanceSlide(dir:int):void
