@@ -31,8 +31,8 @@ package us.xdev.mediaplayer.views
 	{
 		private var preloadInterval:Number;
 
-		private var _width:int;
-		private var _height:int;
+		protected var _width:int;
+		protected var _height:int;
 
 		protected var mediaModel:IMediaModel;
 		protected var transportView:*;
@@ -308,6 +308,7 @@ package us.xdev.mediaplayer.views
 			mc.addEventListener(MouseEvent.CLICK,handleMouse,false,0,true);
 			mc.addEventListener(MouseEvent.MOUSE_OVER,handleMouse,false,0,true);
 			mc.addEventListener(MouseEvent.MOUSE_OUT,handleMouse,false,0,true);
+			scale();
 		}
 		
 		protected function handleMouse(e:MouseEvent):void
