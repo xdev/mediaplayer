@@ -5,6 +5,7 @@ package us.xdev.mediaplayer.models
 	import com.a12.util.XMLLoader;
 
 	import flash.events.EventDispatcher;
+	import com.adobe.serialization.json.JSON;
 
 	public class PlayerModel extends EventDispatcher
 	{
@@ -20,7 +21,7 @@ package us.xdev.mediaplayer.models
 		{
 			params = p;
 			setConfig();
-			setPlaying(false);
+			setPlaying(false);			
 		}
 
 		public function init():void
@@ -37,13 +38,31 @@ package us.xdev.mediaplayer.models
 					_xml += '<server>'+params['server']+'</server>';
 				}
 				_xml += '</slide></slides></xml>';
-				parseXML(_xml);
+				parseXML(_xml,false);
+				//FIXME: FIX IT
+				if(params['streams']){
+					parseStreams(params['streams']);
+				}
+				_init();
 			}else{
 				if(params['xml']){
 					xml = params['xml'];
 				}
 				new XMLLoader(xml,parseXML,this);
 			}
+			
+		}
+		
+		private function parseStreams(s:String,index:int=0):void
+		{
+			trace('parsing streams');
+			var streams:* = JSON.decode(s);
+			slideA[index].streams = [];
+			for(var i:int=0;i<streams.length;i++){
+				var u:String = streams[i].fields.url;
+				slideA[index].streams.push({server:u.substring(0,u.lastIndexOf('/')+1),src:u.substring(u.lastIndexOf('/')+1),bitrate:Number(streams[i].fields.bitrate)});
+			}
+			slideA[index].streams.sortOn('bitrate');			
 		}
 
 		public function setPlaying(val:Boolean):void
@@ -198,7 +217,7 @@ package us.xdev.mediaplayer.models
 			}
 		}
 
-		private function parseXML(xml:String):void
+		private function parseXML(xml:String,auto:Boolean=true):void
 		{
 			var tXML:XML = new XML(xml);
 			//parse config information
@@ -255,8 +274,10 @@ package us.xdev.mediaplayer.models
 				i++;
 			}
 			slideMax = i;
-
-			_init();
+			
+			if(auto){
+				_init();
+			}
 
 		}
 

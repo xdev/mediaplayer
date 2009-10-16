@@ -299,7 +299,10 @@ package us.xdev.mediaplayer.views
 		
 		protected function revealStill(e:Event):void
 		{
+			trace('base revealStill');
 			var mc:MovieClip = Utils.$(ref,'still');
+			mc._width = mc.width;
+			mc._height = mc.height;
 			TweenLite.to(mc,0.5,{alpha:1.0});
 			
 			//add mouse events
@@ -470,9 +473,14 @@ package us.xdev.mediaplayer.views
 			var still:MovieClip = Utils.$(ref,'still');
 			
 			if(still){
+				
+				scale = getScale(still._width,still._height,m);
+				scale = scale/100;
+				
+				//THIS NEEDS TO BE INDEPENDANT OF THE VIDEO
 				//scale her up, same style as other, this is where we can override again, scale the image, not the artwork, etc
-				still.width = Math.ceil(_width*scale);
-				still.height = Math.ceil(_height*scale);
+				still.width = Math.ceil(still._width*scale);
+				still.height = Math.ceil(still._height*scale);
 				still.x = stageW/2 - still.width/2;
 				still.y = (stageH)/2 - still.height/2;
 			}

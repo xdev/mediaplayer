@@ -37,6 +37,7 @@ package us.xdev.mediaplayer.models
 	
 		public function VideoModel(_file:String,_options:Object=null)
 		{
+			trace('VideoModel()');
 			this._file = _file;
 			this._options = _options;
 			_metaData = {};
@@ -50,6 +51,7 @@ package us.xdev.mediaplayer.models
 		
 		public function load():void
 		{
+			trace('Video.load');
 			_connection = new NetConnection();
 			_connection.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 			_connection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
@@ -58,7 +60,7 @@ package us.xdev.mediaplayer.models
 			_connection.client = clientObj;
 			_connection.connect(_options.server);
 		}
-						
+		
 		public function stopStream():void
 		{
 			seekStream(0);
@@ -136,6 +138,11 @@ package us.xdev.mediaplayer.models
 			_playing = false;
 			_timer.stop();
 			_timer = null;
+		}
+		
+		public function switchStream(_file:String,pos:Number=0):void
+		{
+			_stream.play(formatFile(_file),pos);
 		}
 		
 		private function update(obj:Object):void
@@ -231,7 +238,9 @@ package us.xdev.mediaplayer.models
 		{
             // ignore AsyncErrorEvent events.
         }
-
+		
+		
+		
 		private function connectStream():void
 		{
 			
@@ -255,6 +264,7 @@ package us.xdev.mediaplayer.models
 		
 		private function playMedia():void
 		{
+			trace('Video.playMedia');
 			_stream = new NetStream(_connection);
 			_stream.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
             _stream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, asyncErrorHandler);
@@ -293,7 +303,18 @@ package us.xdev.mediaplayer.models
 			_timer.start();					
 			
 		}
-	
+		
+		public function getStreamTime():Number
+		{
+			var r:Number = 0;
+			if(_stream){
+				if(_stream.time){
+					r = _stream.time;
+				}
+			}
+			return r;
+		}
+		
 		private function updateView(e:TimerEvent=null):void
 		{
 			//convert time in seconds to 00:00
@@ -324,9 +345,6 @@ package us.xdev.mediaplayer.models
 		{
 			update({action:'mediaComplete'});
 		}
-		
-		
-		
 		
 	}
 

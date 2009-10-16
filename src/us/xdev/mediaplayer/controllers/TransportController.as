@@ -45,6 +45,15 @@ package us.xdev.mediaplayer.controllers
 		{
 			model.seekStreamPercent(percent);
 		}
+					
+		public function switchStream(file:String,pos:*=null):void
+		{
+			if(!pos){
+				pos = model.getStreamTime();
+			}
+			pos = 0;
+			model.switchStream(file,pos);
+		}
 
 	}
 
