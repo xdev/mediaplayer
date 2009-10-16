@@ -3,11 +3,12 @@ package us.xdev.mediaplayer.controllers
 	
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
+	import flash.events.EventDispatcher;
 	
-	public class ShareController
+	public class ShareController extends EventDispatcher
 	{
 
-		private var model:*;
+		protected var model:*;
 
 		public function ShareController(model:*)
 		{

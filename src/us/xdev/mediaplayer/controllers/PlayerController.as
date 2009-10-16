@@ -5,7 +5,6 @@ package us.xdev.mediaplayer.controllers
 	import flash.external.ExternalInterface;
 	import flash.ui.Keyboard;
 	import flash.utils.clearTimeout;
-	
 	import com.a12.util.CustomEvent;
 
 	public class PlayerController
@@ -103,15 +102,15 @@ package us.xdev.mediaplayer.controllers
 				break;
 
 				case 70:
-					view.toggleFullScreen();
+					//view.toggleFullScreen();
 				break;
 
 				case 83:
-					view.toggleSlideShow();
+					//view.toggleSlideShow();
 				break;
 
 				case 84:
-					view.toggleThumbs();
+					//view.toggleThumbs();
 				break;
 				
 			}
