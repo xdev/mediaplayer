@@ -114,6 +114,10 @@ package us.xdev.mediaplayer.views
 				ref.addChildAt(v,0);
 				transportController.setVolume(0.75);
 			}
+			if(event.props.action == 'mediaComplete'){
+				showStill();
+			}
+			
 			if(event.props.action == 'updateSize'){
 
 				if(Utils.$(ref,'asset')){
@@ -183,6 +187,10 @@ package us.xdev.mediaplayer.views
 				var options:Object = data;
 				if(options.still){
 					options.paused = true;
+				}
+				//double dirty
+				if(model.params.autoplay){
+					options.paused = false;
 				}
 				var ext:String = data.file.substr(data.file.lastIndexOf('.')+1,data.file.length).toLowerCase();
 
@@ -279,39 +287,46 @@ package us.xdev.mediaplayer.views
 			}
 			
 			var movie:LoadMovie = new LoadMovie(mc,data.still,context);
-			movie.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,revealStill);
+			movie.loader.contentLoaderInfo.addEventListener(Event.COMPLETE,handleStillLoad);
 			//transportController.stop();
 			
 			//sort depth
 			//ref.setChildIndex(mc,ref.numChildren-3);
 		}
-		
-		//be ready to call this if user scrubs past the start, or better yet
-		//don't show the scrub yet
-		protected function hideStill():void
+						
+		protected function handleStillLoad(e:Event):void
 		{
-			var mc:MovieClip = Utils.$(ref,'still');
-			TweenLite.to(mc,0.3,{alpha:0.0});
-			//disable the mouse, yo
-			mc.mouseEnabled = false;
-			mc.buttonMode = false;
-		}
-		
-		protected function revealStill(e:Event):void
-		{
-			trace('base revealStill');
 			var mc:MovieClip = Utils.$(ref,'still');
 			mc._width = mc.width;
 			mc._height = mc.height;
-			TweenLite.to(mc,0.5,{alpha:1.0});
-			
-			//add mouse events
-			mc.mouseEnabled = true;
-			mc.buttonMode = true;
+										
 			mc.addEventListener(MouseEvent.CLICK,handleMouse,false,0,true);
 			mc.addEventListener(MouseEvent.MOUSE_OVER,handleMouse,false,0,true);
 			mc.addEventListener(MouseEvent.MOUSE_OUT,handleMouse,false,0,true);
+			
+			if(!mediaModel.getPlaying()){
+				showStill();
+			}else{
+				hideStill();
+			}
+			
 			scale();
+		}
+		
+		protected function showStill():void
+		{
+			var mc:MovieClip = Utils.$(ref,'still');
+			TweenLite.to(mc,0.5,{alpha:1.0});
+			mc.mouseEnabled = true;
+			mc.buttonMode = true;
+		}
+	
+		protected function hideStill():void
+		{
+			var mc:MovieClip = Utils.$(ref,'still');
+			TweenLite.to(mc,0.5,{alpha:0.0});
+			mc.mouseEnabled = false;
+			mc.buttonMode = false;
 		}
 		
 		protected function handleMouse(e:MouseEvent):void

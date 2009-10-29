@@ -206,6 +206,14 @@ package us.xdev.mediaplayer.models
 					playMedia();
 				break;
 				
+				case 'NetStream.Buffer.Full':
+				
+				break;
+				
+				case 'NetStream.Buffer.Empty':
+					//make sure we're on the lowest stream
+				break;
+				
 				case 'NetStream.Play.StreamNotFound':
 				case 'NetConnection.Connect.Failed':
 					
@@ -224,7 +232,14 @@ package us.xdev.mediaplayer.models
 				break;
 				
 				case 'NetStream.Play.Stop':
-					onComplete();
+					//evaluate position
+					if(_metaData && _metaData.duration){
+						if(Math.ceil(_stream.time) == Math.ceil(_metaData.duration)){
+							onComplete();
+						}
+					}else{
+						playStream();
+					}
 				break;
 			}
 		}
@@ -239,18 +254,18 @@ package us.xdev.mediaplayer.models
             // ignore AsyncErrorEvent events.
         }
 		
-		
-		
 		private function connectStream():void
 		{
 			
 		}
 		
-		private function streamLengthHandler(len:Number):void {
+		private function streamLengthHandler(len:Number):void
+		{
 			//onData({type:'streamlength',duration:len});
 		}
 		
-		private function formatFile(file:String):String {
+		private function formatFile(file:String):String
+		{
 			var ext:String = file.substr(file.lastIndexOf('.')+1,file.length).toLowerCase();
 			var basename:String = file.substr(0,file.lastIndexOf('.'));
 			if(ext == 'mp4' || ext == 'mov' || ext == 'aac' || ext == 'm4a') {
@@ -331,7 +346,7 @@ package us.xdev.mediaplayer.models
 				//Need to add another condition that checks the playstate			
 			
 				if(Math.ceil(_stream.time) == Math.ceil(_metaData.duration)){
-					//onComplete();
+					onComplete();
 				}
 			}
 		

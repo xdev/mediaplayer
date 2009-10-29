@@ -48,9 +48,11 @@ package us.xdev.mediaplayer.controllers
 					
 		public function switchStream(file:String,pos:*=null):void
 		{
-			if(!pos){
+			/*
+			if(isNaN(pos)){
 				pos = model.getStreamTime();
-			}
+			}*/
+			trace('SWITCH IT',file);
 			pos = 0;
 			model.switchStream(file,pos);
 		}
