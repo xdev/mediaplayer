@@ -233,12 +233,14 @@ package us.xdev.mediaplayer.models
 				
 				case 'NetStream.Play.Stop':
 					//evaluate position
-					if(_metaData && _metaData.duration){
+					if(_stream && _metaData && _metaData.duration){
 						if(Math.ceil(_stream.time) == Math.ceil(_metaData.duration)){
 							onComplete();
 						}
 					}else{
-						playStream();
+						if(_stream){
+							playStream();
+						}
 					}
 				break;
 			}
