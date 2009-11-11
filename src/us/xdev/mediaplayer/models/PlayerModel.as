@@ -270,6 +270,10 @@ package us.xdev.mediaplayer.models
 				if(tObj.mode){
 					slideA.push(tObj);
 				}
+				
+				if(node.streams != undefined){
+					trace('balls');
+				}
 
 				i++;
 			}

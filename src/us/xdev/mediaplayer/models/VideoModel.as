@@ -311,7 +311,7 @@ package us.xdev.mediaplayer.models
 			tObj.playing = _playing;
 			update(tObj);
 			
-			//dispatchPlaybackStatus(true);
+			dispatchPlaybackStatus(true,'init');
 			
 			_timer = new Timer(100);
 			_timer.addEventListener(TimerEvent.TIMER, updateView);

@@ -315,18 +315,22 @@ package us.xdev.mediaplayer.views
 		
 		protected function showStill():void
 		{
-			var mc:MovieClip = Utils.$(ref,'still');
-			TweenLite.to(mc,0.5,{alpha:1.0});
-			mc.mouseEnabled = true;
-			mc.buttonMode = true;
+			if(Utils.$(ref,'still')){
+				var mc:MovieClip = Utils.$(ref,'still');
+				TweenLite.to(mc,0.5,{alpha:1.0});
+				mc.mouseEnabled = true;
+				mc.buttonMode = true;
+			}
 		}
 	
 		protected function hideStill():void
 		{
-			var mc:MovieClip = Utils.$(ref,'still');
-			TweenLite.to(mc,0.5,{alpha:0.0});
-			mc.mouseEnabled = false;
-			mc.buttonMode = false;
+			if(Utils.$(ref,'still')){
+				var mc:MovieClip = Utils.$(ref,'still');			
+				TweenLite.to(mc,0.5,{alpha:0.0});
+				mc.mouseEnabled = false;
+				mc.buttonMode = false;
+			}
 		}
 		
 		protected function handleMouse(e:MouseEvent):void
