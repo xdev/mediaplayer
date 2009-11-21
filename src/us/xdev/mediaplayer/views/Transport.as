@@ -31,7 +31,7 @@ package us.xdev.mediaplayer.views
 		protected var _soundLevelA:Array;
 		protected var _scrubberWidth:Number;
 				
-		private var options:Object = {};
+		protected var options:Object = {};
 		
 		private var _width:int = 640;
 		private var _height:int = 20;

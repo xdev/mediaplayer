@@ -510,7 +510,9 @@ package us.xdev.mediaplayer.views
 
 
 			}
-
+			
+			
+			
 			onResize();
 
 		}
@@ -558,8 +560,8 @@ package us.xdev.mediaplayer.views
 					mc.y = Math.floor(ref.stage.stageHeight/2);
 					mc.x = ref.stage.stageWidth - 25;
 				}
-			}
-
+			}			
+			
 			if(slideView != null){
 				slideView.scale();
 			}			

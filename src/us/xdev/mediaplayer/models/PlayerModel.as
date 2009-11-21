@@ -3,9 +3,9 @@ package us.xdev.mediaplayer.models
 
 	import com.a12.util.CustomEvent;
 	import com.a12.util.XMLLoader;
-
-	import flash.events.EventDispatcher;
 	import com.adobe.serialization.json.JSON;
+	
+	import flash.events.EventDispatcher;
 
 	public class PlayerModel extends EventDispatcher
 	{
@@ -55,8 +55,10 @@ package us.xdev.mediaplayer.models
 		
 		private function parseStreams(s:String,index:int=0):void
 		{
-			trace('parsing streams');
+			//throw new Error(s);
 			var streams:* = JSON.decode(s);
+			
+			
 			slideA[index].streams = [];
 			for(var i:int=0;i<streams.length;i++){
 				var u:String = streams[i].fields.url;

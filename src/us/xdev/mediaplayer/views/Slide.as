@@ -167,6 +167,7 @@ package us.xdev.mediaplayer.views
 			}
 			if(event.props.action == 'onTransportChange'){
 				if(event.props.mode){
+					dispatchEvent(new CustomEvent('onTransportChange',false,false,{}));
 					hideStill();
 				}
 			}
@@ -181,10 +182,15 @@ package us.xdev.mediaplayer.views
 			//build preload clip
 			var preloadClip:MovieClip = Utils.createmc(ref,'preload',{alpha:0.0});
 			ref.setChildIndex(preloadClip,0);
+			
 
+			Utils.drawRect(Utils.createmc(ref,'hit',{alpha:0.0,mouseEnabled:true}),10,10,0xFF0000,0.0);
+			
+			
 			if(data.mode == 'media'){
 				
 				var options:Object = data;
+				options.buffer = 1;
 				if(options.still){
 					options.paused = true;
 				}
@@ -202,7 +208,7 @@ package us.xdev.mediaplayer.views
 				}
 
 				transportController = new transportControllerClass(mediaModel);
-				transportView = new transportViewClass(Utils.createmc(ref,'transport'),mediaModel,transportController);
+				transportView = new transportViewClass(Utils.createmc(ref,'transport'),mediaModel,transportController,model.params);
 				mediaModel.addEventListener('onUpdate',transportView.update);
 				mediaModel.addEventListener('onUpdate',handleMediaUpdate);
 
@@ -321,6 +327,7 @@ package us.xdev.mediaplayer.views
 				mc.mouseEnabled = true;
 				mc.buttonMode = true;
 			}
+			dispatchEvent(new CustomEvent('onShowStill',false,false,{}));
 		}
 	
 		protected function hideStill():void
@@ -331,6 +338,7 @@ package us.xdev.mediaplayer.views
 				mc.mouseEnabled = false;
 				mc.buttonMode = false;
 			}
+			dispatchEvent(new CustomEvent('onHideStill',false,false,{}));
 		}
 		
 		protected function handleMouse(e:MouseEvent):void
@@ -403,6 +411,9 @@ package us.xdev.mediaplayer.views
 
 			var stageW:int = ref.stage.stageWidth;
 			var stageH:int = ref.stage.stageHeight;
+			
+			Utils.$(ref,'hit').width = stageW;
+			Utils.$(ref,'hit').height = stageH;
 
 			if(slide){
 				var imgX:int = _width;
