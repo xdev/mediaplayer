@@ -36,7 +36,7 @@ package us.xdev.mediaplayer.views
 
 		protected var mediaModel:IMediaModel;
 		protected var transportView:*;
-		protected var transportController:TransportController;
+		public var transportController:TransportController;
 		private var mediaView:*;
 
 		protected var transportViewClass:*;

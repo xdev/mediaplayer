@@ -3,6 +3,9 @@ package us.xdev.mediaplayer.models
 
 	import com.a12.util.CustomEvent;
 	import com.a12.util.XMLLoader;
+	import com.a12.util.LoadData;
+	import com.a12.util.Utils;
+	import flash.events.Event;
 	import com.adobe.serialization.json.JSON;
 	
 	import flash.events.EventDispatcher;
@@ -16,18 +19,31 @@ package us.xdev.mediaplayer.models
 		public var flagPlaying:Boolean;
 		public var configObj:Object;
 		public var params:Object;
+		private var dataLoader:LoadData;
 
 		public function PlayerModel(p:Object)
 		{
 			params = p;
 			setConfig();
-			setPlaying(false);			
+			setPlaying(false);
 		}
+		
+		//
 
 		public function init():void
 		{
+			
+			//Use Existing JSON data
+			
+			//Load JSON data
+			
+			//Use Existing XML data
+			
+			//Load XML data
+			
+			
 			var xml:String;
-
+			
 			if(params['src']){
 				var _xml:String = '<xml><slides><slide>';
 				_xml += '<file>'+params['src']+'</file>';
@@ -50,6 +66,7 @@ package us.xdev.mediaplayer.models
 				}
 				new XMLLoader(xml,parseXML,this);
 			}
+			
 			
 		}
 		
@@ -218,7 +235,60 @@ package us.xdev.mediaplayer.models
 				}
 			}
 		}
-
+		
+		public function loadJSON():void
+		{
+			dataLoader = new LoadData(params.data_url);
+			dataLoader.addEventListener(Event.COMPLETE,handleJSONLoad,false,0,true);
+			dataLoader.load();
+		}
+		
+		private function handleJSONLoad(e:CustomEvent):void
+		{
+			parseJSON(e.props.data);
+		}
+		
+		public function parseJSON(val:*,auto:Boolean=true):void
+		{
+			var json:* = JSON.decode(val);
+			slideA = [];
+			for(var i:int=0;i<json.slides.length;i++){
+				var tObj:Object = {};
+				tObj = json.slides[i];
+				tObj.id = i;
+				
+				if(tObj.file){
+					var ext:String = tObj.file.substring(tObj.file.lastIndexOf('.')+1,tObj.file.length).toLowerCase();
+					if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
+						tObj.mode = 'media';
+					}
+					if(ext == 'jpg' || ext == 'jpeg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
+						tObj.mode = 'image';
+					}
+				}
+				
+				if(tObj.streams){
+					tObj.mode = 'media';
+					
+					//parse it up homescrilla
+					var streams:* = Utils.clone(tObj.streams);
+					tObj.streams = [];
+					for(var j:int=0;j<streams.length;j++){
+						var u:String = streams[j].url;
+						tObj.streams.push({server:u.substring(0,u.lastIndexOf('/')+1),src:u.substring(u.lastIndexOf('/')+1),bitrate:Number(streams[j].bitrate)});
+					}
+					tObj.streams.sortOn('bitrate');
+				}
+				slideA.push(tObj);
+				
+			}
+			slideMax = slideA.length;
+			
+			if(auto){
+				_init();
+			}
+		}
+		
 		private function parseXML(xml:String,auto:Boolean=true):void
 		{
 			var tXML:XML = new XML(xml);
@@ -274,7 +344,7 @@ package us.xdev.mediaplayer.models
 				}
 				
 				if(node.streams != undefined){
-					trace('balls');
+					
 				}
 
 				i++;
