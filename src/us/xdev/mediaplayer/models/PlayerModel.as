@@ -155,6 +155,7 @@ package us.xdev.mediaplayer.models
 				fullscreen:true,
 				duration:5000,
 				slideshow:true,
+				autostart:true,
 				scalevideo:true,
 				scaleimage:true,
 				marginX:0,
@@ -216,6 +217,14 @@ package us.xdev.mediaplayer.models
 					configObj.slideshow = true;
 				}else{
 					configObj.slideshow = false;
+				}
+			}
+			v = params['autostart'];
+			if(v){
+				if(v == 'true'){
+					configObj.autostart = true;
+				}else{
+					configObj.autostart = false;
 				}
 			}
 			v = params['scalevideo'];

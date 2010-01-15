@@ -613,6 +613,7 @@ package us.xdev.mediaplayer.views
 				if(e.props.data.mode == 'media'){
 					stopSlideShow();
 				}
+				// TODO: clean this up
 				
 				if(model.flagPlaying){
 					startSlideShow();
