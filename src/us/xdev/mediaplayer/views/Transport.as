@@ -83,7 +83,7 @@ package us.xdev.mediaplayer.views
 			if(event.props.action == 'updateView'){
 				updateView(event.props);
 			}
-			if(event.props.action == 'mediaComplete'){
+			if(event.props.action == 'onMediaComplete'){
 				trace('local stop, needs to not stop if playback has never begun');
 				controller.stop();			
 			}

@@ -199,7 +199,7 @@ package us.xdev.mediaplayer.models
 	
 		private function onComplete(e:Event):void
 		{
-			update({action:'mediaComplete'});
+			update({action:'onMediaComplete'});
 		}
 	
 		private function onLoad(e:Event):void

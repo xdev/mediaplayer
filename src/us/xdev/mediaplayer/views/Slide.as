@@ -114,7 +114,7 @@ package us.xdev.mediaplayer.views
 				ref.addChildAt(v,0);
 				transportController.setVolume(0.75);
 			}
-			if(event.props.action == 'mediaComplete'){
+			if(event.props.action == 'onMediaComplete'){
 				showStill();
 			}
 			
@@ -170,6 +170,9 @@ package us.xdev.mediaplayer.views
 					dispatchEvent(new CustomEvent('onTransportChange',false,false,{}));
 					hideStill();
 				}
+			}
+			if(event.props.action == 'onMetaData'){
+				showStill();
 			}
 		}
 

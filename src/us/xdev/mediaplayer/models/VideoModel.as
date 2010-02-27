@@ -190,6 +190,7 @@ package us.xdev.mediaplayer.models
 
 				if(_options.paused == true){
 					stopStream();
+					update({action:'onMetaData'});
 				}
 			}
 
@@ -382,7 +383,7 @@ package us.xdev.mediaplayer.models
 
 		private function onComplete():void
 		{
-			update({action:'mediaComplete'});
+			update({action:'onMediaComplete'});
 		}
 
 	}
