@@ -19,6 +19,7 @@ package us.xdev.mediaplayer.models
 		public var flagPlaying:Boolean;
 		public var configObj:Object;
 		public var params:Object;
+		public var rawJson:Object;
 		private var dataLoader:LoadData;
 
 		public function PlayerModel(p:Object)
@@ -259,11 +260,11 @@ package us.xdev.mediaplayer.models
 		
 		public function parseJSON(val:*,auto:Boolean=true):void
 		{
-			var json:* = JSON.decode(val);
+			rawJson = JSON.decode(val);
 			slideA = [];
-			for(var i:int=0;i<json.slides.length;i++){
+			for(var i:int=0;i<rawJson.slides.length;i++){
 				var tObj:Object = {};
-				tObj = json.slides[i];
+				tObj = rawJson.slides[i];
 				tObj.id = i;
 				
 				if(tObj.file){
