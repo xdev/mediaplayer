@@ -1,18 +1,17 @@
 package us.xdev.mediaplayer.models
 {
-
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	
+	import com.adobe.serialization.json.JSON;
 	import com.a12.util.CustomEvent;
 	import com.a12.util.XMLLoader;
 	import com.a12.util.LoadData;
 	import com.a12.util.Utils;
-	import flash.events.Event;
-	import com.adobe.serialization.json.JSON;
 	
-	import flash.events.EventDispatcher;
-
 	public class PlayerModel extends EventDispatcher
 	{
-
+		//TODO: These should be protected or private
 		public var slideIndex:int;
 		public var slideMax:int;
 		public var slideA:Array;
@@ -20,8 +19,9 @@ package us.xdev.mediaplayer.models
 		public var configObj:Object;
 		public var params:Object;
 		public var rawJson:Object;
+		
 		private var dataLoader:LoadData;
-
+		
 		public function PlayerModel(p:Object)
 		{
 			params = p;
@@ -29,19 +29,13 @@ package us.xdev.mediaplayer.models
 			setPlaying(false);
 		}
 		
-		//
-
 		public function init():void
 		{
-			
+			//legacy method
 			//Use Existing JSON data
-			
 			//Load JSON data
-			
 			//Use Existing XML data
-			
 			//Load XML data
-			
 			
 			var xml:String;
 			
@@ -67,47 +61,45 @@ package us.xdev.mediaplayer.models
 				}
 				new XMLLoader(xml,parseXML,this);
 			}
-			
-			
 		}
 		
-		private function parseStreams(s:String,index:int=0):void
+		private function parseStreams(s:String, index:int=0):void
 		{
-			//throw new Error(s);
 			var streams:* = JSON.decode(s);
-			
-			
 			slideA[index].streams = [];
 			for(var i:int=0;i<streams.length;i++){
 				var u:String = streams[i].fields.url;
-				slideA[index].streams.push({server:u.substring(0,u.lastIndexOf('/')+1),src:u.substring(u.lastIndexOf('/')+1),bitrate:Number(streams[i].fields.bitrate)});
+				slideA[index].streams.push({
+					server: u.substring(0,u.lastIndexOf('/')+1),
+					src: u.substring(u.lastIndexOf('/')+1),
+					bitrate: Number(streams[i].fields.bitrate)
+				});
 			}
-			slideA[index].streams.sortOn('bitrate');			
+			slideA[index].streams.sortOn('bitrate');
 		}
-
+		
 		public function setPlaying(val:Boolean):void
 		{
 			flagPlaying = val;
 		}
-
+		
 		private function update(obj:Object):void
 		{
-			dispatchEvent(new CustomEvent('onUpdate',true,true,obj));
+			dispatchEvent(new CustomEvent('onUpdate', true, true, obj));
 		}
-
+		
 		public function getConfig():Object
 		{
 			return configObj;
 		}
-
+		
 		public function setSlide(ind:int):void
 		{
 			slideIndex = ind;
-
-			update({action:'viewSlide'});
-			//update
+			
+			update({ action:'viewSlide' });
 		}
-
+		
 		public function advanceSlide(dir:int):void
 		{
 			switch(true)
@@ -115,25 +107,23 @@ package us.xdev.mediaplayer.models
 				case slideIndex + dir > slideMax - 1:
 					slideIndex = 0;
 				break;
-
+				
 				case slideIndex + dir < 0:
 					slideIndex = slideMax - 1;
 				break;
-
+				
 				default:
 					slideIndex += dir;
 				break;
 			}
-
-			update({action:'viewSlide'});
-			//update for a viewSlide
+			
+			update({ action:'viewSlide' });
 		}
-
+		
 		private function _init():void
 		{
-			//flagThumbs = false;
 			slideIndex = -1;
-
+			
 			if(slideMax > 1){
 				flagPlaying = true;
 			}else{
@@ -141,12 +131,10 @@ package us.xdev.mediaplayer.models
 				configObj.slideshow = false;
 				configObj.thumbgrid = false;
 			}
-
-			//broadcast out a ready signal for view
+			
 			update({action:'init'});
-
 		}
-
+		
 		private function setConfig():void
 		{
 			configObj =
@@ -167,10 +155,9 @@ package us.xdev.mediaplayer.models
 				animate:false,
 				shownumbers:false
 			}
-
-
+			
+			
 			//check the parameters.
-
 			var v:*;
 			v = params['duration'];
 			if(v){
@@ -249,16 +236,16 @@ package us.xdev.mediaplayer.models
 		public function loadJSON():void
 		{
 			dataLoader = new LoadData(params.data_url);
-			dataLoader.addEventListener(Event.COMPLETE,handleJSONLoad,false,0,true);
+			dataLoader.addEventListener(Event.COMPLETE, handleJSONLoad, false, 0, true);
 			dataLoader.load();
 		}
 		
-		private function handleJSONLoad(e:CustomEvent):void
+		private function handleJSONLoad(event:CustomEvent):void
 		{
-			parseJSON(e.props.data);
+			parseJSON(event.props.data);
 		}
 		
-		public function parseJSON(val:*,auto:Boolean=true):void
+		public function parseJSON(val:*, auto:Boolean=true):void
 		{
 			rawJson = JSON.decode(val);
 			slideA = [];
@@ -279,18 +266,19 @@ package us.xdev.mediaplayer.models
 				
 				if(tObj.streams){
 					tObj.mode = 'media';
-					
-					//parse it up homescrilla
 					var streams:* = Utils.clone(tObj.streams);
 					tObj.streams = [];
 					for(var j:int=0;j<streams.length;j++){
 						var u:String = streams[j].url;
-						tObj.streams.push({server:u.substring(0,u.lastIndexOf('/')+1),src:u.substring(u.lastIndexOf('/')+1),bitrate:Number(streams[j].bitrate)});
+						tObj.streams.push({
+							server: u.substring(0,u.lastIndexOf('/')+1),
+							src: u.substring(u.lastIndexOf('/')+1),
+							bitrate: Number(streams[j].bitrate)
+						});
 					}
 					tObj.streams.sortOn('bitrate');
 				}
 				slideA.push(tObj);
-				
 			}
 			slideMax = slideA.length;
 			
@@ -302,20 +290,17 @@ package us.xdev.mediaplayer.models
 		private function parseXML(xml:String,auto:Boolean=true):void
 		{
 			var tXML:XML = new XML(xml);
-			//parse config information
-
+			
 			var snip:XMLList = tXML.slides;
 			var i:int=0;
 			slideA = [];
 			for each(var node:XML in snip..slide){
-
 				var file:String = String(node.file);
-				var ext:String = file.substring(file.lastIndexOf('.')+1,file.length).toLowerCase();
-
+				var ext:String = file.substring(file.lastIndexOf('.')+1, file.length).toLowerCase();
 				var tObj:Object = {};
 				tObj.file = file;
 				tObj.id = i;
-
+				
 				if(node.thumb != undefined){
 					tObj.thumb = String(node.thumb);
 				}
@@ -323,32 +308,32 @@ package us.xdev.mediaplayer.models
 				if(node.fullsize != undefined){
 					tObj.fullsize = String(node.fullsize);
 				}
-
+				
 				if(ext == 'flv' || ext == 'mov' || ext == 'mp4' || ext == 'mp3' || ext == 'm4v'){
 					tObj.mode = 'media';
 					if(node.still != undefined){
 						tObj.still = String(node.still);
 					}
 				}
-
+				
 				if(ext == 'jpg' || ext == 'jpeg' || ext == 'gif' || ext == 'png' || ext == 'swf'){
 					tObj.mode = 'image';
 				}
-
+				
 				if(node.server != undefined){
 					tObj.server = String(node.server);
 				}else{
 					tObj.server = null;
 				}
-
+				
 				if(node.title != undefined){
 					tObj.title = String(node.title);
 				}
-
+				
 				if(node.description != undefined){
 					tObj.description = String(node.description);
 				}
-
+				
 				if(tObj.mode){
 					slideA.push(tObj);
 				}
@@ -356,7 +341,7 @@ package us.xdev.mediaplayer.models
 				if(node.streams != undefined){
 					
 				}
-
+				
 				i++;
 			}
 			slideMax = i;
@@ -364,9 +349,6 @@ package us.xdev.mediaplayer.models
 			if(auto){
 				_init();
 			}
-
 		}
-
 	}
-
 }

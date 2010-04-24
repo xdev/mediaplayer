@@ -1,21 +1,19 @@
 package us.xdev.mediaplayer.controllers
 {
-	
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.events.EventDispatcher;
 	
 	public class ShareController extends EventDispatcher
 	{
-
 		protected var model:*;
-
+		
 		public function ShareController(model:*)
 		{
 			this.model = model;
 		}
 		
-		public function share(socialid:String,custom:String=''):String
+		public function share(socialid:String, custom:String=''):String
 		{
 			var url:String = '';
 			switch(socialid){
@@ -42,7 +40,7 @@ package us.xdev.mediaplayer.controllers
 				break;
 				case 'reddit':
 					url = 'http://reddit.com/submit?url='+model.page_url;
-				break;				
+				break;
 			}
 			
 			//url encode stuff
@@ -52,6 +50,5 @@ package us.xdev.mediaplayer.controllers
 			
 			return url;
 		}
-		
 	}
 }

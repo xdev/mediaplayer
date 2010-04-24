@@ -1,9 +1,5 @@
 package us.xdev.mediaplayer.models
 {
-
-	import com.a12.util.CustomEvent;
-	import com.a12.util.Utils;
-
 	import flash.events.AsyncErrorEvent;
 	import flash.events.EventDispatcher;
 	import flash.events.NetStatusEvent;
@@ -15,10 +11,15 @@ package us.xdev.mediaplayer.models
 	import flash.net.NetStream;
 	import flash.net.Responder;
 	import flash.utils.Timer;
-
+	
+	import com.a12.util.CustomEvent;
+	import com.a12.util.Utils;
+	
 	public class VideoModel extends EventDispatcher implements IMediaModel
 	{
-
+		//TODO: remove this, use internal messaging
+		public var b:EventDispatcher = new EventDispatcher();
+		
 		private var _file:String;
 		private var _stream:NetStream;
 		private var _connection:NetConnection;
@@ -30,21 +31,19 @@ package us.xdev.mediaplayer.models
 		private var _serverVersion:String;
 		private var _availableBandwidth:Number;
 		private var _performBandwidthTest:Boolean;
-
-		public var b:EventDispatcher = new EventDispatcher();
-
-		public function VideoModel(_file:String,_options:Object=null)
+		
+		public function VideoModel(_file:String, _options:Object=null)
 		{
 			this._file = _file;
 			this._options = _options;
 			_metaData = {};
 			_playing = false;
 		}
-
+		
 		// --------------------------------------------------------------------
 		// Interface Methods
 		// --------------------------------------------------------------------
-
+		
 		public function load():void
 		{
 			_connection = new NetConnection();
@@ -56,76 +55,75 @@ package us.xdev.mediaplayer.models
 			_connection.client = clientObj;
 			_connection.connect(_options.server);
 		}
-
+		
 		public function stopStream():void
 		{
 			seekStream(0);
 			pauseStream();
 			_playing = false;
-			dispatchPlaybackStatus(false,'stop');
+			dispatchPlaybackStatus(false, 'stop');
 		}
-
+		
 		public function playStream():void
 		{
 			_stream.resume();
 			_playing = true;
-			dispatchPlaybackStatus(true,'play');
+			dispatchPlaybackStatus(true, 'play');
 		}
-
+		
 		public function pauseStream():void
 		{
 			_stream.pause();
 			_playing = false;
-			dispatchPlaybackStatus(false,'pause');
+			dispatchPlaybackStatus(false, 'pause');
 		}
-
+		
 		public function toggleStream():void
 		{
 			_playing = !_playing;
 			_stream.togglePause();
 			//is there an event listener to for this
 			if(_playing){
-				dispatchPlaybackStatus(true,'toggle');
+				dispatchPlaybackStatus(true, 'toggle');
 			}else{
-				dispatchPlaybackStatus(false,'toggle');
+				dispatchPlaybackStatus(false, 'toggle');
 			}
 		}
-
+		
 		public function seekStream(time:Number):void
 		{
 			_stream.seek(time);
 			_playing = true;
 		}
-
+		
 		public function seekStreamPercent(percent:Number):void
 		{
-			//mediaplayer.('seek' + percent + '--' + _metaData.duration);
 			seekStream(percent * _metaData.duration);
 		}
-
+		
 		public function toggleAudio():void
 		{
-
+			
 		}
-
+		
 		public function setVolume(value:Number):void
 		{
 			var transform:SoundTransform = new SoundTransform();
 			transform.volume = value;
 			_stream.soundTransform = transform;
-			update({action:'onVolumeChange',volume:value});
+			update({action:'onVolumeChange', volume:value});
 		}
-
+		
 		public function setBuffer(value:Number):void
 		{
 			_stream.bufferTime = value;
 		}
-
+		
 		public function getPlaying():Boolean
 		{
 			return _playing;
 		}
-
+		
 		public function kill():void
 		{
 			_stream.close();
@@ -135,28 +133,27 @@ package us.xdev.mediaplayer.models
 			_timer.stop();
 			_timer = null;
 		}
-
-		public function switchStream(_file:String,pos:Number=0):void
+		
+		public function switchStream(_file:String, pos:Number=0):void
 		{
-			trace('VideoModel.switchStream(file='+_file+')');
-			_stream.play(formatFile(_file),pos);
+			_stream.play(formatFile(_file), pos);
 		}
-
+		
 		private function update(obj:Object):void
 		{
-			dispatchEvent(new CustomEvent('onUpdate',true,true,obj));
+			dispatchEvent(new CustomEvent('onUpdate', true, true, obj));
 		}
 		// --------------------------------------------------------------------
 		// Class Methods
 		// --------------------------------------------------------------------
-
+		
 		private function cuePointHandler(obj:Object):void
 		{
 			//obj.name + obj.time
 		}
-
+		
 		//Hack, this is for the external interface, example sound board
-		private function dispatchPlaybackStatus(mode:Boolean,action:String):void
+		private function dispatchPlaybackStatus(mode:Boolean, action:String):void
 		{
 			var tObj:Object = {};
 			tObj.action = 'onTransportChange';
@@ -165,18 +162,18 @@ package us.xdev.mediaplayer.models
 			tObj.file = _file;
 			update(tObj);
 		}
-
+		
 		private function onBWDone( ... rest ):void
 		{
 			_availableBandwidth = rest[0];
-			update({action:'onBandwidth',bandwidth:_availableBandwidth});
+			update({ action:'onBandwidth', bandwidth:_availableBandwidth });
 		}
 		
 		private function onBWCheck( ... rest ):Number
 		{
 			return 0;
 		}
-
+		
 		private function onMetaData(obj:Object):void
 		{
 			//should run only once!
@@ -187,13 +184,13 @@ package us.xdev.mediaplayer.models
 				tObj.width =  obj.width;
 				tObj.height = obj.height;
 				update(tObj);
-
+				
 				if(_options.paused == true){
 					stopStream();
-					update({action:'onMetaData'});
+					update({ action:'onMetaData' });
 				}
 			}
-
+			
 			for(var i:Object in obj){
 				_metaData[i] = obj[i];
 				if(i == 'duration'){
@@ -201,19 +198,18 @@ package us.xdev.mediaplayer.models
 				}
 			}
 		}
-
+		
 		private function netStatusHandler(event:NetStatusEvent):void
 		{
-			//mediaplayer.(event.info.code);
-			switch (event.info.code) {
+			switch (event.info.code){
 				case 'NetConnection.Connect.Success':
 					playMedia();
 				break;
-
+				
 				case 'NetStream.Buffer.Full':
-
+				
 				break;
-
+				
 				case 'NetStream.Buffer.Empty':
 					trace('Buffer Empty');
 					if(_playing){
@@ -230,21 +226,21 @@ package us.xdev.mediaplayer.models
 					
 				case 'NetStream.Play.StreamNotFound':
 				case 'NetConnection.Connect.Failed':
-
+					
 				break;
-
+				
 				case 'NetConnection.Connect.Rejected':
-
+					
 				break;
-
+				
 				case 'NetStream.Seek.Notify':
-
+					
 				break;
-
+				
 				case 'NetStream.Seek.Failed':
-
+					
 				break;
-
+				
 				case 'NetStream.Play.Stop':
 					//evaluate position
 					if(_stream && _metaData && _metaData.duration){
@@ -259,82 +255,72 @@ package us.xdev.mediaplayer.models
 				break;
 			}
 		}
-
+		
 		private function securityErrorHandler(event:SecurityErrorEvent):void
 		{
-
-        }
-
-        private function asyncErrorHandler(event:AsyncErrorEvent):void
-		{
-            // ignore AsyncErrorEvent events.
-        }
-
-		private function connectStream():void
-		{
-
+			
 		}
-
+		
+		private function asyncErrorHandler(event:AsyncErrorEvent):void
+		{
+			// ignore AsyncErrorEvent events.
+		}
+		
 		private function streamLengthHandler(len:Number):void
 		{
 			//onData({type:'streamlength',duration:len});
 		}
-
+		
 		private function formatFile(file:String):String
 		{
-			var ext:String = file.substr(file.lastIndexOf('.')+1,file.length).toLowerCase();
-			var basename:String = file.substr(0,file.lastIndexOf('.'));
-			if(ext == 'mp4' || ext == 'mov' || ext == 'aac' || ext == 'm4a') {
+			var ext:String = file.substr(file.lastIndexOf('.')+1, file.length).toLowerCase();
+			var basename:String = file.substr(0, file.lastIndexOf('.'));
+			if(ext == 'mp4' || ext == 'mov' || ext == 'aac' || ext == 'm4a'){
 				return 'mp4:'+ file;
-			} else if (ext == 'flv' && _options.server != null) {
+			} else if (ext == 'flv' && _options.server != null){
 				return basename;
 			} else {
 				return file;
 			}
 		}
-
+		
 		private function playMedia():void
 		{
-			trace('Video.playMedia');
 			_stream = new NetStream(_connection);
 			_stream.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
-            _stream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, asyncErrorHandler);
-
-			//_stream.receiveVideo(true);
-			//_stream.receiveAudio(true);
-
+			_stream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, asyncErrorHandler);
+			
 			if(_options.buffer != undefined){
 				setBuffer(_options.buffer);
 			}
-
+			
 			var clientObj:Object = {};
 			clientObj.onMetaData = onMetaData;
 			clientObj.onCuePoint = cuePointHandler;
 			_stream.client = clientObj;
 			_stream.play(formatFile(_file),0);
 			var res:Responder = new Responder(streamLengthHandler);
-			_connection.call("getStreamLength",res,_file);
-			_connection.call("checkBandwidth",null);
-
+			_connection.call("getStreamLength", res, _file);
+			_connection.call("checkBandwidth", null);
+			
 			_video = new Video();
 			_video.attachNetStream(_stream);
 			_playing = true;
-
+			
 			var tObj:Object = {};
 			tObj.action = 'playVideo';
 			tObj.stream = _stream;
 			tObj.video = _video;
 			tObj.playing = _playing;
 			update(tObj);
-
-			dispatchPlaybackStatus(true,'init');
-
+			
+			dispatchPlaybackStatus(true, 'init');
+			
 			_timer = new Timer(100);
 			_timer.addEventListener(TimerEvent.TIMER, updateView);
 			_timer.start();
-
 		}
-
+		
 		public function getStreamTime():Number
 		{
 			var r:Number = 0;
@@ -345,12 +331,12 @@ package us.xdev.mediaplayer.models
 			}
 			return r;
 		}
-
+		
 		private function updateView(e:TimerEvent=null):void
 		{
 			//convert time in seconds to 00:00
 			var tObj:Object = {};
-
+			
 			tObj.action = "updateView";
 			tObj.time_current = Utils.convertSeconds(Math.floor(_stream.time));
 			if(_metaData.durationObj != undefined){
@@ -363,7 +349,7 @@ package us.xdev.mediaplayer.models
 				Netstream.Play.Stop command
 				Need to add another condition that checks the playstate
 				*/
-																
+				
 				if(Math.ceil(_stream.time) == Math.ceil(_metaData.duration)){
 					onComplete();
 				}
@@ -373,19 +359,17 @@ package us.xdev.mediaplayer.models
 					//update({action:'onQOSFail'});
 				}
 			}
-
+			
 			tObj.loaded_percent = Math.floor((_stream.bytesLoaded / _stream.bytesTotal) * 100);
 			tObj.playing = _playing;
-
+			
 			update(tObj);
-						
+			
 		}
-
+		
 		private function onComplete():void
 		{
-			update({action:'onMediaComplete'});
+			update({ action:'onMediaComplete' });
 		}
-
 	}
-
 }

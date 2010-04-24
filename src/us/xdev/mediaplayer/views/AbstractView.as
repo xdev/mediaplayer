@@ -1,18 +1,17 @@
 package us.xdev.mediaplayer.views
 {
-	
 	import flash.display.Sprite;
+	
 	import com.a12.util.CustomEvent;
 	
 	public class AbstractView extends Sprite
 	{
-		
 		protected var model:Object;
 		protected var controller:Object;
 		protected var childA:Array;
 		protected var ref:Object;
 		
-		public function AbstractView(ref:Object,model:Object,controller:Object=null)
+		public function AbstractView(ref:Object, model:Object, controller:Object=null)
 		{
 			this.ref = ref;
 			this.model = model;
@@ -34,7 +33,7 @@ package us.xdev.mediaplayer.views
 		{
 			for(var i:int=0;i<childA.length;i++){
 				if(childA[i] == view){
-					childA.splice(i,1);
+					childA.splice(i, 1);
 				}
 			}
 		}
@@ -47,10 +46,8 @@ package us.xdev.mediaplayer.views
 		public function update(event:CustomEvent=null):void
 		{
 			for(var i:int=0;i<childA.length;i++){
-				childA[i].update(event);	
+				childA[i].update(event);
 			}
 		}
-		
 	}
-	
 }

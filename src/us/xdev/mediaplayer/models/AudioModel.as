@@ -1,8 +1,5 @@
 package us.xdev.mediaplayer.models
 {
-	import com.a12.util.CustomEvent;
-	import com.a12.util.Utils;
-	
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -14,25 +11,24 @@ package us.xdev.mediaplayer.models
 	import flash.net.URLRequest;
 	import flash.utils.Timer;
 	
+	import com.a12.util.CustomEvent;
+	import com.a12.util.Utils;
+	
 	public class AudioModel extends EventDispatcher implements IMediaModel
 	{
-	
+		public var b:EventDispatcher = new EventDispatcher();
+		
 		private var _file:String;
-		
 		private var _metaData:Object;
-		
 		private var _sound:Sound;
 		private var _channel:SoundChannel;
 		private	var	_volume:Number;
 		private var _timer:Timer;
-				
-		private var _playing:Boolean;		
+		private var _playing:Boolean;
 		private var _position:Number;
 		private var _options:Object;
 		
-		public var b:EventDispatcher = new EventDispatcher();
-	
-		public function AudioModel(_file:String,_options:Object=null)
+		public function AudioModel(_file:String, _options:Object=null)
 		{
 			this._file = _file;
 			this._options = _options;
@@ -54,8 +50,8 @@ package us.xdev.mediaplayer.models
 		{
 			_channel.stop();
 			_position = 0;
-			_channel = _sound.play(_position);	
-			_playing = false;	
+			_channel = _sound.play(_position);
+			_playing = false;
 			_channel.stop();
 			updateView();
 			dispatchPlaybackStatus(false);
@@ -80,7 +76,7 @@ package us.xdev.mediaplayer.models
 					_playing = false;
 					dispatchPlaybackStatus(false);
 				break;
-			
+				
 				case _playing == false:
 					_channel.stop();
 					_channel = _sound.play(_position);
@@ -96,7 +92,7 @@ package us.xdev.mediaplayer.models
 		{
 			pauseStream();
 		}
-			
+		
 		public function seekStream(time:Number):void
 		{
 			_channel.stop();
@@ -105,7 +101,7 @@ package us.xdev.mediaplayer.models
 			_setVolume();
 			_playing = true;
 		}
-	
+		
 		public function seekStreamPercent(percent:Number):void
 		{
 			seekStream(percent * _sound.length);
@@ -120,14 +116,14 @@ package us.xdev.mediaplayer.models
 		{
 			_volume = value;
 			_setVolume();
-			update({action:'onVolumeChange',volume:value});
+			update({ action:'onVolumeChange', volume:value });
 		}
 		
 		public function setBuffer(value:Number):void
 		{
 			
 		}
-	
+		
 		public function getPlaying():Boolean
 		{
 			return _playing;
@@ -145,7 +141,7 @@ package us.xdev.mediaplayer.models
 		
 		private function update(obj:Object):void
 		{
-			dispatchEvent(new CustomEvent('onUpdate',true,true,obj));
+			dispatchEvent(new CustomEvent('onUpdate', true, true, obj));
 		}
 		
 		// --------------------------------------------------------------------
@@ -162,16 +158,14 @@ package us.xdev.mediaplayer.models
 		{
 			//trace(obj.code);
 		}
-			
+		
 		private function playMedia():void
 		{
-			_metaData = {};		
-		
-			var tObj:Object = {};		
-		
+			_metaData = {};
+			var tObj:Object = {};
+			
 			_sound = new Sound();
 			var req:URLRequest = new URLRequest(_file);
-			//true
 			
 			_sound.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			_sound.addEventListener(Event.COMPLETE, onComplete);
@@ -196,44 +190,37 @@ package us.xdev.mediaplayer.models
 				stopStream();
 			}
 		}
-	
-		private function onComplete(e:Event):void
+		
+		private function onComplete(event:Event):void
 		{
-			update({action:'onMediaComplete'});
-		}
-	
-		private function onLoad(e:Event):void
-		{
-			update({action:'onLoad'});
+			update({ action:'onMediaComplete' });
 		}
 		
-		private function progressHandler(e:Event):void
+		private function onLoad(event:Event):void
+		{
+			update({ action:'onLoad' });
+		}
+		
+		private function progressHandler(event:Event):void
 		{
 			
 		}
 		
-		private function id3Handler(e:Event):void
+		private function id3Handler(event:Event):void
 		{
 			
 		}
 		
 		private function dispatchPlaybackStatus(mode:Boolean):void
 		{
-			/*
-			var tObj = {};
-			tObj.action = 'onTransportChange';
-			tObj.mode = mode;
-			tObj.file = _file;
-			setChanged();
-			update(tObj);
-			*/
-			b.dispatchEvent(new CustomEvent('onTransportChange',true,false,{mode:mode,file:_file}));
+			//TODO: this is wrong, use update instead
+			b.dispatchEvent(new CustomEvent('onTransportChange', true, false, { mode:mode, file:_file }));
 		}
-	
-		private function updateView(e:TimerEvent=null):void
+		
+		private function updateView(event:TimerEvent=null):void
 		{
 			var tObj:Object = {};
-		
+			
 			tObj.action = "updateView";
 			tObj.time_current = Utils.convertSeconds(Math.floor(_channel.position/1000));
 			tObj.time_duration = Utils.convertSeconds(Math.floor(_sound.length/1000));
@@ -241,11 +228,8 @@ package us.xdev.mediaplayer.models
 			tObj.time_percent = Math.floor(((_channel.position/1000) / Math.floor(_sound.length/1000)) * 100);
 			tObj.loaded_percent = Math.floor((_sound.bytesLoaded / _sound.bytesTotal) * 100);
 			tObj.playing = _playing;
-				
-			update(tObj);			
-		
+			
+			update(tObj);
 		}
-	
 	}
-
 }

@@ -1,14 +1,14 @@
 package
 {
+	import flash.system.Capabilities;
+	import flash.display.Sprite;
+	
 	import us.xdev.mediaplayer.controllers.PlayerController;
 	import us.xdev.mediaplayer.models.PlayerModel;
 	import us.xdev.mediaplayer.views.Player;
 	
-	import flash.system.Capabilities;	
-	import flash.display.Sprite;
-	
 	[SWF(frameRate="30", backgroundColor="#000000")]
-		
+	
 	public class Main extends Sprite
 	{
 		public function Main()
@@ -31,7 +31,5 @@ package
 			model.addEventListener('onUpdate',view.update);
 			model.init();
 		}
-	
 	}
-	
 }

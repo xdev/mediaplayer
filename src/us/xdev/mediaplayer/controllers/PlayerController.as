@@ -1,19 +1,18 @@
 package us.xdev.mediaplayer.controllers
 {
-
 	import flash.events.KeyboardEvent;
 	import flash.external.ExternalInterface;
 	import flash.ui.Keyboard;
 	import flash.utils.clearTimeout;
+	
 	import com.a12.util.CustomEvent;
-
+	
 	public class PlayerController
 	{
-
 		protected var model:*;
 		protected var view:*;
-
-		public function PlayerController(model:*,view:*=null)
+		
+		public function PlayerController(model:*, view:*=null)
 		{
 			this.model = model;
 			this.view = view;
@@ -23,10 +22,10 @@ package us.xdev.mediaplayer.controllers
 		{
 			this.view = view;
 		}
-
-		private function handleTransport(e:CustomEvent):void
+		
+		private function handleTransport(event:CustomEvent):void
 		{
-			if(e.props.mode == true){
+			if(event.props.mode == true){
 				sendExternal('playMedia');
 			}else{
 				sendExternal('stopMedia');
@@ -37,12 +36,12 @@ package us.xdev.mediaplayer.controllers
 		{
 			view.closeScreen();
 		}
-
-		public function sendExternal(e:String,args:Array=null):Boolean
+		
+		public function sendExternal(event:String, args:Array=null):Boolean
 		{
 			if(ExternalInterface.available){
 				var _args:Array = [];
-				_args.push(e);
+				_args.push(event);
 				if(args){
 					for(var i:int=0;i<args.length;i++){
 						_args.push(args[i]);
@@ -55,7 +54,7 @@ package us.xdev.mediaplayer.controllers
 				return false;
 			}
 		}
-
+		
 		public function viewSlideByIndex(value:Number):void
 		{
 			model.setSlide(value);
@@ -66,57 +65,51 @@ package us.xdev.mediaplayer.controllers
 			clearTimeout(view.slideInterval);
 			model.advanceSlide(dir);
 		}
-
-		public function handleKey(e:KeyboardEvent):void
+		
+		public function handleKey(event:KeyboardEvent):void
 		{
-			switch(e.keyCode)
+			switch(event.keyCode)
 			{
 				case Keyboard.LEFT:
 					if(model.slideMax>1){
 						advanceSlide(-1);
 					}
 				break;
-
+				
 				case Keyboard.RIGHT:
 					if(model.slideMax>1){
 						advanceSlide(1);
 					}
 				break;
-
+				
 				case 38:
 					if(model.slideMax>1){
 						advanceSlide(-1);
 					}
 				break;
-
+				
 				case 40:
 					if(model.slideMax>1){
 						advanceSlide(1);
 					}
 				break;
-
+				
 				case Keyboard.SPACE:
-					
 					//	MP.toggle();
-					
 				break;
-
+				
 				case 70:
 					//view.toggleFullScreen();
 				break;
-
+				
 				case 83:
 					//view.toggleSlideShow();
 				break;
-
+				
 				case 84:
 					//view.toggleThumbs();
 				break;
-				
 			}
-		
 		}
-
 	}
-
 }

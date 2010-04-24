@@ -16,7 +16,7 @@ package us.xdev.mediaplayer.models
 		
 		function seekStream(time:Number):void;
 		
-		function seekStreamPercent(percent:Number):void;		
+		function seekStreamPercent(percent:Number):void;
 		
 		function toggleAudio():void;
 		
@@ -25,9 +25,8 @@ package us.xdev.mediaplayer.models
 		function setBuffer(value:Number):void;
 		
 		function getPlaying():Boolean;
-				
+		
 		function kill():void;
 		
 	}
-		
 }

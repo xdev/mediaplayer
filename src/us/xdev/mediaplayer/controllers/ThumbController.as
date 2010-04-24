@@ -1,11 +1,9 @@
 package us.xdev.mediaplayer.controllers
 {
-
 	public class ThumbController
 	{
-
 		private var model:*;
-
+		
 		public function ThumbController(model:*)
 		{
 			this.model = model;
@@ -15,7 +13,5 @@ package us.xdev.mediaplayer.controllers
 		{
 			model.setSlide(id);
 		}
-		
 	}
-	
 }
