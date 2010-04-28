@@ -40,19 +40,22 @@ package us.xdev.mediaplayer.controllers
 		public function sendExternal(event:String, args:Array=null):Boolean
 		{
 			if(ExternalInterface.available){
-				var _args:Array = [];
-				_args.push(event);
-				if(args){
-					for(var i:int=0;i<args.length;i++){
-						_args.push(args[i]);
+				try {
+					var _args:Array = [];
+					_args.push(event);
+					if(args){
+						for(var i:int=0;i<args.length;i++){
+							_args.push(args[i]);
+						}
 					}
+					var method:Function = ExternalInterface.call;
+					method.apply(ExternalInterface,_args);
+					return true;
+				} catch(error:SecurityError){
+					return false;
 				}
-				var method:Function = ExternalInterface.call;
-				method.apply(ExternalInterface,_args);
-				return true;
-			}else{
-				return false;
 			}
+			return false;
 		}
 		
 		public function viewSlideByIndex(value:Number):void

@@ -257,6 +257,7 @@ package us.xdev.mediaplayer.views
 		
 		public function toggleFullScreen():void
 		{
+			
 			switch(true){
 				
 				case ref.stage.displayState == "fullScreen":
@@ -264,7 +265,11 @@ package us.xdev.mediaplayer.views
 				break;
 				
 				case ref.stage.displayState == "normal":
-					ref.stage.displayState = "fullScreen";
+					try {
+						ref.stage.displayState = "fullScreen";
+					} catch(error:Error){
+						
+					}
 				break;
 				
 			}
